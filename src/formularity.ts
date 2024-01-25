@@ -2,6 +2,7 @@ import { FormValues } from './types/types';
 
 export class Formularity<TFormValues extends FormValues> {
     public formValues: TFormValues;
+    public submitCount: number = 0;
 
     constructor ( initialFormValues: TFormValues ) {
         this.formValues = initialFormValues;
@@ -15,6 +16,10 @@ export class Formularity<TFormValues extends FormValues> {
 
     setValues = <TNewValues extends TFormValues>( newValues: TNewValues ) => {
         this.formValues = newValues;
+    };
+
+    updateSubmitCount = () => {
+        this.submitCount += 1;
     };
 
 }
