@@ -1,7 +1,7 @@
 {
   "name": "formularity",
   "version": "0.0.1",
-  "description": "The ast React form library you will ever need!",
+  "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -21,9 +21,9 @@
   "author": "Alex Johnson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/helgastogova/npm-react-typescript-template/issues"
+    "url": "https://github.com/johnsav1992/formularity/issues"
   },
-  "homepage": "https://github.com/helgastogova/npm-react-typescript-template#readme",
+  "homepage": "https://github.com/johnsav1992/formularity/#readme",
   "peerDependencies": {
     "react": ">=18.2.0",
     "react-dom": ">=18.2.0",
@@ -40,6 +40,7 @@
     "@typescript-eslint/parser": "^6.7.2",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
     "johnsonav-eslint-config": "^0.0.4",
     "npm": "^10.1.0",

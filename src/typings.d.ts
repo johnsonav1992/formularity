@@ -4,7 +4,7 @@ declare module '*.css' {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface SvgrComponent extends React.StatelessComponent<React.SVGAttributes<SVGElement>> {}
+interface SvgrComponent extends React.FC<React.SVGAttributes<SVGElement>> {}
 
 declare module '*.svg' {
   const svgUrl: string;
