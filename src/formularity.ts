@@ -1,11 +1,20 @@
-import { FormValues } from './types/types';
+import {
+    FormValues
+    , FormularityConstructorFunctionArgs
+    , SubmitHandler
+} from './types/types';
 
 export class Formularity<TFormValues extends FormValues> {
     public formValues: TFormValues;
     public submitCount: number = 0;
+    public onSubmit: SubmitHandler<TFormValues>;
 
-    constructor ( initialFormValues: TFormValues ) {
+    constructor ( {
+        initialFormValues
+        , onSubmit
+    }: FormularityConstructorFunctionArgs<TFormValues> ) {
         this.formValues = initialFormValues;
+        this.onSubmit = onSubmit;
     }
 
     setFieldValue = <TFieldName extends keyof TFormValues>(
@@ -23,3 +32,8 @@ export class Formularity<TFormValues extends FormValues> {
     };
 
 }
+
+const form = new Formularity( {
+    initialFormValues: { name: '' }
+    , onSubmit: () => {}
+} );
