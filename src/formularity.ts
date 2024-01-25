@@ -5,9 +5,9 @@ import {
 } from './types/types';
 
 export class Formularity<TFormValues extends FormValues> {
-    public formValues: TFormValues;
-    public submitCount: number = 0;
-    public onSubmit: SubmitHandler<TFormValues>;
+    formValues: TFormValues;
+    submitCount: number = 0;
+    onSubmit: SubmitHandler<TFormValues>;
 
     constructor ( {
         initialFormValues
