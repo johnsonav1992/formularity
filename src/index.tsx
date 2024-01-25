@@ -2,6 +2,8 @@ import React from 'react';
 
 import s from './styles.module.css';
 
+export * from './types/types';
+
 type TestComponentProps = {
   textText?: string;
 };

@@ -33,9 +33,13 @@ var css_248z = ".styles-module_root__Xsw1F {\n  background: gold;\n}\n";
 var s = {"root":"styles-module_root__Xsw1F"};
 styleInject(css_248z);
 
+class Formularity {
+}
+
 const TestComponent = ({ textText }) => {
     return React.createElement("div", { className: s.root }, textText !== null && textText !== void 0 ? textText : 'Hello!');
 };
 
+exports.Formularity = Formularity;
 exports.TestComponent = TestComponent;
 //# sourceMappingURL=index.js.map
