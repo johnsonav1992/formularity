@@ -1,1 +1,1 @@
-export type InitialFormValues = Record<PropertyKey, unknown>;
+export type FormValues = Record<PropertyKey, unknown>;

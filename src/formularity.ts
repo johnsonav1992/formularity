@@ -1,16 +1,20 @@
-import { InitialFormValues } from './types/types';
+import { FormValues } from './types/types';
 
-export class Formularity<TInitValues extends InitialFormValues> {
-    initialFormValues: TInitValues;
+export class Formularity<TFormValues extends FormValues> {
+    public formValues: TFormValues;
 
-    constructor ( initialFormValues: TInitValues ) {
-        this.initialFormValues = initialFormValues;
+    constructor ( initialFormValues: TFormValues ) {
+        this.formValues = initialFormValues;
     }
 
-    setFieldValue = <TFieldName extends keyof TInitValues>(
-        fieldName: TFieldName, newValue: TInitValues[TFieldName]
+    setFieldValue = <TFieldName extends keyof TFormValues>(
+        fieldName: TFieldName, newValue: TFormValues[TFieldName]
     ) => {
-        this.initialFormValues[ fieldName ] = newValue;
+        this.formValues[ fieldName ] = newValue;
+    };
+
+    setValues = <TNewValues extends TFormValues>( newValues: TNewValues ) => {
+        this.formValues = newValues;
     };
 
 }
