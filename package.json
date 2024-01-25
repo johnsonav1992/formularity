@@ -44,7 +44,6 @@
     "identity-obj-proxy": "^3.0.0",
     "johnsonav-eslint-config": "^0.0.4",
     "npm": "^10.4.0",
-    "postcss": "^8.4.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.29.4",
