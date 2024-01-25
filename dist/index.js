@@ -36,7 +36,7 @@ styleInject(css_248z);
 class Formularity {
 }
 
-const TestComponent = ({ textText }) => {
+const TestComponent = ({ textText, something }) => {
     return React.createElement("div", { className: s.root }, textText !== null && textText !== void 0 ? textText : 'Hello!');
 };
 
