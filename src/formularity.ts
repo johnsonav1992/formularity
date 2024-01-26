@@ -12,7 +12,6 @@ export class Formularity<TFormValues extends FormValues> {
     submitCount: number = 0;
     isSubmitting: boolean = false;
     onSubmit: SubmitHandler<TFormValues>;
-    updaterCallback: () => void;
 
     constructor ( {
         initialFormValues
@@ -26,6 +25,8 @@ export class Formularity<TFormValues extends FormValues> {
         this.updaterCallback = updater;
     }
 
+    // For handling triggering rerenders
+    private updaterCallback: () => void;
     private triggerUpdate = () => {
         this.updaterCallback();
     };
