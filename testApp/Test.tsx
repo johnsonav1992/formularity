@@ -3,7 +3,10 @@ import React from 'react';
 import { useForm } from '../src/useForm';
 
 const Test = () => {
-    const form = useForm( {
+    const {
+        handleChange
+        , formValues
+    } = useForm( {
         initialFormValues: {
             name: ''
         }
@@ -12,8 +15,12 @@ const Test = () => {
 
     return (
         <div>
-            <input onChange={ e => form.setFieldValue( 'name', e.target.value ) } />
-            { form.formValues.name }
+            <input
+                name='name'
+                value={ formValues.name }
+                onChange={ handleChange }
+            />
+            { formValues.name }
         </div>
     );
 };

@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import {
     FormErrors
     , FormValues
@@ -63,6 +64,16 @@ export class Formularity<TFormValues extends FormValues> {
 
     updateSubmitCount = () => {
         this.submitCount += 1;
+    };
+
+    handleChange = <TElement extends HTMLElement>( e: ChangeEvent<TElement> ) => {
+        const {
+            name
+            , value
+        } = e.target;
+
+        this.setFieldValue( name, value as TFormValues[keyof TFormValues] );
+        this.triggerUpdate();
     };
 
     handleSubmit = async () => {
