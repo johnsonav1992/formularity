@@ -17,7 +17,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
+  "include": ["src", "testApp"],
   "exclude": ["node_modules", "dist"],
   "types": ["vite/client"]
 }

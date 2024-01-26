@@ -1,6 +1,6 @@
 /* eslint-disable no-autofix/unused-imports/no-unused-imports */
 import React from 'react';
-import { useForm } from './useForm';
+import { useForm } from '../src/useForm';
 
 const Test = () => {
     const form = useForm( {
