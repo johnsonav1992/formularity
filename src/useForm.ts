@@ -1,5 +1,5 @@
 import {
-    useEffect
+    useMemo
     , useState
 } from 'react';
 import {
@@ -8,15 +8,27 @@ import {
 } from './types/types';
 import { Formularity } from './formularity';
 
-type UseFormParams<TFormValues extends FormValues> = FormularityConstructorFunctionArgs<TFormValues>;
+type UseFormParams<TFormValues extends FormValues> = Omit<FormularityConstructorFunctionArgs<TFormValues>, 'updater'>;
 
-export const useForm = <TFormValues extends FormValues>( formOptions: UseFormParams<TFormValues> ) => {
-    const [ form, setForm ] = useState<Formularity<TFormValues>>( () => new Formularity( formOptions ) );
+// Your hook code
+// Your hook code
+export const useForm = <TFormValues extends FormValues>(
+    formOptions: UseFormParams<TFormValues>
+): Formularity<TFormValues> => {
+    const [ form, setForm ] = useState<Formularity<TFormValues> | null>( null );
 
-    useEffect( () => {
-        //@ts-expect-error -> this is needed for rerendering
-        form.setUpdater( () => setForm( prevForm => ( { ...prevForm } ) ) );
-    }, [ form ] );
+    const initializedForm = useMemo( () => {
+        if ( !form ) {
+            const newForm = new Formularity( {
+                initialFormValues: formOptions.initialFormValues
+                , onSubmit: formOptions.onSubmit
+                , updater: () => setForm( prevForm => ( { ...prevForm } as never ) )
+            } );
+            setForm( newForm );
+            return newForm;
+        }
+        return form;
+    }, [ form, formOptions ] );
 
-    return form;
+    return initializedForm;
 };

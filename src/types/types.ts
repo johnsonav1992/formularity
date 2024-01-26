@@ -7,6 +7,7 @@ export type SubmitHandler<TFormValues extends FormValues> =
     ( values: TFormValues, formularity: Formularity<TFormValues> ) => void | Promise<void>;
 
 export type FormularityConstructorFunctionArgs<TFormValues extends FormValues> = {
-    initialFormValues: TFormValues
-    ; onSubmit: SubmitHandler<TFormValues>;
+    initialFormValues: TFormValues;
+    onSubmit: SubmitHandler<TFormValues>;
+    updater: () => void;
 };

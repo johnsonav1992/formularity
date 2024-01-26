@@ -10,8 +10,6 @@ const Test = () => {
         , onSubmit: () => {}
     } );
 
-    console.log( 'render' );
-
     return (
         <div>
             <input onChange={ e => form.setFieldValue( 'name', e.target.value ) } />

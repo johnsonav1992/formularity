@@ -12,23 +12,22 @@ export class Formularity<TFormValues extends FormValues> {
     submitCount: number = 0;
     isSubmitting: boolean = false;
     onSubmit: SubmitHandler<TFormValues>;
+    updaterCallback: () => void;
 
     constructor ( {
         initialFormValues
         , onSubmit
+        , updater
     }: FormularityConstructorFunctionArgs<TFormValues> ) {
         this.initialFormValues = { ...initialFormValues };
         this.formValues = initialFormValues;
         this.onSubmit = onSubmit;
         this.errors = {} as FormErrors<TFormValues>;
+        this.updaterCallback = updater;
     }
 
-    setUpdater = ( updater: () => void ) => {
-        this.updaterCallback = updater;
-    };
-    private updaterCallback: ( () => void ) | null = null;
     private triggerUpdate = () => {
-        this.updaterCallback?.();
+        this.updaterCallback();
     };
 
     /**
@@ -80,7 +79,7 @@ export class Formularity<TFormValues extends FormValues> {
     };
 }
 
-const form = new Formularity( {
-    initialFormValues: { name: '' }
-    , onSubmit: () => {}
-} );
+// const form = new Formularity( {
+//     initialFormValues: { name: '' }
+//     , onSubmit: () => {}
+// } );
