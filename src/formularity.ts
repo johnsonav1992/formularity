@@ -7,6 +7,7 @@ import {
 
 export class Formularity<TFormValues extends FormValues> {
     formValues: TFormValues;
+    initialFormValues: TFormValues;
     errors: FormErrors<TFormValues>;
     submitCount: number = 0;
     isSubmitting: boolean = false;
@@ -16,11 +17,19 @@ export class Formularity<TFormValues extends FormValues> {
         initialFormValues
         , onSubmit
     }: FormularityConstructorFunctionArgs<TFormValues> ) {
+        this.initialFormValues = { ...initialFormValues };
         this.formValues = initialFormValues;
         this.onSubmit = onSubmit;
         this.errors = {} as FormErrors<TFormValues>;
     }
 
+    /**
+     *
+     * @description Set the value of a single field
+     * @param fieldName name of field to set
+     * @param newValue new value of field
+     *
+     */
     setFieldValue = <TFieldName extends keyof TFormValues>(
         fieldName: TFieldName
         , newValue: TFormValues[TFieldName]
@@ -54,6 +63,11 @@ export class Formularity<TFormValues extends FormValues> {
         await this.onSubmit( this.formValues, this );
 
         this.isSubmitting = false;
+    };
+
+    resetForm = () => {
+        this.formValues = this.initialFormValues;
+        this.errors = {} as FormErrors<TFormValues>;
     };
 }
 
