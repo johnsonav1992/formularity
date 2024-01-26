@@ -23,6 +23,14 @@ export class Formularity<TFormValues extends FormValues> {
         this.errors = {} as FormErrors<TFormValues>;
     }
 
+    setUpdater = ( updater: () => void ) => {
+        this.updaterCallback = updater;
+    };
+    private updaterCallback: ( () => void ) | null = null;
+    private triggerUpdate = () => {
+        this.updaterCallback?.();
+    };
+
     /**
      *
      * @description Set the value of a single field
@@ -35,6 +43,7 @@ export class Formularity<TFormValues extends FormValues> {
         , newValue: TFormValues[TFieldName]
     ) => {
         this.formValues[ fieldName ] = newValue;
+        this.triggerUpdate();
     };
 
     setValues = <TNewValues extends TFormValues>( newValues: TNewValues ) => {

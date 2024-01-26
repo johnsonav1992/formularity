@@ -6,6 +6,7 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "start": "vite",
     "build": "rollup -c",
     "lint": "eslint './{src,app}/**/*.{ts,tsx}'",
     "prepare": "npm run build"
@@ -50,6 +51,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "tslib": "^2.6.2"
+    "@vitejs/plugin-react": "^4.2.1",
+    "tslib": "^2.6.2",
+    "vite": "^5.0.12",
+    "vite-tsconfig-paths": "^4.3.1"
   }
 }
