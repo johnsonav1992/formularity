@@ -14,12 +14,16 @@ const Test = () => {
         , errors
         , setFieldValue
         , setFieldError
+        , isValid
+        , handleSubmit
+        , submitCount
+        , isSubmitting
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( errors );
+    console.log( values, submitCount, isSubmitting );
 
     return (
         <div
@@ -29,20 +33,14 @@ const Test = () => {
                 , gap: '1rem'
             } }
         >
-            { /* <form onSubmit={ handleSubmit }> */ }
-            <input
-                name='name'
-                value={ values.name }
-                onChange={ e => setFieldValue( 'email', e.target.value ) }
-            />
-            { /* <button type='submit'>Submit</button> */ }
-            { /* </form> */ }
-            <div>ANOTHER</div>
-            <Another />
-            <button
-                type='button'
-                onClick={ () => setFieldError( 'name', 'ERROR' ) }
-            >set error</button>
+            <form onSubmit={ handleSubmit }>
+                <input
+                    name='name'
+                    value={ values.email }
+                    onChange={ e => setFieldValue( 'email', e.target.value ) }
+                />
+                <button type='submit'>Submit</button>
+            </form>
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import {
-    useCallback
+    FormEvent
+    , useCallback
     , useMemo
     , useSyncExternalStore
 } from 'react';
@@ -8,25 +9,26 @@ import {
     , FormStore
     , FormValues
 } from './types/types';
+import { useEventCallback } from './useEventCallback';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
-    onSubmit: ( formValues: TFormValues ) => void | Promise<void>;
+    onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
 export const useFormularity = <TFormValues extends FormValues>( {
     formStore
     , onSubmit
 }: UseFormularityParams<TFormValues> ) => {
-    const memoizedStore = useMemo( () => formStore, [] );
-    const store = useSyncExternalStore( memoizedStore.subscribe, memoizedStore.get );
+    const store = useMemo( () => formStore, [] );
+    const currentStore = useSyncExternalStore( store.subscribe, store.get );
 
-    const errors = store.errors;
-    const values = store.values;
+    const errors = currentStore.errors;
+    const values = currentStore.values;
 
     const setFieldValue = useCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
-        memoizedStore.set( {
-            errors
+        store.set( {
+            ...currentStore
             , values: {
                 ...values
                 , [ fieldName ]: newValue
@@ -35,15 +37,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
-        memoizedStore.set( {
-            errors
+        store.set( {
+            ...currentStore
             , values: newValues
         } );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: keyof TFormValues, newError: string ) => {
-        memoizedStore.set( {
-            values
+        store.set( {
+            ...currentStore
             , errors: {
                 ...errors
                 , [ fieldName ]: newError
@@ -52,18 +54,37 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        memoizedStore.set( {
-            values
+        store.set( {
+            ...currentStore
             , errors: newErrors
         } );
     }, [] );
 
+    const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
+        e.persist();
+        e.preventDefault();
+
+        store.set( {
+            ...currentStore
+            , isSubmitting: true
+        } );
+
+        await onSubmit?.( currentStore.values );
+
+        store.set( {
+            ...currentStore
+            , submitCount: currentStore.submitCount + 1
+            , isSubmitting: false
+        } );
+
+    } );
+
     return {
-        values
-        , errors
+        ...currentStore
         , setFieldValue
         , setValues
         , setFieldError
         , setErrors
+        , handleSubmit
     };
 };

@@ -1,14 +1,25 @@
 export type FormValues = Record<PropertyKey, unknown> | null;
-export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | Record<string, never>;
+export type EmptyObject = Record<string, never>;
+export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
+export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValues, boolean> | EmptyObject;
 
 export type UnsubScribeFn = () => void;
-
-export type FormStoreState<TFormValues extends FormValues> = { values: TFormValues; errors: FormErrors<TFormValues>};
 
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
     set: ( newFormStore: FormStoreState<TFormValues> ) => void;
     subscribe: ( callback: ( newFormStore: FormStoreState<TFormValues> ) => void ) => UnsubScribeFn;
+};
+
+export type FormStoreState<TFormValues extends FormValues> = {
+    values: TFormValues;
+    errors: FormErrors<TFormValues>;
+    touched: FormTouched<TFormValues>;
+    isSubmitting: boolean;
+    dirty: boolean;
+    isValid: boolean;
+    isValidating: boolean;
+    submitCount: number;
 };
 
 export type Formularity<TFormValues extends FormValues> = {
