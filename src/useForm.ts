@@ -1,12 +1,13 @@
 import {
-    useMemo
+    useEffect
+    , useMemo
     , useState
 } from 'react';
 import {
     FormValues
     , FormularityConstructorFunctionArgs
 } from './types/types';
-import { Formularity } from './formularity';
+import { Formularity } from './formularityOld';
 
 type UseFormParams<TFormValues extends FormValues> = Omit<FormularityConstructorFunctionArgs<TFormValues>, 'updater'>;
 
@@ -21,22 +22,11 @@ type UseFormParams<TFormValues extends FormValues> = Omit<FormularityConstructor
 export const useForm = <TFormValues extends FormValues>(
     formOptions: UseFormParams<TFormValues>
 ): Formularity<TFormValues> => {
-    const [ form, setForm ] = useState<Formularity<TFormValues> | null>( null );
+    const [ form, setForm ] = useState<Formularity<TFormValues> | null>( () => new Formularity( formOptions ) );
 
-    const initializedForm = useMemo( () => {
-        if ( !form ) {
-            const newForm = new Formularity( {
-                initialFormValues: formOptions.initialFormValues
-                , onSubmit: formOptions.onSubmit
-                , updater: () => setForm( prevForm => ( { ...prevForm } as never ) )
-            } );
+    useEffect( () => {
+        form?.setUpdaterCallback( () => setForm( prevForm => prevForm ) );
+    }, [ form ] );
 
-            setForm( newForm );
-
-            return newForm;
-        }
-        return form;
-    }, [ form, formOptions ] );
-
-    return initializedForm;
+    return form!;
 };

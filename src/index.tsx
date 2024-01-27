@@ -1,5 +1,5 @@
 export * from './types/types';
 
-export * from './formularity';
+export * from './formularityOld';
 
 export * from './useForm';

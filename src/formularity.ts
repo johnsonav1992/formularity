@@ -1,97 +1,65 @@
-import { ChangeEvent } from 'react';
 import {
-    FormErrors
+    useMemo
+    , useSyncExternalStore
+} from 'react';
+import {
+    FormStore
     , FormValues
-    , FormularityConstructorFunctionArgs
-    , SubmitHandler
 } from './types/types';
 
-export class Formularity<TFormValues extends FormValues> {
-    formValues: TFormValues;
-    initialFormValues: TFormValues;
-    errors: FormErrors<TFormValues>;
-    submitCount: number = 0;
-    isSubmitting: boolean = false;
-    onSubmit: SubmitHandler<TFormValues>;
+export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
+    const valuesStore = initialValues;
+    const errorsStore = {};
 
-    constructor ( {
-        initialFormValues
-        , onSubmit
-        , updater
-    }: FormularityConstructorFunctionArgs<TFormValues> ) {
-        this.initialFormValues = { ...initialFormValues };
-        this.formValues = initialFormValues;
-        this.onSubmit = onSubmit;
-        this.errors = {} as FormErrors<TFormValues>;
-        this.updaterCallback = updater;
-    }
-
-    // For handling triggering rerenders
-    private updaterCallback: () => void;
-    private triggerUpdate = () => {
-        this.updaterCallback();
+    let combinedStore = {
+        values: valuesStore
+        , errors: errorsStore
     };
 
-    /**
-     *
-     * @description Set the value of a single field
-     * @param fieldName name of field to set
-     * @param newValue new value of field
-     *
-     */
-    setFieldValue = <TFieldName extends keyof TFormValues>(
-        fieldName: TFieldName
-        , newValue: TFormValues[TFieldName]
-    ) => {
-        this.formValues[ fieldName ] = newValue;
-        this.triggerUpdate();
+    const subscribers = new Set<( store: typeof combinedStore ) => void>();
+
+    return {
+        get: () => combinedStore
+        , set: ( newStoreState: typeof combinedStore ) => {
+            combinedStore = newStoreState;
+
+            subscribers.forEach( callback => callback( combinedStore ) );
+        }
+        , subscribe: callback => {
+            subscribers.add( callback );
+
+            return () => {
+                subscribers.delete( callback );
+            };
+        }
+    };
+};
+
+type UseFormularityParams<TFormValues extends FormValues> = {
+    formStore: FormStore<TFormValues>;
+    onSubmit: ( formValues: TFormValues ) => void | Promise<void>;
+};
+
+export const useFormularity = <TFormValues extends FormValues>( {
+    formStore
+    , onSubmit
+}: UseFormularityParams<TFormValues> ) => {
+    const memoizedStore = useMemo( () => formStore, [] );
+    const store = useSyncExternalStore( memoizedStore.subscribe, memoizedStore.get );
+
+    const setFieldValue = ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
+        formStore.set( {
+            errors: store.errors
+            , values: {
+                ...formStore.get().values
+                , [ fieldName ]: newValue
+            }
+        } );
     };
 
-    setValues = <TNewValues extends TFormValues>( newValues: TNewValues ) => {
-        this.formValues = newValues;
+    return {
+        values: store.values
+        , errors: store.errors
+        , setFieldValue
     };
-
-    setFieldError = <TFieldName extends keyof TFormValues>(
-        fieldName: TFieldName
-        , newError: string
-    ) => {
-        this.errors[ fieldName ] = newError;
-    };
-
-    setErrors = <TNewErrors extends FormErrors<TFormValues>>( newErrors: TNewErrors ) => {
-        this.errors = newErrors;
-    };
-
-    updateSubmitCount = () => {
-        this.submitCount += 1;
-    };
-
-    handleChange = <TElement extends HTMLElement>( e: ChangeEvent<TElement> ) => {
-        const {
-            name
-            , value
-        } = e.target;
-
-        this.setFieldValue( name, value as TFormValues[keyof TFormValues] );
-        this.triggerUpdate();
-    };
-
-    handleSubmit = async () => {
-        this.isSubmitting = true;
-        this.updateSubmitCount();
-
-        await this.onSubmit( this.formValues, this );
-
-        this.isSubmitting = false;
-    };
-
-    resetForm = () => {
-        this.formValues = this.initialFormValues;
-        this.errors = {} as FormErrors<TFormValues>;
-    };
-}
-
-// const form = new Formularity( {
-//     initialFormValues: { name: '' }
-//     , onSubmit: () => {}
-// } );
+};
