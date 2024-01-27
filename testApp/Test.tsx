@@ -33,7 +33,7 @@ const Test = () => {
             <input
                 name='name'
                 value={ values.name }
-                onChange={ e => setFieldValue( 'name', e.target.value ) }
+                onChange={ e => setFieldValue( 'email', e.target.value ) }
             />
             { /* <button type='submit'>Submit</button> */ }
             { /* </form> */ }

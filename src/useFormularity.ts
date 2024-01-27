@@ -51,11 +51,19 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
     }, [] );
 
+    const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
+        memoizedStore.set( {
+            values
+            , errors: newErrors
+        } );
+    }, [] );
+
     return {
         values
         , errors
         , setFieldValue
         , setValues
         , setFieldError
+        , setErrors
     };
 };
