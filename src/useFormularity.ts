@@ -1,5 +1,6 @@
 import {
-    FormEvent
+    ChangeEvent
+    , FormEvent
     , useCallback
     , useMemo
     , useSyncExternalStore
@@ -60,6 +61,19 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
     }, [] );
 
+    const handleChange = useEventCallback( ( e: ChangeEvent<any> ) => {
+        const fieldName = e.target.name;
+        const value = e.target.value;
+
+        store.set( {
+            ...currentStore
+            , values: {
+                ...values
+                , [ fieldName ]: value
+            }
+        } );
+    } );
+
     const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
         e.persist();
         e.preventDefault();
@@ -85,6 +99,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , setValues
         , setFieldError
         , setErrors
+        , handleChange
         , handleSubmit
     };
 };
