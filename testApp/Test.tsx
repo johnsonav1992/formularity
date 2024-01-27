@@ -45,13 +45,12 @@ const Test = () => {
 const Another = () => {
     const {
         values
-        , setFieldValue
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    return <div>{ values.email }</div>;
+    return <div>{ values.name }</div>;
 };
 
 export default Test;
