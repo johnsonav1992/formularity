@@ -46,12 +46,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
 }: UseFormularityParams<TFormValues> ) => {
     const memoizedStore = useMemo( () => formStore, [] );
     const store = useSyncExternalStore( memoizedStore.subscribe, memoizedStore.get );
+    const errors = store.errors;
+    const values = store.values;
 
     const setFieldValue = ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         formStore.set( {
-            errors: store.errors
+            errors
             , values: {
-                ...formStore.get().values
+                ...values
                 , [ fieldName ]: newValue
             }
         } );
