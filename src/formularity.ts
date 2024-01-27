@@ -51,7 +51,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const values = store.values;
 
     const setFieldValue = ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
-        formStore.set( {
+        memoizedStore.set( {
             errors
             , values: {
                 ...values
