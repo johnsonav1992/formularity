@@ -1,5 +1,3 @@
-/* eslint-disable no-autofix/unused-imports/no-unused-imports */
-import React from 'react';
 import { useFormularity } from '../src/useFormularity';
 import { createFormStore } from '../src/createFormStore';
 
@@ -9,7 +7,7 @@ const formStore = createFormStore( {
     , choice: false
 } );
 
-const Test = () => {
+const App = () => {
     const {
         values
         , errors
@@ -44,7 +42,7 @@ const Test = () => {
                 <input
                     type='checkbox'
                     name='choice'
-                    value={ values.choice }
+                    value={ values.choice as unknown as string }
                     onChange={ handleChange }
                 />
                 <button type='submit'>Submit</button>
@@ -53,15 +51,4 @@ const Test = () => {
     );
 };
 
-const Another = () => {
-    const {
-        values
-    } = useFormularity( {
-        formStore
-        , onSubmit: values => console.log( 'submit', values )
-    } );
-
-    return <div>{ values.name }</div>;
-};
-
-export default Test;
+export default App;

@@ -1,7 +1,6 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Test from './Test';
+import App from './Test';
 
-ReactDOM.createRoot( document.getElementById( 'root' )! ).render(
-    <Test />
-);
+ReactDOM
+    .createRoot( document.getElementById( 'root' )! )
+    .render( <App /> );
