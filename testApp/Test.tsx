@@ -19,12 +19,13 @@ const Test = () => {
         , handleSubmit
         , submitCount
         , isSubmitting
+        , handleChange
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( values, submitCount, isSubmitting );
+    console.log( values );
 
     return (
         <div
@@ -42,8 +43,9 @@ const Test = () => {
                 />
                 <input
                     type='checkbox'
+                    name='choice'
                     checked={ values.choice }
-                    onChange={ e => setFieldValue( 'choice', e.target.checked ) }
+                    onChange={ handleChange }
                 />
                 <button type='submit'>Submit</button>
             </form>
