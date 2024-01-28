@@ -44,7 +44,7 @@ const Test = () => {
                 <input
                     type='checkbox'
                     name='choice'
-                    checked={ values.choice }
+                    value={ values.choice }
                     onChange={ handleChange }
                 />
                 <button type='submit'>Submit</button>
