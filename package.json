@@ -34,6 +34,7 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
@@ -52,6 +53,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.2.1",
+    "lodash": "^4.17.21",
     "tslib": "^2.6.2",
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.3.1"

@@ -6,7 +6,7 @@ import {
 
 type AnyFunction = ( ...args: unknown[] ) => void;
 
-export const useEventCallback = ( fn: AnyFunction ) => {
+export const useEventCallback = <T extends AnyFunction>( fn: T ): T => {
     const ref = useRef<AnyFunction>();
 
     useLayoutEffect( () => {
@@ -16,5 +16,5 @@ export const useEventCallback = ( fn: AnyFunction ) => {
     return useCallback(
         ( ...args: unknown[] ) => ref.current?.apply( void 0, args )
         , []
-    );
+    ) as T;
 };

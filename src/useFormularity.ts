@@ -11,6 +11,11 @@ import {
     , FormValues
 } from './types/types';
 import { useEventCallback } from './useEventCallback';
+import {
+    getCheckboxValue
+    , getMultiSelectValues
+    , getViaPath
+} from './utils';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
@@ -61,17 +66,51 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
     }, [] );
 
-    const handleChange = useEventCallback( ( e: ChangeEvent<any> ) => {
-        const fieldName = e.target.name;
-        const value = e.target.value;
+    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
+        e.persist();
 
-        store.set( {
-            ...currentStore
-            , values: {
-                ...values
-                , [ fieldName ]: value
+        let finalValue;
+        let parsedValue: number;
+
+        const {
+            value
+            , name: fieldName
+            , type
+        } = e.target;
+
+        const {
+            options
+            , multiple
+        } = e.target as HTMLSelectElement;
+
+        const { checked } = e.target as HTMLInputElement;
+
+        // determine field type -> number, checkbox, multiselect or stock
+        switch ( true ) {
+            case /number|range/.test( type ): {
+                parsedValue = parseFloat( value );
+
+                if ( isNaN( parsedValue ) ) {
+                    finalValue = '';
+                } else {
+                    finalValue = parsedValue;
+                }
             }
-        } );
+                break;
+            case /checkbox/.test( type ):
+                finalValue = getCheckboxValue(
+                    getViaPath( values, fieldName ) as Parameters<typeof getCheckboxValue>[0]
+                    , checked
+                    , value
+                );
+                break;
+            case options && multiple:
+                finalValue = getMultiSelectValues( options );
+                break;
+            default: finalValue = value;
+        }
+
+        setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
     } );
 
     const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {

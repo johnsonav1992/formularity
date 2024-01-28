@@ -6,6 +6,7 @@ import { createFormStore } from '../src/createFormStore';
 const formStore = createFormStore( {
     name: ''
     , email: ''
+    , choice: false
 } );
 
 const Test = () => {
@@ -38,6 +39,11 @@ const Test = () => {
                     name='name'
                     value={ values.email }
                     onChange={ e => setFieldValue( 'email', e.target.value ) }
+                />
+                <input
+                    type='checkbox'
+                    checked={ values.choice }
+                    onChange={ e => setFieldValue( 'choice', e.target.checked ) }
                 />
                 <button type='submit'>Submit</button>
             </form>
