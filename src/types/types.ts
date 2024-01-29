@@ -22,7 +22,9 @@ export type FormStoreState<TFormValues extends FormValues> = {
      */
     values: TFormValues;
     /**
-     * The current state of the errors of the form
+     * The current errors in the form. *Note that only fields with validation
+     * logic attached to them (whether through field or form-level validation)
+     * can ever have errors populate in this object.*
      */
     errors: FormErrors<TFormValues>;
     /**
@@ -56,7 +58,7 @@ export type FormStoreState<TFormValues extends FormValues> = {
     submitCount: number;
     /**
      * Whether the form is being used in an editing state.
-     * This is a custom filed that is provided by the user at the time
+     * This is a custom field that is provided by the user at the time
      * of initializing the form based on the logic of their application.
      */
     isEditing: boolean;

@@ -108,7 +108,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             case /number|range/.test( type ): {
                 const parsedValue = parseFloat( value );
 
-                if ( isNaN( parseFloat( value ) ) ) {
+                if ( isNaN( parsedValue ) ) {
                     finalValue = '';
                 } else {
                     finalValue = parsedValue;
