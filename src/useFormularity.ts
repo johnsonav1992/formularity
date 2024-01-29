@@ -9,6 +9,7 @@ import {
 import {
     FormErrors
     , FormStore
+    , FormStoreState
     , FormValues
 } from './types/types';
 import { useEventCallback } from './useEventCallback';
@@ -16,6 +17,7 @@ import {
     getCheckboxValue
     , getMultiSelectValues
     , getViaPath
+    , objectEntries
 } from './utils';
 import { isEqual } from 'lodash';
 
@@ -29,14 +31,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , onSubmit
 }: UseFormularityParams<TFormValues> ) => {
     const store = useMemo( () => formStore, [] );
-    const currentStore = useSyncExternalStore( store.subscribe, store.get );
+    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
 
     const initialValues = useRef( currentStore.values );
     const values = currentStore.values;
     const errors = currentStore.errors;
 
     const setFieldValue = useCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
-        store.set( {
+        formStore.set( {
             ...currentStore
             , values: {
                 ...values
@@ -112,6 +114,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             default: finalValue = value;
         }
 
+        console.log( finalValue );
+
         setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
     } );
 
@@ -136,6 +140,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isDirty = !isEqual( currentStore.values, initialValues.current );
 
+    const dirtyFields = values
+        && objectEntries( values ).filter(
+            ( [ field, value ] ) => value !== initialValues.current?.[ field ] )?.[ 0 ]?.[ 0 ];
+
     return {
         ...currentStore
         , initialValues: initialValues.current
@@ -146,5 +154,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleChange
         , handleSubmit
         , isDirty
+        , dirtyFields
     };
 };

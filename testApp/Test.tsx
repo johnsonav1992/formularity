@@ -4,7 +4,6 @@ import { createFormStore } from '../src/createFormStore';
 const formStore = createFormStore( {
     name: ''
     , email: ''
-    , choice: false
 } );
 
 const App = () => {
@@ -38,15 +37,21 @@ const App = () => {
             <form onSubmit={ handleSubmit }>
                 <input
                     name='name'
+                    value={ values.name }
+                    onChange={ e => setFieldValue( 'name', e.target.value ) }
+                />
+                <input
+                    name='email'
                     value={ values.email }
                     onChange={ e => setFieldValue( 'email', e.target.value ) }
                 />
-                <input
+                { /* <input
                     type='checkbox'
                     name='choice'
-                    value={ values.choice as unknown as string }
+                    checked={ values.choice }
+                    // value={ values.choice as unknown as string }
                     onChange={ handleChange }
-                />
+                /> */ }
                 <button type='submit'>Submit</button>
             </form>
         </div>

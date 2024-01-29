@@ -54,3 +54,12 @@ export const getMultiSelectValues = ( options: HTMLOptionsCollection ) => {
         .filter( option => option.selected )
         .map( option => option.value );
 };
+
+export const objectKeys = <TObj extends object>( obj: TObj ) => Object.keys( obj ) as Array<keyof TObj>;
+
+type ValueOf<T> = T[keyof T];
+type Entries<T> = [keyof T, ValueOf<T>][];
+
+export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
+    return Object.entries( obj ) as Entries<T>;
+};
