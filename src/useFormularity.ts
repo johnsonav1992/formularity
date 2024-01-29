@@ -18,12 +18,24 @@ import {
     , getMultiSelectValues
     , getViaPath
     , objectEntries
+    , objectKeys
 } from './utils';
 import { isEqual } from 'lodash';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
+    /**
+     * Formularity store used to power the form
+     */
     formStore: FormStore<TFormValues>;
-    isEditing?: boolean;
+    /**
+     * optional utility property to hook up a custom "editing" state where Formularity
+     * can be told if the form is currently in an editing state in order to perform certain
+     * disable logic, etc.
+     */
+    isEditing?: FormStoreState<TFormValues>['isEditing'];
+    /**
+     * Submit handler for the form. This is called when the form is submitted.
+     */
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
@@ -91,7 +103,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         const { checked } = e.target as HTMLInputElement;
 
-        // determine field type -> number, range, checkbox, multiselect or stock input
+        // determine field type -> number, range, checkbox, multiselect or other stock input
         switch ( true ) {
             case /number|range/.test( type ): {
                 const parsedValue = parseFloat( value );
@@ -147,6 +159,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             .filter( ( [ field, value ] ) => value !== initialValues.current?.[ field ] )
             .flatMap( ( [ field ] ) => field );
 
+    const isValid = objectKeys( errors ).length === 0;
+
     return {
         ...currentStore
         , initialValues: initialValues.current
@@ -157,6 +171,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleChange
         , handleSubmit
         , isDirty
+        , isValid
         , isEditing
         , dirtyFields
     };
