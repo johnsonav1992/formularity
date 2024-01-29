@@ -23,11 +23,13 @@ import { isEqual } from 'lodash';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
+    isEditing?: boolean;
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
 export const useFormularity = <TFormValues extends FormValues>( {
     formStore
+    , isEditing = false
     , onSubmit
 }: UseFormularityParams<TFormValues> ) => {
     const store = useMemo( () => formStore, [] );
@@ -155,6 +157,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleChange
         , handleSubmit
         , isDirty
+        , isEditing
         , dirtyFields
     };
 };

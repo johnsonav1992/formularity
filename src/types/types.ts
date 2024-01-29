@@ -20,6 +20,7 @@ export type FormStoreState<TFormValues extends FormValues> = {
     isValid: boolean;
     isValidating: boolean;
     submitCount: number;
+    isEditing: boolean;
 };
 
 export type Formularity<TFormValues extends FormValues> = {
