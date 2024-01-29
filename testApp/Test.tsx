@@ -18,12 +18,14 @@ const App = () => {
         , submitCount
         , isSubmitting
         , handleChange
+        , isDirty
+        , initialValues
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( values );
+    console.log( initialValues, values, 'isDirty - ', isDirty );
 
     return (
         <div

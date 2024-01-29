@@ -3,6 +3,7 @@ import {
     , FormEvent
     , useCallback
     , useMemo
+    , useRef
     , useSyncExternalStore
 } from 'react';
 import {
@@ -16,6 +17,7 @@ import {
     , getMultiSelectValues
     , getViaPath
 } from './utils';
+import { isEqual } from 'lodash';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
@@ -29,8 +31,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const store = useMemo( () => formStore, [] );
     const currentStore = useSyncExternalStore( store.subscribe, store.get );
 
-    const errors = currentStore.errors;
+    const initialValues = useRef( currentStore.values );
     const values = currentStore.values;
+    const errors = currentStore.errors;
 
     const setFieldValue = useCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
@@ -70,7 +73,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
 
         let finalValue;
-        let parsedValue: number;
 
         const {
             value
@@ -85,12 +87,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         const { checked } = e.target as HTMLInputElement;
 
-        // determine field type -> number, checkbox, multiselect or stock
+        // determine field type -> number, range, checkbox, multiselect or stock input
         switch ( true ) {
             case /number|range/.test( type ): {
-                parsedValue = parseFloat( value );
+                const parsedValue = parseFloat( value );
 
-                if ( isNaN( parsedValue ) ) {
+                if ( isNaN( parseFloat( value ) ) ) {
                     finalValue = '';
                 } else {
                     finalValue = parsedValue;
@@ -132,13 +134,17 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     } );
 
+    const isDirty = !isEqual( currentStore.values, initialValues.current );
+
     return {
         ...currentStore
+        , initialValues: initialValues.current
         , setFieldValue
         , setValues
         , setFieldError
         , setErrors
         , handleChange
         , handleSubmit
+        , isDirty
     };
 };
