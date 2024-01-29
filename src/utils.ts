@@ -1,4 +1,4 @@
-import { toPath } from 'lodash';
+import toPath from 'lodash/toPath';
 
 export const getViaPath = (
     obj: unknown,

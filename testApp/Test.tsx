@@ -21,12 +21,15 @@ const App = () => {
         , isDirty
         , initialValues
         , dirtyFields
+        , setFieldTouched
+        , touched
+        , isFormTouched
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( initialValues, values, 'isDirty - ', isDirty, dirtyFields );
+    console.log( touched, isFormTouched );
 
     return (
         <div
@@ -40,6 +43,7 @@ const App = () => {
                 <input
                     name='name'
                     value={ values.name }
+                    onBlur={ e => setFieldTouched( 'name', true ) }
                     onChange={ handleChange }
                 />
                 <input

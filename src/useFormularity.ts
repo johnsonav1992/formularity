@@ -10,6 +10,7 @@ import {
     FormErrors
     , FormStore
     , FormStoreState
+    , FormTouched
     , FormValues
 } from './types/types';
 import { useEventCallback } from './useEventCallback';
@@ -20,7 +21,7 @@ import {
     , objectEntries
     , objectKeys
 } from './utils';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -50,6 +51,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const initialValues = useRef( currentStore.values );
     const values = currentStore.values;
     const errors = currentStore.errors;
+    const touched = currentStore.touched;
 
     const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
@@ -82,6 +84,23 @@ export const useFormularity = <TFormValues extends FormValues>( {
         store.set( {
             ...currentStore
             , errors: newErrors
+        } );
+    }, [] );
+
+    const setFieldTouched = useEventCallback( ( fieldName: keyof TFormValues, newTouched: boolean ) => {
+        store.set( {
+            ...currentStore
+            , touched: {
+                ...touched
+                , [ fieldName ]: newTouched
+            } as FormTouched<TFormValues>
+        } );
+    } );
+
+    const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
+        store.set( {
+            ...currentStore
+            , touched: newTouched
         } );
     }, [] );
 
@@ -161,6 +180,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isValid = objectKeys( errors ).length === 0;
 
+    const isFormTouched = objectKeys( touched ).length > 0;
+
     return {
         ...currentStore
         , initialValues: initialValues.current
@@ -168,11 +189,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , setValues
         , setFieldError
         , setErrors
+        , setFieldTouched
+        , setTouched
         , handleChange
         , handleSubmit
         , isDirty
         , isValid
         , isEditing
         , dirtyFields
+        , isFormTouched
     };
 };
