@@ -4,6 +4,7 @@ import { createFormStore } from '../src/createFormStore';
 const formStore = createFormStore( {
     name: ''
     , email: ''
+    , choice: false
 } );
 
 const App = () => {
@@ -19,12 +20,13 @@ const App = () => {
         , handleChange
         , isDirty
         , initialValues
+        , dirtyFields
     } = useFormularity( {
         formStore
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( initialValues, values, 'isDirty - ', isDirty );
+    console.log( initialValues, values, 'isDirty - ', isDirty, dirtyFields );
 
     return (
         <div
@@ -38,20 +40,20 @@ const App = () => {
                 <input
                     name='name'
                     value={ values.name }
-                    onChange={ e => setFieldValue( 'name', e.target.value ) }
+                    onChange={ handleChange }
                 />
                 <input
                     name='email'
                     value={ values.email }
-                    onChange={ e => setFieldValue( 'email', e.target.value ) }
+                    onChange={ handleChange }
                 />
-                { /* <input
+                <input
                     type='checkbox'
                     name='choice'
-                    checked={ values.choice }
-                    // value={ values.choice as unknown as string }
+                    // checked={ values.choice }
+                    value={ values.choice as unknown as string }
                     onChange={ handleChange }
-                /> */ }
+                />
                 <button type='submit'>Submit</button>
             </form>
         </div>

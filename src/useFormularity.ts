@@ -141,8 +141,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isDirty = !isEqual( currentStore.values, initialValues.current );
 
     const dirtyFields = values
-        && objectEntries( values ).filter(
-            ( [ field, value ] ) => value !== initialValues.current?.[ field ] )?.[ 0 ]?.[ 0 ];
+        && objectEntries( values )
+            .filter( ( [ field, value ] ) => value !== initialValues.current?.[ field ] )
+            .flatMap( ( [ field ] ) => field );
 
     return {
         ...currentStore

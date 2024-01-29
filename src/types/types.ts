@@ -28,3 +28,5 @@ export type Formularity<TFormValues extends FormValues> = {
     setFormValues: ( newValues: TFormValues ) => void;
     setFormErrors: ( newErrors: FormErrors<TFormValues> ) => void;
 };
+
+export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
