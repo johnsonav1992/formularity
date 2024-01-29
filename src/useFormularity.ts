@@ -31,21 +31,21 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , onSubmit
 }: UseFormularityParams<TFormValues> ) => {
     const store = useMemo( () => formStore, [] );
-    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
+    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
     const initialValues = useRef( currentStore.values );
     const values = currentStore.values;
     const errors = currentStore.errors;
 
-    const setFieldValue = useCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
-        formStore.set( {
+    const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
+        store.set( {
             ...currentStore
             , values: {
                 ...values
                 , [ fieldName ]: newValue
             }
         } );
-    }, [] );
+    } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
         store.set( {
