@@ -40,6 +40,7 @@ export const getDefaultFormStoreState = <TFormValues extends FormValues>( initia
         , isValidating: false
         , submitCount: 0
         , isEditing: false
+        , isFormMounted: false
     };
 
     return defaultStoreState;

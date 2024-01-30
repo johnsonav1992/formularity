@@ -25,6 +25,7 @@ const App = () => {
         , touched
         , isFormTouched
         , handleBlur
+        , isFormMounted
     } = useFormularity( {
         formStore
         , manualValidationHandler: ( { name } ) => {
@@ -43,7 +44,7 @@ const App = () => {
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( values, errors );
+    console.log( { isFormMounted } );
 
     return (
         <div

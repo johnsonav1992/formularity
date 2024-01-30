@@ -63,14 +63,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const values = currentStore.values;
     const errors = currentStore.errors;
     const touched = currentStore.touched;
-
-    const isMounted = useRef<boolean>( false );
+    const isMounted = currentStore.isFormMounted;
 
     useEffect( () => {
-        isMounted.current = true;
+        store.set( { isFormMounted: true } );
 
         return () => {
-            isMounted.current = false;
+            store.set( { isFormMounted: false } );
         };
     }, [] );
 
@@ -236,7 +235,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     return {
         ...currentStore
-        , isFormMounted: isMounted.current
+        , isFormMounted: isMounted
         , values
         , errors
         , touched

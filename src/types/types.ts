@@ -68,6 +68,10 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * of initializing the form based on the logic of their application.
      */
     isEditing: boolean;
+    /**
+     * Returns true if the form is moutned in the DOM
+     */
+    isFormMounted: boolean;
 };
 
 export type FormHelperMethods<TFormValues extends FormValues> = {
@@ -131,10 +135,6 @@ export type FormComputedProps<TFormValues extends FormValues> = {
      * Returns true if any field in the form is touched
      */
     isFormTouched: boolean;
-    /**
-     * Whether or not the form is mounted in the DOM
-     */
-    isFormMounted: boolean;
 };
 
 export type UseFormularityReturn<TFormValues extends FormValues> =
