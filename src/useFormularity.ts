@@ -74,16 +74,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
         };
     }, [] );
 
-    const validateForm = () => {
+    const validateForm = useCallback( () => {
         const validationErrors = runUserDefinedValidations();
         return validationErrors;
-    };
+    }, [] );
 
-    const runUserDefinedValidations = () => {
+    const runUserDefinedValidations = useCallback( () => {
         if ( manualValidationHandler ) {
             const validationErrors = manualValidationHandler( values ) as Partial<FormErrors<TFormValues>>;
             if ( isEmpty( validationErrors ) ) {
-                setErrors( {} );
+                return setErrors( {} );
             } else {
                 setErrors( {
                     ...errors
@@ -93,7 +93,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
             return validationErrors;
         }
-    };
+    }, [] );
 
     const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
@@ -203,6 +203,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const validationErrors = validateForm();
 
         if ( validationErrors ) {
+            store.set( {
+                submitCount: currentStore.submitCount + 1
+                , isSubmitting: false
+            } );
+
             return setErrors( {
                 ...errors
                 , ...validationErrors
