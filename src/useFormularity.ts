@@ -136,8 +136,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
             default: finalValue = value;
         }
 
-        console.log( finalValue );
-
         setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
     } );
 
@@ -169,6 +167,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     return {
         ...currentStore
+        , values
+        , errors
+        , touched
         , initialValues: initialValues.current
         , setFieldValue
         , setValues

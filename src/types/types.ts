@@ -39,10 +39,6 @@ export type FormStoreState<TFormValues extends FormValues> = {
      */
     touched: FormTouched<TFormValues>;
     /**
-     * Returns true if any field in the form is touched
-     */
-    isFormTouched: boolean;
-    /**
      * Current submitting status of the form
      */
     isSubmitting: boolean;
@@ -53,15 +49,6 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * thus it is considered "dirty"
      */
     dirty: boolean;
-    /**
-     * Returns true if any field in the form is dirty
-     */
-    isDirty: boolean;
-    /**
-     * This returns true if the form is currently in a valid state;
-     * There are no errors present.
-     */
-    isValid: boolean;
     /**
      * This returns true if the form is currently validating (running validation).
      */
@@ -118,9 +105,22 @@ export type FormHelperMethods<TFormValues extends FormValues> = {
 
 export type FormComputedProps<TFormValues extends FormValues> = {
     /**
+     * Returns true if any field in the form is dirty
+     */
+    isDirty: boolean;
+    /**
      * An array of the names of all fields that are dirty
      */
     dirtyFields: DirtyFields<TFormValues>;
+    /**
+     * This returns true if the form is currently in a valid state;
+     * There are no errors present.
+     */
+    isValid: boolean;
+    /**
+     * Returns true if any field in the form is touched
+     */
+    isFormTouched: boolean;
 };
 
 export type UseFormularityReturn<TFormValues extends FormValues> =
