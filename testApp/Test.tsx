@@ -27,8 +27,12 @@ const App = () => {
         , handleBlur
     } = useFormularity( {
         formStore
-        , validationSchema: ( { name } ) => {
-            const formErrors = {};
+        , manualValidationHandler: ( { name } ) => {
+            const formErrors: Record<string, string> = {};
+
+            if ( name.length < 3 ) {
+                formErrors.name = 'Name is too short!';
+            }
 
             if ( !name ) {
                 formErrors.name = 'Name is required!';

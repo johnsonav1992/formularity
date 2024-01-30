@@ -13,9 +13,8 @@ export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullabl
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 
-export type ValidationSchema<TFormValues extends FormValues> =
-    ( values: TFormValues ) => Partial<FormErrors<TFormValues>>
-    | unknown;
+export type ManualValidationHandler<TFormValues extends FormValues> =
+    ( values: TFormValues ) => Partial<FormErrors<TFormValues>>;
 
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
