@@ -27,10 +27,19 @@ const App = () => {
         , handleBlur
     } = useFormularity( {
         formStore
+        , validationSchema: ( { name } ) => {
+            const formErrors = {};
+
+            if ( !name ) {
+                formErrors.name = 'Name is required!';
+            }
+
+            return formErrors;
+        }
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( values, touched );
+    console.log( values, errors );
 
     return (
         <div
@@ -47,6 +56,7 @@ const App = () => {
                     onBlur={ handleBlur }
                     onChange={ handleChange }
                 />
+                { errors.name }
                 <input
                     name='email'
                     value={ values.email }

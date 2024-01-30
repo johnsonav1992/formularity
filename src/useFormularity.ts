@@ -3,6 +3,7 @@ import {
     , FocusEvent
     , FormEvent
     , useCallback
+    , useEffect
     , useMemo
     , useRef
     , useSyncExternalStore
@@ -51,6 +52,7 @@ type UseFormularityParams<TFormValues extends FormValues> = {
 export const useFormularity = <TFormValues extends FormValues>( {
     formStore
     , isEditing = false
+    , validationSchema
     , onSubmit
 }: UseFormularityParams<TFormValues> ): UseFormularityReturn<TFormValues> => {
     const store = useMemo( () => formStore, [] );
@@ -61,6 +63,33 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const errors = currentStore.errors;
     const touched = currentStore.touched;
 
+    const isMounted = useRef<boolean>( false );
+
+    useEffect( () => {
+        isMounted.current = true;
+
+        return () => {
+            isMounted.current = false;
+        };
+    }, [] );
+
+    const validateForm = () => {
+        const validationErrors = runUserDefinedValidations();
+        return validationErrors;
+    };
+
+    const runUserDefinedValidations = () => {
+        if ( validationSchema ) {
+            const validationErrors = validationSchema( values ) as Partial<FormErrors<TFormValues>>;
+            setErrors( {
+                ...errors
+                , ...validationErrors
+            } as FormErrors<TFormValues> );
+
+            return validationErrors;
+        }
+    };
+
     const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
             values: {
@@ -68,6 +97,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 , [ fieldName ]: newValue
             }
         } );
+
+        validateForm();
     } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
@@ -162,6 +193,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         store.set( { isSubmitting: true } );
 
+        const validationErrors = validateForm();
+
+        if ( validationErrors ) {
+            return setErrors( {
+                ...errors
+                , ...validationErrors
+            } as FormErrors<TFormValues> );
+        }
+
         await onSubmit?.( currentStore.values );
 
         store.set( {
@@ -184,6 +224,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     return {
         ...currentStore
+        , isFormMounted: isMounted.current
         , values
         , errors
         , touched

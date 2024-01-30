@@ -132,6 +132,10 @@ export type FormComputedProps<TFormValues extends FormValues> = {
      * Returns true if any field in the form is touched
      */
     isFormTouched: boolean;
+    /**
+     * Whether or not the form is mounted in the DOM
+     */
+    isFormMounted: boolean;
 };
 
 export type UseFormularityReturn<TFormValues extends FormValues> =
