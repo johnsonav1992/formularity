@@ -103,7 +103,7 @@ export type FormHelperMethods<TFormValues extends FormValues> = {
      * taking the event emitted from onBlur and setting the
      * field's touched status accordingly
      */
-    handleBlur: ( e: FocusEvent<unknown> ) => void;
+    handleBlur: ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => void;
     /**
      * Helper method for handling form submission
      */

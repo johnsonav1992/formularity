@@ -142,8 +142,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         // TODO: update once validation is ready
     } );
 
-    const handleBlur = useEventCallback( ( e: FocusEvent<unknown> ) => {
-        const { name: fieldName } = e.target as HTMLInputElement;
+    const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {
+        const { name: fieldName } = e.target;
 
         setFieldTouched( fieldName as keyof TFormValues, true );
 
