@@ -1,13 +1,20 @@
+import {
+    ChangeEvent
+    , FormEvent
+} from 'react';
+
 export type FormValues = Record<PropertyKey, unknown> | null;
 export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
 export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValues, boolean> | EmptyObject;
+
+export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
-    set: ( newFormStore: FormStoreState<TFormValues> ) => void;
+    set: ( newFormStore: Partial<FormStoreState<TFormValues>> ) => void;
     subscribe: ( callback: ( newFormStore: FormStoreState<TFormValues> ) => void ) => UnsubScribeFn;
 };
 
@@ -32,6 +39,10 @@ export type FormStoreState<TFormValues extends FormValues> = {
      */
     touched: FormTouched<TFormValues>;
     /**
+     * Returns true if any field in the form is touched
+     */
+    isFormTouched: boolean;
+    /**
      * Current submitting status of the form
      */
     isSubmitting: boolean;
@@ -42,6 +53,10 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * thus it is considered "dirty"
      */
     dirty: boolean;
+    /**
+     * Returns true if any field in the form is dirty
+     */
+    isDirty: boolean;
     /**
      * This returns true if the form is currently in a valid state;
      * There are no errors present.
@@ -64,11 +79,51 @@ export type FormStoreState<TFormValues extends FormValues> = {
     isEditing: boolean;
 };
 
-export type Formularity<TFormValues extends FormValues> = {
-    values: TFormValues;
-    errors: FormErrors<TFormValues>;
-    setFormValues: ( newValues: TFormValues ) => void;
-    setFormErrors: ( newErrors: FormErrors<TFormValues> ) => void;
+export type FormHelperMethods<TFormValues extends FormValues> = {
+    /**
+     * Set the value of a single field
+     */
+    setFieldValue: ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => void;
+    /**
+     * Set the values of any number of fields simultaneously
+     */
+    setValues: ( newValues: TFormValues ) => void;
+    /**
+     * Set the error message of a single field
+     */
+    setFieldError: ( fieldName: keyof TFormValues, newError: string ) => void;
+    /**
+     * Set the errors of any number of fields simultaneously
+     */
+    setErrors: ( newErrors: FormErrors<TFormValues> ) => void;
+    /**
+     * Set the touched status of a single field
+     */
+    setFieldTouched: ( fieldName: keyof TFormValues, newTouched: boolean ) => void;
+    /**
+     * Set the touched statuses of any number of fields simultaneously
+     */
+    setTouched: ( newTouched: FormTouched<TFormValues> ) => void;
+    /**
+     * Helper method to handle the updating of a field by
+     * taking the event emitted from onChange and setting the
+     * field's value accordingly
+     */
+    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => void;
+    /**
+     * Helper method for handling form submission
+     */
+    handleSubmit: ( e: FormEvent<HTMLFormElement> ) => void | Promise<void>;
 };
 
-export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
+export type FormComputedProps<TFormValues extends FormValues> = {
+    /**
+     * An array of the names of all fields that are dirty
+     */
+    dirtyFields: DirtyFields<TFormValues>;
+};
+
+export type UseFormularityReturn<TFormValues extends FormValues> =
+    FormStoreState<TFormValues>
+    & FormHelperMethods<TFormValues>
+    & FormComputedProps<TFormValues>;

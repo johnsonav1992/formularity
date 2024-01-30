@@ -12,6 +12,7 @@ import {
     , FormStoreState
     , FormTouched
     , FormValues
+    , UseFormularityReturn
 } from './types/types';
 import { useEventCallback } from './useEventCallback';
 import {
@@ -44,19 +45,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
     formStore
     , isEditing = false
     , onSubmit
-}: UseFormularityParams<TFormValues> ) => {
+}: UseFormularityParams<TFormValues> ): UseFormularityReturn<TFormValues> => {
     const store = useMemo( () => formStore, [] );
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
-    const initialValues = useRef( currentStore.values );
+    const initialValues = useRef( currentStore.initialValues );
     const values = currentStore.values;
     const errors = currentStore.errors;
     const touched = currentStore.touched;
 
     const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
-            ...currentStore
-            , values: {
+            values: {
                 ...values
                 , [ fieldName ]: newValue
             }
@@ -64,16 +64,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
-        store.set( {
-            ...currentStore
-            , values: newValues
-        } );
+        store.set( { values: newValues } );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: keyof TFormValues, newError: string ) => {
         store.set( {
-            ...currentStore
-            , errors: {
+            errors: {
                 ...errors
                 , [ fieldName ]: newError
             } as FormErrors<TFormValues>
@@ -81,16 +77,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        store.set( {
-            ...currentStore
-            , errors: newErrors
-        } );
+        store.set( { errors: newErrors } );
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: keyof TFormValues, newTouched: boolean ) => {
         store.set( {
-            ...currentStore
-            , touched: {
+            touched: {
                 ...touched
                 , [ fieldName ]: newTouched
             } as FormTouched<TFormValues>
@@ -98,10 +90,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
-        store.set( {
-            ...currentStore
-            , touched: newTouched
-        } );
+        store.set( { touched: newTouched } );
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
@@ -156,22 +145,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
-        store.set( {
-            ...currentStore
-            , isSubmitting: true
-        } );
+        store.set( { isSubmitting: true } );
 
         await onSubmit?.( currentStore.values );
 
         store.set( {
-            ...currentStore
-            , submitCount: currentStore.submitCount + 1
+            submitCount: currentStore.submitCount + 1
             , isSubmitting: false
         } );
 
     } );
 
-    const isDirty = !isEqual( currentStore.values, initialValues.current );
+    const isDirty = !isEqual( values, initialValues.current );
 
     const dirtyFields = values
         && objectEntries( values )

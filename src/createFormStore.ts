@@ -7,11 +7,11 @@ import {
 export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
     let storeState = getDefaultFormStoreState( initialValues );
 
-    const subscribers = new Set<( store: typeof storeState ) => void>();
+    const subscribers = new Set<( store: FormStoreState<TFormValues> ) => void>();
 
     return {
         get: () => storeState
-        , set: ( newStoreState: typeof storeState ) => {
+        , set: ( newStoreState: Partial<FormStoreState<TFormValues>> ) => {
             storeState = {
                 ...storeState
                 , ...newStoreState
@@ -32,13 +32,17 @@ export const createFormStore = <TFormValues extends FormValues>( initialValues: 
 export const getDefaultFormStoreState = <TFormValues extends FormValues>( initialValues: TFormValues ) => {
     const defaultStoreState: FormStoreState<TFormValues> = {
         values: initialValues
+        , initialValues
         , errors: {}
         , touched: {}
+        , isFormTouched: false
         , isSubmitting: false
         , dirty: false
+        , isDirty: false
         , isValid: false
         , isValidating: false
         , submitCount: 0
+        , isEditing: false
     };
 
     return defaultStoreState;

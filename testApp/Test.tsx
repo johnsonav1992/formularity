@@ -29,7 +29,7 @@ const App = () => {
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( touched, isFormTouched );
+    console.log( values );
 
     return (
         <div
@@ -44,7 +44,7 @@ const App = () => {
                     name='name'
                     value={ values.name }
                     onBlur={ e => setFieldTouched( 'name', true ) }
-                    onChange={ handleChange }
+                    onChange={ e => setFieldValue( 'name', e.target.value ) }
                 />
                 <input
                     name='email'
