@@ -26,7 +26,7 @@ import {
     , objectKeys
 } from './utils';
 import isEqual from 'lodash/isEqual';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     /**
