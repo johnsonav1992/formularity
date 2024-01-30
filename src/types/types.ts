@@ -1,5 +1,6 @@
 import {
     ChangeEvent
+    , FocusEvent
     , FormEvent
 } from 'react';
 
@@ -80,7 +81,7 @@ export type FormHelperMethods<TFormValues extends FormValues> = {
      */
     setFieldError: ( fieldName: keyof TFormValues, newError: string ) => void;
     /**
-     * Set the errors of any number of fields simultaneously
+     * Set the error messages of any number of fields simultaneously
      */
     setErrors: ( newErrors: FormErrors<TFormValues> ) => void;
     /**
@@ -92,11 +93,17 @@ export type FormHelperMethods<TFormValues extends FormValues> = {
      */
     setTouched: ( newTouched: FormTouched<TFormValues> ) => void;
     /**
-     * Helper method to handle the updating of a field by
+     * Helper method to handle the updating of a field's value by
      * taking the event emitted from onChange and setting the
      * field's value accordingly
      */
     handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => void;
+    /**
+     * Helper method to handle the updating of a field's touched status by
+     * taking the event emitted from onBlur and setting the
+     * field's touched status accordingly
+     */
+    handleBlur: ( e: FocusEvent<unknown> ) => void;
     /**
      * Helper method for handling form submission
      */

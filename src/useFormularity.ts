@@ -1,5 +1,6 @@
 import {
     ChangeEvent
+    , FocusEvent
     , FormEvent
     , useCallback
     , useMemo
@@ -137,6 +138,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
+
+        // TODO: update once validation is ready
+    } );
+
+    const handleBlur = useEventCallback( ( e: FocusEvent<unknown> ) => {
+        const { name: fieldName } = e.target as HTMLInputElement;
+
+        setFieldTouched( fieldName as keyof TFormValues, true );
+
+        // TODO: update once validation is ready
     } );
 
     const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
@@ -178,6 +189,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , setFieldTouched
         , setTouched
         , handleChange
+        , handleBlur
         , handleSubmit
         , isDirty
         , isValid
