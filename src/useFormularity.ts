@@ -81,6 +81,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const runUserDefinedValidations = useCallback( () => {
         if ( manualValidationHandler ) {
             const validationErrors = manualValidationHandler( values ) as Partial<FormErrors<TFormValues>>;
+
             if ( isEmpty( validationErrors ) ) {
                 return setErrors( {} );
             } else {
