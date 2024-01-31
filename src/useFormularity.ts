@@ -93,10 +93,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( isEmpty( validationErrors ) ) {
                 return setErrors( {} );
             } else {
-                setErrors( {
-                    ...errors
-                    , ...validationErrors
-                } as FormErrors<TFormValues> );
+                setErrors( validationErrors as FormErrors<TFormValues> );
             }
 
             return validationErrors;
@@ -139,7 +136,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             } as FormTouched<TFormValues>
         } );
 
-        // validateForm();
+        validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
@@ -198,8 +195,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const { name: fieldName } = e.target;
 
         setFieldTouched( fieldName as keyof TFormValues, true );
-
-        // TODO: update once validation is ready
     } );
 
     const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
@@ -208,7 +203,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         store.set( { isSubmitting: true } );
 
-        const validationErrors = {}; // do later
+        const validationErrors = validateForm( values );
 
         if ( validationErrors ) {
             store.set( {
@@ -243,6 +238,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } as FormStoreState<TFormValues> );
     };
 
+    const handleReset = useEventCallback( ( e: FormEvent<HTMLFormElement> ) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        resetForm();
+    } );
+
     const isDirty = !isEqual( values, initialValues.current );
 
     const dirtyFields = values
@@ -271,6 +273,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleBlur
         , handleSubmit
         , resetForm
+        , handleReset
         , isDirty
         , isValid
         , isEditing

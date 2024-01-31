@@ -8,28 +8,12 @@ const formStore = createFormStore( {
 } );
 
 const App = () => {
-    const {
-        values
-        , errors
-        , setFieldValue
-        , setFieldError
-        , isValid
-        , handleSubmit
-        , submitCount
-        , isSubmitting
-        , handleChange
-        , isDirty
-        , initialValues
-        , dirtyFields
-        , setFieldTouched
-        , touched
-        , isFormTouched
-        , handleBlur
-        , isFormMounted
-        , resetForm
-    } = useFormularity( {
+    const formularity = useFormularity( {
         formStore
-        , manualValidationHandler: ( { name } ) => {
+        , manualValidationHandler: ( {
+            name
+            , email
+        } ) => {
             const formErrors: Record<string, string> = {};
 
             if ( name.length < 3 ) {
@@ -40,12 +24,26 @@ const App = () => {
                 formErrors.name = 'Name is required!';
             }
 
+            if ( !email ) {
+                formErrors.email = 'Email is required!';
+            }
+
             return formErrors;
         }
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( values, errors );
+    console.log( 'render' );
+
+    const {
+        values
+        , errors
+        , handleSubmit
+        , handleChange
+        , touched
+        , handleBlur
+        , handleReset
+    } = formularity;
 
     return (
         <div
@@ -56,6 +54,7 @@ const App = () => {
         >
             <form
                 onSubmit={ handleSubmit }
+                onReset={ handleReset }
                 style={ {
                     display: 'flex'
                     , flexDirection: 'column'
@@ -77,7 +76,7 @@ const App = () => {
                         onBlur={ handleBlur }
                         onChange={ handleChange }
                     />
-                    { errors.name }
+                    { touched.name && errors.name }
                 </fieldset>
                 <fieldset
                     style={ {
@@ -91,8 +90,9 @@ const App = () => {
                         name='email'
                         value={ values.email }
                         onChange={ handleChange }
+                        onBlur={ handleBlur }
                     />
-                    { errors.email }
+                    { touched.email && errors.email }
                 </fieldset>
                 <fieldset
                     style={ {
@@ -106,6 +106,7 @@ const App = () => {
                         type='checkbox'
                         name='choice'
                         value={ values.choice as unknown as string }
+                        checked={ values.choice }
                         onChange={ handleChange }
                     />
                     { errors.choice }
@@ -116,15 +117,12 @@ const App = () => {
                         , gap: '1rem'
                     } }
                 >
-                    <button
-                        type='button'
-                        onClick={ () => resetForm() }
-                    >Reset</button>
+                    <button type='reset'>Reset</button>
                     <button type='submit'>Submit</button>
                 </div>
             </form>
             <pre>
-                { JSON.stringify( values, null, '\t' ) }
+                { JSON.stringify( formularity, null, '\t' ) }
             </pre>
         </div>
     );

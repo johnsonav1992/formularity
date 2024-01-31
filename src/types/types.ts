@@ -109,6 +109,10 @@ export type FormHandlers<TFormValues extends FormValues> = {
      */
     handleSubmit: ( e: FormEvent<HTMLFormElement> ) => void | Promise<void>;
     /**
+     * Helper method for handling form reset
+     */
+    handleReset: ( e: FormEvent<HTMLFormElement> ) => void;
+    /**
      * Reset the form imperatively and optional set all or some of the
      * form values to new values(s)
      */
