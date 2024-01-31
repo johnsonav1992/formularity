@@ -26,6 +26,7 @@ const App = () => {
         , isFormTouched
         , handleBlur
         , isFormMounted
+        , resetForm
     } = useFormularity( {
         formStore
         , manualValidationHandler: ( { name } ) => {
@@ -44,38 +45,87 @@ const App = () => {
         , onSubmit: values => console.log( 'submit', values )
     } );
 
-    console.log( { isFormMounted } );
+    console.log( values, errors );
 
     return (
         <div
             style={ {
                 display: 'flex'
-                , flexDirection: 'column'
                 , gap: '1rem'
             } }
         >
-            <form onSubmit={ handleSubmit }>
-                <input
-                    name='name'
-                    value={ values.name }
-                    onBlur={ handleBlur }
-                    onChange={ handleChange }
-                />
-                { errors.name }
-                <input
-                    name='email'
-                    value={ values.email }
-                    onChange={ handleChange }
-                />
-                <input
-                    type='checkbox'
-                    name='choice'
-                    // checked={ values.choice }
-                    value={ values.choice as unknown as string }
-                    onChange={ handleChange }
-                />
-                <button type='submit'>Submit</button>
+            <form
+                onSubmit={ handleSubmit }
+                style={ {
+                    display: 'flex'
+                    , flexDirection: 'column'
+                    , gap: '1rem'
+                    , width: '25%'
+                } }
+            >
+                <fieldset
+                    style={ {
+                        display: 'flex'
+                        , flexDirection: 'column'
+                        , gap: '.5rem'
+                    } }
+                >
+                    <label htmlFor='name'>Name</label>
+                    <input
+                        name='name'
+                        value={ values.name }
+                        onBlur={ handleBlur }
+                        onChange={ handleChange }
+                    />
+                    { errors.name }
+                </fieldset>
+                <fieldset
+                    style={ {
+                        display: 'flex'
+                        , flexDirection: 'column'
+                        , gap: '.5rem'
+                    } }
+                >
+                    <label htmlFor='email'>Email</label>
+                    <input
+                        name='email'
+                        value={ values.email }
+                        onChange={ handleChange }
+                    />
+                    { errors.email }
+                </fieldset>
+                <fieldset
+                    style={ {
+                        display: 'flex'
+                        , flexDirection: 'column'
+                        , gap: '.5rem'
+                    } }
+                >
+                    <label htmlFor='choice'>Agree to Terms</label>
+                    <input
+                        type='checkbox'
+                        name='choice'
+                        value={ values.choice as unknown as string }
+                        onChange={ handleChange }
+                    />
+                    { errors.choice }
+                </fieldset>
+                <div
+                    style={ {
+                        display: 'flex'
+                        , gap: '1rem'
+                    } }
+                >
+                    <button
+                        type='button'
+                        onClick={ () => resetForm() }
+                    >Reset</button>
+                    <button type='submit'>Submit</button>
+                </div>
             </form>
+            <pre>
+                { JSON.stringify( values ) }
+            </pre>
         </div>
     );
 };
