@@ -1,13 +1,13 @@
-/////// DISABLE LOGIC HELPERS ///////
-
+// Types
 import {
-    FormStoreState
+    FormComputedProps
+    , FormStoreState
     , FormValues
 } from './types/types';
 
 export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormValues>(
     submitCount: FormStoreState<TFormValues>['submitCount']
-    , isValid: FormStoreState<TFormValues>['isValid']
+    , isValid: FormComputedProps<TFormValues>['isValid']
     , dirty: FormStoreState<TFormValues>['dirty']
     , isEditing?: FormStoreState<TFormValues>['isEditing']
 ) => {
@@ -19,7 +19,7 @@ export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormVal
 };
 
 export const isFormDisabled = <TFormValues extends FormValues>(
-    isValid: FormStoreState<TFormValues>['isValid']
+    isValid: FormComputedProps<TFormValues>['isValid']
     , dirty: FormStoreState<TFormValues>['dirty']
 ) => {
     return !( isValid && dirty );

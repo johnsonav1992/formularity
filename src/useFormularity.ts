@@ -8,6 +8,12 @@ import {
     , useRef
     , useSyncExternalStore
 } from 'react';
+
+// Libraries
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
+
+// Types
 import {
     FormErrors
     , FormStore
@@ -17,7 +23,11 @@ import {
     , ManualValidationHandler
     , UseFormularityReturn
 } from './types/types';
+
+// Hooks
 import { useEventCallback } from './useEventCallback';
+
+// Utils
 import {
     getCheckboxValue
     , getMultiSelectValues
@@ -25,8 +35,6 @@ import {
     , objectEntries
     , objectKeys
 } from './utils';
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     /**
