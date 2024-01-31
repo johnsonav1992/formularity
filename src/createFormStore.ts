@@ -37,7 +37,6 @@ export const getDefaultFormStoreState = <TFormValues extends FormValues>( initia
         , errors: {}
         , touched: {}
         , isSubmitting: false
-        , dirty: false
         , isValidating: false
         , submitCount: 0
         , isEditing: false

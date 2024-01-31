@@ -47,13 +47,6 @@ export type FormStoreState<TFormValues extends FormValues> = {
      */
     isSubmitting: boolean;
     /**
-     * This returns true if the intial values of the form
-     * do not match the current values. This essentially
-     * means that the form has been partially completed,
-     * thus it is considered "dirty"
-     */
-    dirty: boolean;
-    /**
      * This returns true if the form is currently validating (running validation).
      */
     isValidating: boolean;

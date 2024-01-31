@@ -239,6 +239,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 ...values
                 , ...newFormValues
             }
+            , isEditing: false
+            , isSubmitting: false
+            , submitCount: 0 // Should this get reset or only be tied to mount?
         } );
     };
 
