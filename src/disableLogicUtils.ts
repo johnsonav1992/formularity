@@ -8,7 +8,7 @@ import {
 export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormValues>(
     submitCount: FormStoreState<TFormValues>['submitCount']
     , isValid: FormComputedProps<TFormValues>['isValid']
-    , dirty: FormStoreState<TFormValues>['dirty']
+    , dirty: FormComputedProps<TFormValues>['isDirty']
     , isEditing?: FormStoreState<TFormValues>['isEditing']
 ) => {
     return submitCount > 0
@@ -20,7 +20,7 @@ export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormVal
 
 export const isFormDisabled = <TFormValues extends FormValues>(
     isValid: FormComputedProps<TFormValues>['isValid']
-    , dirty: FormStoreState<TFormValues>['dirty']
+    , dirty: FormComputedProps<TFormValues>['isDirty']
 ) => {
     return !( isValid && dirty );
 };
