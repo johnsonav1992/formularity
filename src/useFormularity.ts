@@ -231,6 +231,17 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     } );
 
+    const resetForm = ( newFormValues?: Partial<TFormValues> ) => {
+        store.set( {
+            errors: {}
+            , touched: {}
+            , values: {
+                ...values
+                , ...newFormValues
+            }
+        } );
+    };
+
     const isDirty = !isEqual( values, initialValues.current );
 
     const dirtyFields = values
@@ -258,6 +269,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleChange
         , handleBlur
         , handleSubmit
+        , resetForm
         , isDirty
         , isValid
         , isEditing

@@ -74,7 +74,7 @@ export type FormStoreState<TFormValues extends FormValues> = {
     isFormMounted: boolean;
 };
 
-export type FormHelperMethods<TFormValues extends FormValues> = {
+export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the value of a single field
      */
@@ -115,6 +115,11 @@ export type FormHelperMethods<TFormValues extends FormValues> = {
      * Helper method for handling form submission
      */
     handleSubmit: ( e: FormEvent<HTMLFormElement> ) => void | Promise<void>;
+    /**
+     * Reset the form imperatively and optional set all or some of the
+     * form values to new values(s)
+     */
+    resetForm: ( newFormValues?: Partial<TFormValues> ) => void;
 };
 
 export type FormComputedProps<TFormValues extends FormValues> = {
@@ -139,5 +144,5 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 
 export type UseFormularityReturn<TFormValues extends FormValues> =
     FormStoreState<TFormValues>
-    & FormHelperMethods<TFormValues>
+    & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
