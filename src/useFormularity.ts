@@ -35,6 +35,7 @@ import {
     , objectEntries
     , objectKeys
 } from './utils';
+import { getDefaultFormStoreState } from './createFormStore';
 
 type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -81,14 +82,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
         };
     }, [] );
 
-    const validateForm = useCallback( () => {
+    const validateForm = useEventCallback( () => {
         const validationErrors = runUserDefinedValidations();
         return validationErrors;
-    }, [] );
+    } );
 
-    const runUserDefinedValidations = useCallback( () => {
+    const runUserDefinedValidations = useEventCallback( () => {
         if ( manualValidationHandler ) {
-            const validationErrors = manualValidationHandler( values );
+            const validationErrors = manualValidationHandler( currentStore.values );
 
             if ( isEmpty( validationErrors ) ) {
                 return setErrors( {} );
@@ -101,7 +102,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
             return validationErrors;
         }
-    }, [] );
+    } );
 
     const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
         store.set( {
@@ -232,17 +233,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const resetForm = ( newFormValues?: Partial<TFormValues> ) => {
+        console.log( 'reset' );
         store.set( {
-            errors: {}
-            , touched: {}
-            , values: {
-                ...values
-                , ...newFormValues
-            }
-            , isEditing: false
-            , isSubmitting: false
-            , submitCount: 0 // Should this get reset or only be tied to mount?
-        } );
+            ...getDefaultFormStoreState( initialValues.current )
+            , ...( newFormValues && {
+                values: {
+                    ...values
+                    , ...newFormValues
+                }
+            } )
+        } as FormStoreState<TFormValues> );
     };
 
     const isDirty = !isEqual( values, initialValues.current );
