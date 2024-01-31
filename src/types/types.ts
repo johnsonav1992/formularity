@@ -19,7 +19,7 @@ export type ManualValidationHandler<TFormValues extends FormValues> =
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
     set: ( newFormStore: Partial<FormStoreState<TFormValues>> ) => void;
-    subscribe: ( callback: ( newFormStore: FormStoreState<TFormValues> ) => void ) => UnsubScribeFn;
+    subscribe: ( callback: () => void ) => UnsubScribeFn;
 };
 
 export type FormStoreState<TFormValues extends FormValues> = {

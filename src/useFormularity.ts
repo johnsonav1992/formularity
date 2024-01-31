@@ -4,7 +4,6 @@ import {
     , FormEvent
     , useCallback
     , useEffect
-    , useMemo
     , useRef
     , useSyncExternalStore
 } from 'react';
@@ -65,7 +64,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , manualValidationHandler
     , onSubmit
 }: UseFormularityParams<TFormValues> ): UseFormularityReturn<TFormValues> => {
-    const store = useMemo( () => formStore, [] );
+    const store = formStore;
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
     const initialValues = useRef( currentStore.initialValues );
@@ -89,7 +88,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const runUserDefinedValidations = useEventCallback( () => {
         if ( manualValidationHandler ) {
-            const validationErrors = manualValidationHandler( currentStore.values );
+            const validationErrors = manualValidationHandler( values );
 
             if ( isEmpty( validationErrors ) ) {
                 return setErrors( {} );
@@ -233,7 +232,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const resetForm = ( newFormValues?: Partial<TFormValues> ) => {
-        console.log( 'reset' );
         store.set( {
             ...getDefaultFormStoreState( initialValues.current )
             , ...( newFormValues && {

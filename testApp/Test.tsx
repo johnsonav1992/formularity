@@ -124,7 +124,7 @@ const App = () => {
                 </div>
             </form>
             <pre>
-                { JSON.stringify( values ) }
+                { JSON.stringify( values, null, '\t' ) }
             </pre>
         </div>
     );

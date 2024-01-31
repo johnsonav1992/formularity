@@ -8,7 +8,7 @@ import {
 export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
     let storeState = getDefaultFormStoreState( initialValues );
 
-    const subscribers = new Set<( store: FormStoreState<TFormValues> ) => void>();
+    const subscribers = new Set<() => void>();
 
     return {
         get: () => storeState
@@ -18,7 +18,7 @@ export const createFormStore = <TFormValues extends FormValues>( initialValues: 
                 , ...newStoreState
             };
 
-            subscribers.forEach( callback => callback( storeState ) );
+            subscribers.forEach( callback => callback() );
         }
         , subscribe: callback => {
             subscribers.add( callback );
