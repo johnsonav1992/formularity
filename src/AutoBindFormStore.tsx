@@ -8,6 +8,7 @@ import React, {
 import {
     FormStore
     , FormValues
+    , ManualValidationHandler
 } from './types/types';
 
 export const recursiveChildrenMap = (
@@ -31,16 +32,21 @@ export const recursiveChildrenMap = (
 
 type Props<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
+    manualValidationHandler: ManualValidationHandler<TFormValues> | undefined;
 };
 
 export const AutoBindFormStore = <TFormValues extends FormValues>( props: PropsWithChildren<Props<TFormValues>> ) => {
     const {
         formStore
+        , manualValidationHandler
         , children
     } = props;
 
     return recursiveChildrenMap(
         children
-        , child => React.cloneElement( child as ReactElement, { formStore } )
+        , child => React.cloneElement( child as ReactElement, {
+            formStore
+            , manualValidationHandler
+        } )
     );
 };

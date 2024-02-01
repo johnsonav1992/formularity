@@ -36,7 +36,7 @@ import {
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
-type UseFormularityParams<TFormValues extends FormValues> = {
+export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
      * Formularity store used to power the form
      */

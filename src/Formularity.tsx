@@ -4,21 +4,31 @@ import { PropsWithChildren } from 'react';
 import { AutoBindFormStore } from './AutoBindFormStore';
 
 // Types
+import { FormValues } from './types/types';
 import {
-    FormStore
-    , FormValues
-} from './types/types';
+    UseFormularityParams
+    , useFormularity
+} from './useFormularity';
 
-type Props<TFormValues extends FormValues> = {
-    formStore: FormStore<TFormValues>;
-};
+type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues>;
 
 export const Formularity = <TFormValues extends FormValues>( {
     formStore
     , children
+    , manualValidationHandler
 }: PropsWithChildren<Props<TFormValues>> ) => {
+
+    console.log( manualValidationHandler );
+    const formularity = useFormularity( {
+        formStore
+        , manualValidationHandler
+    } );
+
     return (
-        <AutoBindFormStore formStore={ formStore }>
+        <AutoBindFormStore
+            formStore={ formStore }
+            manualValidationHandler={ manualValidationHandler }
+        >
             { children }
         </AutoBindFormStore>
     );
