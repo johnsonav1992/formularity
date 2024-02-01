@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import App from './Test';
+// import App from './Test';
 import AnotherTest from './AnotherTest';
 
 ReactDOM

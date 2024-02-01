@@ -45,12 +45,11 @@ const AnotherTest = () => {
             >
                 <Field
                     name='name'
-                    type=''
                     showErrors
                 />
                 <Field
                     name='email'
-                    type=''
+                    showErrors
                 />
                 <Field
                     name='choice'

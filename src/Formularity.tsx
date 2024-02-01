@@ -18,17 +18,13 @@ export const Formularity = <TFormValues extends FormValues>( {
     , manualValidationHandler
 }: PropsWithChildren<Props<TFormValues>> ) => {
 
-    console.log( manualValidationHandler );
     const formularity = useFormularity( {
         formStore
         , manualValidationHandler
     } );
 
     return (
-        <AutoBindFormStore
-            formStore={ formStore }
-            manualValidationHandler={ manualValidationHandler }
-        >
+        <AutoBindFormStore formularity={ formularity }>
             { children }
         </AutoBindFormStore>
     );

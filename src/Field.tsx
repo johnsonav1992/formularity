@@ -1,23 +1,31 @@
 import React, {
-    HTMLInputTypeAttribute
-    , ReactElement
+    FC
+    , HTMLInputTypeAttribute
     , ReactNode
 } from 'react';
+
+// Types
 import {
     FormErrors
     , FormStore
     , FormTouched
     , FormValues
-    , ManualValidationHandler
+    , UseFormularityReturn
 } from './types/types';
-import { useFormularity } from './useFormularity';
+
+// Utils
 import { getViaPath } from './utils';
+
+// Components
 import { ConditionalWrapper } from './ConditionalWrapper';
+
+// Hooks
+import { useFormularity } from './useFormularity';
 
 type BaseProps<TFormValues extends FormValues> = {
     name: keyof TFormValues | ( string & {} );
+    formularity?: UseFormularityReturn<TFormValues>;
     formStore?: FormStore<TFormValues>;
-    manualValidationHandler?: ManualValidationHandler<TFormValues>;
     value?: unknown;
     type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
     checked?: boolean;
@@ -29,40 +37,37 @@ type Props<TFormValues extends FormValues> = BaseProps<TFormValues>;
 
 export const Field = <TFormValues extends FormValues>( {
     name
+    , formularity
     , formStore
-    , manualValidationHandler
     , value
     , type
     , checked
     , component
     , showErrors
 }: Props<TFormValues> ) => {
-    if ( !formStore ) throw new Error( `Must use <Field /> 
+    if ( !formularity ) throw new Error( `Must use <Field /> 
     component within a <Formularity /> component or 
     explicitly pass a form store as a prop!` );
 
-    const formularity = useFormularity( {
-        formStore
-        , manualValidationHandler
-    } );
-
     const renderedComponent = component || 'input';
+
+    const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
 
     const fieldProps = {
         name
-        , value: value || getViaPath( formularity.values, name as string )
+        , value: value || getViaPath( formularityProps.values, name as string )
         , checked: type === 'checkbox'
             ? value == undefined
                 ? checked
-                : !!getViaPath( formularity.values, name as string )
+                : !!getViaPath( formularityProps.values, name as string )
             : undefined
-        , onChange: formularity.handleChange
-        , onBlur: formularity.handleBlur
+        , onChange: formularityProps.handleChange
+        , onBlur: formularityProps.handleBlur
         , type: type || 'text'
     };
 
-    const error = formularity.errors[ name as keyof FormErrors<TFormValues> ];
-    const touched = formularity.touched[ name as keyof FormTouched<TFormValues> ];
+    const error = formularityProps.errors[ name as keyof FormErrors<TFormValues> ];
+    const touched = formularityProps.touched[ name as keyof FormTouched<TFormValues> ];
 
     return (
         <ConditionalWrapper
@@ -88,7 +93,8 @@ export const Field = <TFormValues extends FormValues>( {
                 </div>
             ) }
         >
-            { React.createElement( renderedComponent as ReactElement, { ...fieldProps } ) }
+            { /* Need to resolve this any... */ }
+            { React.createElement<typeof fieldProps>( renderedComponent as unknown as FC, fieldProps ) }
         </ConditionalWrapper>
     );
 };
