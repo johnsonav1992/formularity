@@ -1,4 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import React, {
+    PropsWithChildren
+    , ReactElement
+    , ReactNode
+} from 'react';
 
 // Types
 import {
@@ -6,8 +10,24 @@ import {
     , FormValues
 } from './types/types';
 
-// Utils
-import { recursiveChildrenMap } from './utils';
+export const recursiveChildrenMap = (
+    children: ReactNode,
+    fn: ( child: ReactNode ) => ReactNode
+): ReactNode => {
+    return React.Children.map( children, child => {
+        if ( !React.isValidElement( child ) ) return child;
+
+        if ( child.props.children ) {
+            const props = {
+                children: recursiveChildrenMap( child.props.children, fn )
+            };
+
+            child = React.cloneElement( child, props );
+        }
+
+        return fn( child );
+    } );
+};
 
 type Props<TFormValues extends FormValues> = {
     formStore: FormStore<TFormValues>;
@@ -21,6 +41,6 @@ export const AutoBindFormStore = <TFormValues extends FormValues>( props: PropsW
 
     return recursiveChildrenMap(
         children
-        , child => React.cloneElement( child, { formStore } )
+        , child => React.cloneElement( child as ReactElement, { formStore } )
     );
 };
