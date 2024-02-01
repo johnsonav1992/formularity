@@ -73,13 +73,7 @@ export const Field = <TFormValues extends FormValues>( {
         <ConditionalWrapper
             condition={ showErrors }
             wrapper={ children => (
-                <div
-                    style={ {
-                        display: 'flex'
-                        , flexDirection: 'column'
-                        , gap: '.5rem'
-                    } }
-                >
+                <div>
                     { children }
                     {
                         error
