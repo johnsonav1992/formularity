@@ -187,8 +187,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
-
-        // TODO: update once validation is ready
     } );
 
     const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {

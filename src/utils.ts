@@ -1,3 +1,9 @@
+import React, {
+    ReactElement
+    , ReactNode
+} from 'react';
+
+// Libraries
 import toPath from 'lodash/toPath';
 
 export const getViaPath = (
@@ -62,4 +68,24 @@ type Entries<T> = [keyof T, ValueOf<T>][];
 
 export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
     return Object.entries( obj ) as Entries<T>;
+};
+
+export const recursiveChildrenMap = (
+    children: ReactNode,
+    fn: ( child: ReactElement ) => ReactElement
+): ReactNode => {
+    return React.Children.map( children, child => {
+        if ( !React.isValidElement( child ) ) {
+            return child;
+        }
+
+        if ( child.props.children ) {
+            const props = {
+                children: recursiveChildrenMap( child.props.children, fn )
+            };
+            child = React.cloneElement( child, props );
+        }
+
+        return fn( child );
+    } );
 };
