@@ -45,9 +45,11 @@ export const Field = <TFormValues extends FormValues>( {
     , component
     , showErrors
 }: Props<TFormValues> ) => {
-    if ( !formularity ) throw new Error( `Must use <Field /> 
-    component within a <Formularity /> component or 
-    explicitly pass a form store as a prop!` );
+    if ( !formularity ) throw new Error(
+        `Must use <Field /> 
+        component within a <Formularity /> component or 
+        explicitly pass a form store as a prop!`
+    );
 
     const renderedComponent = component || 'input';
 
@@ -87,7 +89,6 @@ export const Field = <TFormValues extends FormValues>( {
                 </div>
             ) }
         >
-            { /* Need to resolve this any... */ }
             { React.createElement<typeof fieldProps>( renderedComponent as unknown as FC, fieldProps ) }
         </ConditionalWrapper>
     );

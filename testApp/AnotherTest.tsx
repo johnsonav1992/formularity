@@ -4,6 +4,7 @@ import {
 } from '../src';
 import { Field } from '../src/Field';
 import { Formularity } from '../src/Formularity';
+import { SubmitButton } from '../src/SubmitButton';
 
 const initialValues = {
     name: ''
@@ -55,6 +56,9 @@ const AnotherTest = () => {
                     name='choice'
                     type='checkbox'
                 />
+                <SubmitButton>
+                    Submit
+                </SubmitButton>
             </Formularity>
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }

@@ -135,7 +135,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     isFormTouched: boolean;
 };
 
-export type UseFormularityReturn<TFormValues extends FormValues> =
+export type UseFormularityReturn<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;

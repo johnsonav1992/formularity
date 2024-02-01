@@ -13,15 +13,11 @@ import {
 type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues>;
 
 export const Formularity = <TFormValues extends FormValues>( {
-    formStore
-    , children
-    , manualValidationHandler
+    children
+    , ...formularityProps
 }: PropsWithChildren<Props<TFormValues>> ) => {
 
-    const formularity = useFormularity( {
-        formStore
-        , manualValidationHandler
-    } );
+    const formularity = useFormularity( { ...formularityProps } );
 
     return (
         <AutoBindFormStore formularity={ formularity }>
