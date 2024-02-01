@@ -61,10 +61,6 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * of initializing the form based on the logic of their application.
      */
     isEditing: boolean;
-    /**
-     * Returns true if the form is moutned in the DOM
-     */
-    isFormMounted: boolean;
 };
 
 export type FormHandlers<TFormValues extends FormValues> = {
