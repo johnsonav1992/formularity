@@ -4,6 +4,10 @@ import {
     , FormEvent
 } from 'react';
 
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+
 export type FormValues = Record<PropertyKey, unknown> | null;
 export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
 export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValues, boolean> | EmptyObject;

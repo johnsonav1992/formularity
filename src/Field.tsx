@@ -1,7 +1,8 @@
 import React, {
-    FC
+    CSSProperties
+    , ComponentProps
+    , FC
     , HTMLInputTypeAttribute
-    , ReactNode
 } from 'react';
 
 // Types
@@ -22,29 +23,40 @@ import { ConditionalWrapper } from './ConditionalWrapper';
 // Hooks
 import { useFormularity } from './useFormularity';
 
-type BaseFieldProps<TFormValues extends FormValues> = {
-    name: keyof TFormValues | ( string & {} );
-    formularity?: UseFormularityReturn<TFormValues>;
-    formStore?: FormStore<TFormValues>;
-    value?: unknown;
-    type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
-    checked?: boolean;
-    component?: ReactNode;
-    showErrors?: boolean;
-};
+type FieldProps<
+    TFormValues extends FormValues
+    , TComponentProps extends Record<string, unknown>
+    , TShowErrors extends boolean
+> = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
+    & {
+        name: keyof TFormValues | ( string & {} );
+        formularity?: UseFormularityReturn<TFormValues>;
+        formStore?: FormStore<TFormValues>;
+        value?: unknown;
+        type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
+        checked?: boolean;
+        component?: FC<TComponentProps>;
+        showErrors?: TShowErrors;
+        errorStyles?: TShowErrors extends true ? CSSProperties : never;
+    }
+    & TComponentProps;
 
-type FieldProps<TFormValues extends FormValues> = BaseFieldProps<TFormValues>;
-
-export const Field = <TFormValues extends FormValues>( {
-    name
-    , formularity
-    , formStore
-    , value
-    , type
-    , checked
-    , component
-    , showErrors
-}: FieldProps<TFormValues> ) => {
+export const Field = <
+    TFormValues extends FormValues
+    , TComponentProps extends Record<string, unknown>
+    , TShowErrors extends boolean = false
+    >( {
+        name
+        , formularity
+        , formStore
+        , value
+        , type
+        , checked
+        , component
+        , showErrors
+        , errorStyles
+        , ...props
+    }: FieldProps<TFormValues, TComponentProps, TShowErrors> ) => {
     if ( !formularity ) throw new Error(
         `Must use <Field /> 
         component within a <Formularity /> component or 
@@ -81,7 +93,7 @@ export const Field = <TFormValues extends FormValues>( {
                         error
                         && touched
                         && (
-                            <div>
+                            <div style={ errorStyles }>
                                 { error }
                             </div>
                         )
@@ -89,7 +101,15 @@ export const Field = <TFormValues extends FormValues>( {
                 </div>
             ) }
         >
-            { React.createElement<typeof fieldProps>( renderedComponent, fieldProps ) }
+            {
+                React.createElement<typeof fieldProps>(
+                    renderedComponent
+                    , {
+                        ...props
+                        , ...fieldProps
+                    }
+                )
+            }
         </ConditionalWrapper>
     );
 };

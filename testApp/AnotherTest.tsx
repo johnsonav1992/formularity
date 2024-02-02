@@ -14,6 +14,10 @@ const initialValues = {
 
 const formStore = createFormStore( initialValues );
 
+const AComponent = ( { something }: { something?: string} ) => (
+    <input />
+);
+
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
@@ -48,10 +52,11 @@ const AnotherTest = () => {
                 <Field
                     name='name'
                     showErrors
+                    errorStyles={ { color: 'red' } }
+                    style={ { width: '100%' } }
                 />
                 <Field
                     name='email'
-                    showErrors
                 />
                 <Field
                     name='choice'

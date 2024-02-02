@@ -1,6 +1,8 @@
 import { useFormularity } from '../src/useFormularity';
 import { createFormStore } from '../src/createFormStore';
 
+import './global.css';
+
 const formStore = createFormStore( {
     name: ''
     , email: ''
