@@ -4,19 +4,14 @@ import React, {
     , ReactNode
 } from 'react';
 
-// Types
-import { UseFormularityReturn } from './types';
-
-type Props = ComponentProps<'button'> & {
+type SubmitButtonProps = ComponentProps<'button'> & {
     component?: ReactNode;
-    formularity?: UseFormularityReturn;
 };
 
 export const SubmitButton = ( {
     component
     , children
-    , formularity
-}: Props ) => {
+}: SubmitButtonProps ) => {
     const renderedComponent = ( component as unknown as FC ) || 'button';
 
     const submitButtonProps = {

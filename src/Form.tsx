@@ -14,8 +14,6 @@ export const Form = <TFormValues extends FormValues>( {
     formularity
     , children
 }: FormProps<TFormValues> ) => {
-
-    console.log( formularity?.handleSubmit );
     return (
         <form
             onSubmit={ formularity?.handleSubmit }

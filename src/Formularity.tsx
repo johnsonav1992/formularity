@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 
 // Components
 import { AutoBindFormStore } from './AutoBindFormStore';
+import { Form } from './Form';
+import { ConditionalWrapper } from './ConditionalWrapper';
 
 // Types
 import { FormValues } from './types';
@@ -9,8 +11,6 @@ import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
-import { ConditionalWrapper } from './ConditionalWrapper';
-import { Form } from './Form';
 
 type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & { useFormComponent?: boolean };
 
