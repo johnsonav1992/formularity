@@ -8,7 +8,7 @@ import React, {
 import {
     FormValues
     , UseFormularityReturn
-} from './types/types';
+} from './types';
 
 export const recursiveChildrenMap = (
     children: ReactNode,

@@ -11,7 +11,7 @@ import {
     , FormTouched
     , FormValues
     , UseFormularityReturn
-} from './types/types';
+} from './types';
 
 // Utils
 import { getViaPath } from './utils';
@@ -22,7 +22,7 @@ import { ConditionalWrapper } from './ConditionalWrapper';
 // Hooks
 import { useFormularity } from './useFormularity';
 
-type BaseProps<TFormValues extends FormValues> = {
+type BaseFieldProps<TFormValues extends FormValues> = {
     name: keyof TFormValues | ( string & {} );
     formularity?: UseFormularityReturn<TFormValues>;
     formStore?: FormStore<TFormValues>;
@@ -33,7 +33,7 @@ type BaseProps<TFormValues extends FormValues> = {
     showErrors?: boolean;
 };
 
-type Props<TFormValues extends FormValues> = BaseProps<TFormValues>;
+type FieldProps<TFormValues extends FormValues> = BaseFieldProps<TFormValues>;
 
 export const Field = <TFormValues extends FormValues>( {
     name
@@ -44,14 +44,14 @@ export const Field = <TFormValues extends FormValues>( {
     , checked
     , component
     , showErrors
-}: Props<TFormValues> ) => {
+}: FieldProps<TFormValues> ) => {
     if ( !formularity ) throw new Error(
         `Must use <Field /> 
         component within a <Formularity /> component or 
         explicitly pass a form store as a prop!`
     );
 
-    const renderedComponent = component || 'input';
+    const renderedComponent = component as unknown as FC || 'input';
 
     const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
 
@@ -89,7 +89,7 @@ export const Field = <TFormValues extends FormValues>( {
                 </div>
             ) }
         >
-            { React.createElement<typeof fieldProps>( renderedComponent as unknown as FC, fieldProps ) }
+            { React.createElement<typeof fieldProps>( renderedComponent, fieldProps ) }
         </ConditionalWrapper>
     );
 };

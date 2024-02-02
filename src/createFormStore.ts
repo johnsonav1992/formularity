@@ -3,7 +3,7 @@ import {
     FormStore
     , FormStoreState
     , FormValues
-} from './types/types';
+} from './types';
 
 export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
     let storeState = getDefaultFormStoreState( initialValues );

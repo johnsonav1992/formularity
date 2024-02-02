@@ -139,3 +139,5 @@ export type UseFormularityReturn<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
+
+export type FormularityProps<TFormValues extends FormValues> = UseFormularityReturn<TFormValues>;

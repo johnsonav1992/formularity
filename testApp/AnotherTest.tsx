@@ -23,6 +23,7 @@ const AnotherTest = () => {
         <div>
             <Formularity
                 formStore={ formStore }
+                onSubmit={ values => alert( values ) }
                 manualValidationHandler={ ( {
                     name
                     , email
@@ -44,6 +45,7 @@ const AnotherTest = () => {
                     return formErrors;
                 } }
             >
+                { /* <form onSubmit={ formularity.handleSubmit }> */ }
                 <Field
                     name='name'
                     showErrors
@@ -59,6 +61,7 @@ const AnotherTest = () => {
                 <SubmitButton>
                     Submit
                 </SubmitButton>
+                { /* </form> */ }
             </Formularity>
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }

@@ -4,16 +4,19 @@ import { PropsWithChildren } from 'react';
 import { AutoBindFormStore } from './AutoBindFormStore';
 
 // Types
-import { FormValues } from './types/types';
+import { FormValues } from './types';
 import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
+import { ConditionalWrapper } from './ConditionalWrapper';
+import { Form } from './Form';
 
-type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues>;
+type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & { useFormComponent?: boolean };
 
 export const Formularity = <TFormValues extends FormValues>( {
     children
+    , useFormComponent = true
     , ...formularityProps
 }: PropsWithChildren<Props<TFormValues>> ) => {
 
@@ -21,7 +24,16 @@ export const Formularity = <TFormValues extends FormValues>( {
 
     return (
         <AutoBindFormStore formularity={ formularity }>
-            { children }
+            <ConditionalWrapper
+                condition={ useFormComponent }
+                wrapper={ children => (
+                    <Form formularity={ formularity }>
+                        { children }
+                    </Form>
+                ) }
+            >
+                { children }
+            </ConditionalWrapper>
         </AutoBindFormStore>
     );
 };

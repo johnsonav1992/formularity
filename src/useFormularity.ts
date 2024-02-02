@@ -21,7 +21,7 @@ import {
     , FormValues
     , ManualValidationHandler
     , UseFormularityReturn
-} from './types/types';
+} from './types';
 
 // Hooks
 import { useEventCallback } from './useEventCallback';

@@ -3,7 +3,7 @@ import {
     FormComputedProps
     , FormStoreState
     , FormValues
-} from './types/types';
+} from './types';
 
 export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormValues>(
     submitCount: FormStoreState<TFormValues>['submitCount']
