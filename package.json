@@ -1,6 +1,6 @@
 {
   "name": "formularity",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -17,7 +17,10 @@
   },
   "keywords": [
     "react",
-    "typescript"
+    "typescript",
+    "forms",
+    "React forms",
+    "Formularity"
   ],
   "author": "Alex Johnson",
   "license": "MIT",
@@ -49,13 +52,13 @@
     "react-dom": "^18.2.0",
     "rollup": "^3.29.4",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite-tsconfig-paths": "^4.3.1"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
     "lodash": "^4.17.21",
-    "tslib": "^2.6.2",
-    "vite": "^5.0.12",
-    "vite-tsconfig-paths": "^4.3.1"
+    "tslib": "^2.6.2"
   }
 }
