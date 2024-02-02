@@ -1,6 +1,6 @@
 {
   "name": "formularity",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
