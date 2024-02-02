@@ -1,9 +1,8 @@
 {
   "name": "formularity",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "start": "vite",
