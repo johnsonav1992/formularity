@@ -70,7 +70,7 @@ export const Field = <
             : undefined
         , onChange: formularityProps?.handleChange
         , onBlur: formularityProps?.handleBlur
-        // , type -> need to figure out a way to leave this out
+        , type: type || 'text'
     };
 
     const error = formularityProps?.errors[ name as keyof FormErrors<FormValues> ];
