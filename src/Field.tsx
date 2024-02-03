@@ -11,7 +11,6 @@ import {
     , FormStore
     , FormTouched
     , FormValues
-    , UseFormularityReturn
 } from './types';
 
 // Utils
@@ -22,6 +21,7 @@ import { ConditionalWrapper } from './ConditionalWrapper';
 
 // Hooks
 import { useFormularity } from './useFormularity';
+import { useFormularityContext } from './Formularity';
 
 type FieldProps<
     TFormValues extends FormValues
@@ -30,7 +30,6 @@ type FieldProps<
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
     & {
         name: keyof TFormValues | ( string & {} );
-        formularity?: UseFormularityReturn<TFormValues>;
         formStore?: FormStore<TFormValues>;
         value?: unknown;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
@@ -47,7 +46,6 @@ export const Field = <
     , TShowErrors extends boolean = false
     >( {
         name
-        , formularity
         , formStore
         , value
         , type
@@ -57,31 +55,26 @@ export const Field = <
         , errorStyles
         , ...props
     }: FieldProps<TFormValues, TComponentProps, TShowErrors> ) => {
-    if ( !formularity ) throw new Error(
-        `Must use <Field /> 
-        component within a <Formularity /> component or 
-        explicitly pass a form store as a prop!`
-    );
+    const formularity = useFormularityContext();
+    const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
 
     const renderedComponent = component as unknown as FC || 'input';
 
-    const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
-
     const fieldProps = {
         name
-        , value: value || getViaPath( formularityProps.values, name as string )
+        , value: value || getViaPath( formularityProps?.values, name as string )
         , checked: type === 'checkbox'
             ? value == undefined
                 ? checked
-                : !!getViaPath( formularityProps.values, name as string )
+                : !!getViaPath( formularityProps?.values, name as string )
             : undefined
-        , onChange: formularityProps.handleChange
-        , onBlur: formularityProps.handleBlur
-        , type: type || 'text'
+        , onChange: formularityProps?.handleChange
+        , onBlur: formularityProps?.handleBlur
+        // , type -> need to figure out a way to leave this out
     };
 
-    const error = formularityProps.errors[ name as keyof FormErrors<TFormValues> ];
-    const touched = formularityProps.touched[ name as keyof FormTouched<TFormValues> ];
+    const error = formularityProps?.errors[ name as keyof FormErrors<FormValues> ];
+    const touched = formularityProps?.touched[ name as keyof FormTouched<FormValues> ];
 
     return (
         <ConditionalWrapper
@@ -105,8 +98,8 @@ export const Field = <
                 React.createElement<typeof fieldProps>(
                     renderedComponent
                     , {
-                        ...props
-                        , ...fieldProps
+                        ...fieldProps
+                        , ...props
                     }
                 )
             }

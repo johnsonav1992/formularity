@@ -5,6 +5,7 @@ import {
 import { Field } from '../src/Field';
 import { Formularity } from '../src/Formularity';
 import { SubmitButton } from '../src/SubmitButton';
+import { Checkbox } from '@mui/material';
 
 const initialValues = {
     name: ''
@@ -13,10 +14,6 @@ const initialValues = {
 };
 
 const formStore = createFormStore( initialValues );
-
-const AComponent = ( { something }: { something?: string} ) => (
-    <input />
-);
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
@@ -51,17 +48,23 @@ const AnotherTest = () => {
             >
                 <Field
                     name='name'
-                    showErrors
-                    errorStyles={ { color: 'red' } }
-                    style={ { width: '100%' } }
+                    component={ Checkbox }
                 />
+                <Checkbox />
+                <input
+                    type='checkbox'
+                    name='choice'
+                    onChange={ formularity.handleChange }
+                    checked={ formularity.values.choice }
+                />
+                <input />
                 <Field
                     name='email'
                 />
-                <Field
+                { /* <Field
                     name='choice'
                     type='checkbox'
-                />
+                /> */ }
                 <SubmitButton>
                     Submit
                 </SubmitButton>

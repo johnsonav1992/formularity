@@ -1,19 +1,13 @@
 import { PropsWithChildren } from 'react';
 
-// Types
-import {
-    FormValues
-    , FormularityProps
-} from './types';
+// Hooks
+import { useFormularityContext } from './Formularity';
 
-type FormProps<TFormValues extends FormValues> = PropsWithChildren<{
-    formularity?: FormularityProps<TFormValues>;
-}>;
+type FormProps = PropsWithChildren<{}>;
 
-export const Form = <TFormValues extends FormValues>( {
-    formularity
-    , children
-}: FormProps<TFormValues> ) => {
+export const Form = ( { children }: FormProps ) => {
+    const formularity = useFormularityContext();
+
     return (
         <form
             onSubmit={ formularity?.handleSubmit }
