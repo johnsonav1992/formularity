@@ -2,7 +2,6 @@ import {
     createFormStore
     , useFormularity
 } from '../src';
-import { Field } from '../src/Field';
 import { Formularity } from '../src/Formularity';
 import { SubmitButton } from '../src/SubmitButton';
 
@@ -16,8 +15,6 @@ const formStore = createFormStore( initialValues );
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
-
-    const { FieldComp } = formularity;
 
     console.log( formularity.values, formularity.errors );
 
@@ -47,23 +44,14 @@ const AnotherTest = () => {
                     return formErrors;
                 } }
             >
-                { /* <Field
-                    name='name'
-                />
-                <Field
-                    name='email'
-                />
-                <Field
-                    name='choice'
-                    type='checkbox'
-                />
-                <SubmitButton>
-                    Submit
-                </SubmitButton> */ }
+
                 { ( { Field } ) => (
-                    <Field
-                        name='email'
-                    />
+                    <>
+                        <Field name='name' />
+                        <SubmitButton>
+                            Submit
+                        </SubmitButton>
+                    </>
                 ) }
             </Formularity>
             <pre>

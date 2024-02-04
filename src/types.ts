@@ -3,7 +3,6 @@ import {
     , FocusEvent
     , FormEvent
 } from 'react';
-import { Field } from './Field';
 
 export type Prettify<T> = {
     [K in keyof T]: T[K];
@@ -143,8 +142,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 export type UseFormularityReturn<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
-    & FormComputedProps<TFormValues>
-    & { FieldComp: typeof Field<TFormValues, DeepKeys<TFormValues>> };
+    & FormComputedProps<TFormValues>;
 
 export type FormularityProps<TFormValues extends FormValues> = UseFormularityReturn<TFormValues>;
 
