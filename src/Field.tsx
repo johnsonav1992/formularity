@@ -7,7 +7,9 @@ import React, {
 
 // Types
 import {
-    FormErrors
+    DeepKeys
+    , DeepValue
+    , FormErrors
     , FormStore
     , FormTouched
     , FormValues
@@ -25,16 +27,17 @@ import { useFormularityContext } from './Formularity';
 
 type FieldProps<
     TFormValues extends FormValues
+    , TFieldName extends DeepKeys<TFormValues>
     , TComponentProps extends Record<string, unknown>
     , TShowErrors extends boolean
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
     & {
-        name: keyof TFormValues | ( string & {} );
-        formStore?: FormStore<TFormValues>;
-        value?: unknown;
+        name: TFieldName;
+        value?: DeepValue<TFormValues, TFieldName>;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
         checked?: boolean;
         component?: FC<TComponentProps>;
+        formStore?: FormStore<TFormValues>;
         showErrors?: TShowErrors;
         errorStyles?: TShowErrors extends true ? CSSProperties : never;
     }
@@ -42,7 +45,8 @@ type FieldProps<
 
 export const Field = <
     TFormValues extends FormValues
-    , TComponentProps extends Record<string, unknown>
+    , TFieldName extends DeepKeys<TFormValues>
+    , TComponentProps extends Record<string, unknown> = {}
     , TShowErrors extends boolean = false
     >( {
         name
@@ -54,19 +58,23 @@ export const Field = <
         , showErrors
         , errorStyles
         , ...props
-    }: FieldProps<TFormValues, TComponentProps, TShowErrors> ) => {
+    }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors> ) => {
     const formularity = useFormularityContext();
     const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
 
     const renderedComponent = component as unknown as FC || 'input';
 
+    type FieldValue = TFieldName extends keyof TFormValues
+    ? TFormValues[TFieldName]
+    : never;
+
     const fieldProps = {
         name
-        , value: value || getViaPath( formularityProps?.values, name as string )
+        , value: value || getViaPath( formularityProps?.values, name ) as FieldValue
         , checked: type === 'checkbox'
             ? value == undefined
                 ? checked
-                : !!getViaPath( formularityProps?.values, name as string )
+                : !!getViaPath( formularityProps?.values, name )
             : undefined
         , onChange: formularityProps?.handleChange
         , onBlur: formularityProps?.handleBlur

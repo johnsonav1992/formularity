@@ -17,6 +17,8 @@ const formStore = createFormStore( initialValues );
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
+    const { FieldComp } = formularity;
+
     console.log( formularity.values, formularity.errors );
 
     return (
@@ -45,7 +47,7 @@ const AnotherTest = () => {
                     return formErrors;
                 } }
             >
-                <Field
+                { /* <Field
                     name='name'
                 />
                 <Field
@@ -57,7 +59,12 @@ const AnotherTest = () => {
                 />
                 <SubmitButton>
                     Submit
-                </SubmitButton>
+                </SubmitButton> */ }
+                { ( { Field } ) => (
+                    <Field
+                        name='email'
+                    />
+                ) }
             </Formularity>
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }

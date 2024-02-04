@@ -35,6 +35,7 @@ import {
     , objectKeys
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
+import { Field } from './Field';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -254,6 +255,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isFormTouched = objectKeys( touched ).length > 0;
 
+    const FieldComp = Field<typeof values>;
+
     return {
         ...currentStore
         , values
@@ -276,5 +279,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , isEditing
         , dirtyFields
         , isFormTouched
+        , FieldComp
     };
 };

@@ -3,6 +3,7 @@ import {
     , FocusEvent
     , FormEvent
 } from 'react';
+import { Field } from './Field';
 
 export type Prettify<T> = {
     [K in keyof T]: T[K];
@@ -142,6 +143,33 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 export type UseFormularityReturn<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
-    & FormComputedProps<TFormValues>;
+    & FormComputedProps<TFormValues>
+    & { FieldComp: typeof Field<TFormValues, DeepKeys<TFormValues>> };
 
 export type FormularityProps<TFormValues extends FormValues> = UseFormularityReturn<TFormValues>;
+
+type Keys<O, IsTop, K extends string | number> =
+    IsTop extends true
+        ? K | ( O extends unknown[] ? `[${ K }]` : never )
+        : `.${ K }` | ( O extends unknown[] ? `[${ K }]` | `.[${ K }]` : never );
+
+export type DeepKeys<T, IsTop = true, K extends keyof T = keyof T> =
+    K extends string | number
+        ? `${ Keys<T, IsTop, K> }${ '' | ( T[K] extends object ? DeepKeys<T[K], false> : '' ) }`
+        : never;
+
+export type DeepValue<TObj, TKey> = TObj extends Record<PropertyKey, unknown>
+    ? TKey extends `${ infer TBranch }.${ infer TDeepKey }`
+        ? DeepValue<TObj[TBranch], TDeepKey>
+        : TObj[TKey & keyof TObj]
+    : never;
+
+type obj = {
+    one: {
+        two: string;
+    };
+};
+
+type access<TFieldName extends DeepKeys<obj>> = DeepValue<obj, TFieldName>;
+
+type actualtest = access<'one.two'>;

@@ -1,47 +1,53 @@
 import {
-    PropsWithChildren
+    ReactNode
     , createContext
     , useContext
 } from 'react';
 
 // Components
 import { Form } from './Form';
-import { ConditionalWrapper } from './ConditionalWrapper';
 
 // Types
 import {
-    FormValues
+    DeepKeys
+    , FormValues
     , FormularityProps
 } from './types';
 import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
+import { Field } from './Field';
 
-type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & { useFormComponent?: boolean };
+type Props<TFormValues extends FormValues, TFieldName extends DeepKeys<TFormValues>> = UseFormularityParams<TFormValues> & {
+    useFormComponent?: boolean;
+    children: ( formularity: FormularityProps<TFormValues> & { Field: typeof Field<TFormValues, TFieldName> } ) => ReactNode;
+};
 
 const FormularityContext = createContext<FormularityProps<FormValues> | null>( null );
 
-export const Formularity = <TFormValues extends FormValues>( {
+export const Formularity = <TFormValues extends FormValues, TFieldName extends DeepKeys<TFormValues>>( {
     children
     , useFormComponent = true
     , ...formularityProps
-}: PropsWithChildren<Props<TFormValues>> ) => {
-
+}: Props<TFormValues, TFieldName> ) => {
     const formularity = useFormularity( { ...formularityProps } );
+    const renderedChildren = children( {
+        ...formularity
+        , Field
+    } );
 
     return (
         <FormularityContext.Provider value={ formularity }>
-            <ConditionalWrapper
-                condition={ useFormComponent }
-                wrapper={ children => (
-                    <Form>
-                        { children }
-                    </Form>
-                ) }
-            >
-                { children }
-            </ConditionalWrapper>
+            {
+                useFormComponent
+                    ? (
+                        <Form>
+                            { renderedChildren }
+                        </Form>
+                    )
+                    : renderedChildren
+            }
         </FormularityContext.Provider>
     );
 };
