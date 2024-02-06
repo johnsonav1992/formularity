@@ -10,7 +10,6 @@ import {
     DeepKeys
     , DeepValue
     , FormErrors
-    , FormStore
     , FormTouched
     , FormValues
 } from './types';
@@ -22,22 +21,21 @@ import { getViaPath } from './utils';
 import { ConditionalWrapper } from './ConditionalWrapper';
 
 // Hooks
-import { useFormularity } from './useFormularity';
 import { useFormularityContext } from './Formularity';
 
-type FieldProps<
+export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues>
-    , TComponentProps extends Record<string, unknown>
-    , TShowErrors extends boolean
+    , TComponentProps extends Record<string, unknown> = {}
+    , TShowErrors extends boolean = false
+    , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
     & {
         name: TFieldName;
-        value?: DeepValue<TFormValues, TFieldName>;
+        value?: TFieldValue;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
         checked?: boolean;
         component?: FC<TComponentProps>;
-        formStore?: FormStore<TFormValues>;
         showErrors?: TShowErrors;
         errorStyles?: TShowErrors extends true ? CSSProperties : never;
     }
@@ -45,12 +43,12 @@ type FieldProps<
 
 export const Field = <
     TFormValues extends FormValues
-    , TFieldName extends DeepKeys<TFormValues>
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TComponentProps extends Record<string, unknown> = {}
     , TShowErrors extends boolean = false
+    , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >( {
         name
-        , formStore
         , value
         , type
         , checked
@@ -58,19 +56,14 @@ export const Field = <
         , showErrors
         , errorStyles
         , ...props
-    }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors> ) => {
-    const formularity = useFormularityContext();
-    const formularityProps = formStore ? useFormularity( { formStore } ) : formularity;
+    }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
+    const formularityProps = useFormularityContext();
 
     const renderedComponent = component as unknown as FC || 'input';
 
-    type FieldValue = TFieldName extends keyof TFormValues
-    ? TFormValues[TFieldName]
-    : never;
-
     const fieldProps = {
         name
-        , value: value || getViaPath( formularityProps?.values, name ) as FieldValue
+        , value: value || getViaPath( formularityProps?.values, name )
         , checked: type === 'checkbox'
             ? value == undefined
                 ? checked
@@ -103,7 +96,7 @@ export const Field = <
             ) }
         >
             {
-                React.createElement<typeof fieldProps>(
+                React.createElement(
                     renderedComponent
                     , {
                         ...fieldProps

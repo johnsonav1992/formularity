@@ -9,6 +9,9 @@ const initialValues = {
     name: ''
     , email: ''
     , choice: false
+    , deep: {
+        nested: ''
+    }
 };
 
 const formStore = createFormStore( initialValues );
@@ -44,10 +47,12 @@ const AnotherTest = () => {
                     return formErrors;
                 } }
             >
-
                 { ( { Field } ) => (
                     <>
-                        <Field name='name' />
+                        <Field
+                            name='deep.nested'
+                            value
+                        />
                         <SubmitButton>
                             Submit
                         </SubmitButton>
