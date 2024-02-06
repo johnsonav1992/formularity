@@ -1,17 +1,24 @@
-import { PropsWithChildren } from 'react';
+import {
+    ComponentProps
+    , PropsWithChildren
+} from 'react';
 
 // Hooks
 import { useFormularityContext } from './Formularity';
 
-type FormProps = PropsWithChildren<{}>;
+type FormProps = PropsWithChildren<{}> & ComponentProps<'form'>;
 
-export const Form = ( { children }: FormProps ) => {
+export const Form = ( {
+    children
+    , ...props
+}: FormProps ) => {
     const formularity = useFormularityContext();
 
     return (
         <form
             onSubmit={ formularity?.handleSubmit }
             onReset={ formularity?.handleReset }
+            { ...props }
         >
             { children }
         </form>
