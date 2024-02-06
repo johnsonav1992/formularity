@@ -9,7 +9,7 @@ import { Form } from './Form';
 
 // Types
 import {
-    DeepKeys
+    FieldComponent
     , FormValues
     , FormularityProps
 } from './types';
@@ -17,19 +17,14 @@ import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
-import {
-    Field
-    , FieldProps
-} from './Field';
+import { Field } from './Field';
 
-type Props<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & {
+type FormularityComponentProps<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & {
     useFormComponent?: boolean;
     children: (
         formularity: FormularityProps<TFormValues>
         & {
-            Field: <TFieldValue extends DeepKeys<TFormValues>>(
-                props: FieldProps<TFormValues, TFieldValue>
-            ) => ReactNode;
+            Field: FieldComponent<TFormValues>;
         }
     ) => ReactNode;
 };
@@ -40,7 +35,7 @@ export const Formularity = <TFormValues extends FormValues>( {
     children
     , useFormComponent = true
     , ...formularityProps
-}: Props<TFormValues> ) => {
+}: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
     const renderedChildren = children( {
         ...formularity

@@ -50,8 +50,8 @@ const AnotherTest = () => {
                 { ( { Field } ) => (
                     <>
                         <Field
-                            name='deep.nested'
-                            value
+                            name='name'
+                            value=''
                         />
                         <SubmitButton>
                             Submit

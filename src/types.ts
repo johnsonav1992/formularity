@@ -2,7 +2,9 @@ import {
     ChangeEvent
     , FocusEvent
     , FormEvent
+    , ReactNode
 } from 'react';
+import { FieldProps } from './Field';
 
 export type Prettify<T> = {
     [K in keyof T]: T[K];
@@ -139,12 +141,15 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     isFormTouched: boolean;
 };
 
-export type UseFormularityReturn<TFormValues extends FormValues = FormValues> =
+export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
 
-export type FormularityProps<TFormValues extends FormValues> = UseFormularityReturn<TFormValues>;
+export type FieldComponent<TFormValues extends FormValues>
+    = <TFieldValue extends DeepKeys<TFormValues>>(
+        props: FieldProps<TFormValues, TFieldValue>
+    ) => ReactNode;
 
 type Keys<O, IsTop, K extends string | number> =
     IsTop extends true
@@ -164,10 +169,12 @@ export type DeepValue<TObj, TKey> = TObj extends Record<PropertyKey, unknown>
 
 type obj = {
     one: {
-        two: string;
+        two: [
+            'something'
+        ];
     };
 };
 
 type access<TFieldName extends DeepKeys<obj>> = DeepValue<obj, TFieldName>;
 
-type actualtest = access<'one.two'>;
+type actualtest = access<'one.two.0'>;

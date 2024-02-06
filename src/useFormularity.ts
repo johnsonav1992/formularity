@@ -19,8 +19,8 @@ import {
     , FormStoreState
     , FormTouched
     , FormValues
+    , FormularityProps
     , ManualValidationHandler
-    , UseFormularityReturn
 } from './types';
 
 // Hooks
@@ -63,7 +63,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , isEditing = false
     , manualValidationHandler
     , onSubmit
-}: UseFormularityParams<TFormValues> ): UseFormularityReturn<TFormValues> => {
+}: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const store = formStore;
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
