@@ -3,7 +3,6 @@ import {
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
-import { SubmitButton } from '../src/SubmitButton';
 
 const initialValues = {
     name: ''
@@ -47,12 +46,13 @@ const AnotherTest = () => {
                     return formErrors;
                 } }
             >
-                { ( { Field } ) => (
+                { ( {
+                    Field
+                    , SubmitButton
+                } ) => (
                     <>
-                        <Field
-                            name='name'
-                            value=''
-                        />
+                        <Field name='name' />
+                        <Field name='email' />
                         <SubmitButton>
                             Submit
                         </SubmitButton>

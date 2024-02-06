@@ -5,6 +5,7 @@ import {
     , ReactNode
 } from 'react';
 import { FieldProps } from './Field';
+import { SubmitButton } from './SubmitButton';
 
 export type Prettify<T> = {
     [K in keyof T]: T[K];
@@ -150,6 +151,8 @@ export type FieldComponent<TFormValues extends FormValues>
     = <TFieldValue extends DeepKeys<TFormValues>>(
         props: FieldProps<TFormValues, TFieldValue>
     ) => ReactNode;
+
+export type SubmitButtonComponent = typeof SubmitButton;
 
 type Keys<O, IsTop, K extends string | number> =
     IsTop extends true

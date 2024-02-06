@@ -6,18 +6,20 @@ import {
 
 // Components
 import { Form } from './Form';
+import { Field } from './Field';
+import { SubmitButton } from './SubmitButton';
 
 // Types
 import {
     FieldComponent
     , FormValues
     , FormularityProps
+    , SubmitButtonComponent
 } from './types';
 import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
-import { Field } from './Field';
 
 type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
@@ -27,6 +29,7 @@ type FormularityComponentProps<TFormValues extends FormValues> =
             formularity: FormularityProps<TFormValues>
             & {
                 Field: FieldComponent<TFormValues>;
+                SubmitButton: SubmitButtonComponent;
             }
         ) => ReactNode;
     };
@@ -43,6 +46,7 @@ export const Formularity = <TFormValues extends FormValues>( {
     const renderedChildren = children( {
         ...formularity
         , Field
+        , SubmitButton
     } );
 
     return (
