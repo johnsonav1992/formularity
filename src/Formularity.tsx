@@ -19,15 +19,17 @@ import {
 } from './useFormularity';
 import { Field } from './Field';
 
-type FormularityComponentProps<TFormValues extends FormValues> = UseFormularityParams<TFormValues> & {
-    useFormComponent?: boolean;
-    children: (
-        formularity: FormularityProps<TFormValues>
-        & {
-            Field: FieldComponent<TFormValues>;
-        }
-    ) => ReactNode;
-};
+type FormularityComponentProps<TFormValues extends FormValues> =
+    UseFormularityParams<TFormValues>
+    & {
+        useFormComponent?: boolean;
+        children: (
+            formularity: FormularityProps<TFormValues>
+            & {
+                Field: FieldComponent<TFormValues>;
+            }
+        ) => ReactNode;
+    };
 
 const FormularityContext = createContext<FormularityProps<FormValues> | null>( null );
 
@@ -37,6 +39,7 @@ export const Formularity = <TFormValues extends FormValues>( {
     , ...formularityProps
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
+
     const renderedChildren = children( {
         ...formularity
         , Field
@@ -58,12 +61,14 @@ export const Formularity = <TFormValues extends FormValues>( {
 };
 
 export const useFormularityContext = () => {
-    if ( FormularityContext == null ) {
+    const formularity = useContext( FormularityContext );
+
+    if ( !formularity ) {
         throw new Error(
             `Must use any Formularity custom component within 
             a <Formularity /> component in order for it to work!`
         );
     }
 
-    return useContext( FormularityContext ) as FormularityProps<FormValues>;
+    return formularity;
 };
