@@ -72,6 +72,7 @@ export const Field = <
         , onChange: formularityProps?.handleChange
         , onBlur: formularityProps?.handleBlur
         , type: type || 'text'
+        , ... props
     };
 
     const error = formularityProps?.errors[ name as keyof FormErrors<FormValues> ];
@@ -98,10 +99,7 @@ export const Field = <
             {
                 React.createElement(
                     renderedComponent
-                    , {
-                        ...fieldProps
-                        , ...props
-                    }
+                    , fieldProps
                 )
             }
         </ConditionalWrapper>
