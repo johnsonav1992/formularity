@@ -4,12 +4,16 @@ import {
     , FormEvent
     , ReactNode
 } from 'react';
+
+// Components
 import { FieldProps } from './Field';
 import { SubmitButton } from './SubmitButton';
 
-export type Prettify<T> = {
-    [K in keyof T]: T[K];
-} & {};
+// Types
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
 export type FormValues = Record<PropertyKey, unknown> | null;
 export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
@@ -147,28 +151,13 @@ export type FormularityProps<TFormValues extends FormValues = FormValues> =
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
 
+////// COMPONENTS //////
 export type FieldComponent<TFormValues extends FormValues>
     = <TFieldValue extends DeepKeys<TFormValues>>(
         props: FieldProps<TFormValues, TFieldValue>
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;
-
-type Keys<O, IsTop, K extends string | number> =
-    IsTop extends true
-        ? K | ( O extends unknown[] ? `[${ K }]` : never )
-        : `.${ K }` | ( O extends unknown[] ? `[${ K }]` | `.[${ K }]` : never );
-
-export type DeepKeys<T, IsTop = true, K extends keyof T = keyof T> =
-    K extends string | number
-        ? `${ Keys<T, IsTop, K> }${ '' | ( T[K] extends object ? DeepKeys<T[K], false> : '' ) }`
-        : never;
-
-export type DeepValue<TObj, TKey> = TObj extends Record<PropertyKey, unknown>
-    ? TKey extends `${ infer TBranch }.${ infer TDeepKey }`
-        ? DeepValue<TObj[TBranch], TDeepKey>
-        : TObj[TKey & keyof TObj]
-    : never;
 
 type obj = {
     one: {

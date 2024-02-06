@@ -7,12 +7,14 @@ import React, {
 
 // Types
 import {
-    DeepKeys
-    , DeepValue
-    , FormErrors
+    FormErrors
     , FormTouched
     , FormValues
 } from './types';
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
 // Utils
 import { getViaPath } from './utils';
