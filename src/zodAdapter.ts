@@ -8,16 +8,18 @@ import {
     , ValidationHandler
 } from './types';
 
-export const parseZodErrors = <T = Record<string, unknown>>( errorObj: SafeParseError<T> ) => {
+export const parseZodErrors = <
+    TFormValues extends FormValues
+    , T extends SafeParseError<TFormValues>
+>( errorObj: T ) => {
     const flattenedZodErrors = errorObj.error.flatten();
     const fieldErrors = flattenedZodErrors.fieldErrors;
 
-    const formErrors: FormErrors<FormValues> = {};
+    const formErrors: FormErrors<TFormValues> = {};
 
-    let fieldError: keyof typeof fieldErrors;
-
-    for ( fieldError in fieldErrors ) {
-        formErrors[ fieldError ] = fieldErrors[ fieldError ]?.join( ',' );
+    for ( const fieldError in fieldErrors ) {
+        //@ts-expect-error -> TODO: need to figure out this indexing issue
+        formErrors[ fieldError ] = fieldErrors[ fieldError as keyof typeof fieldErrors ]?.join( ',' );
     }
 
     return formErrors;

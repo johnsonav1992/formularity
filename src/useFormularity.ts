@@ -87,7 +87,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         };
     }, [] );
 
-    const validateForm = useEventCallback( ( values: TFormValues ) => {
+    const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};
 
         if ( validationSchema ) {
