@@ -91,7 +91,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         let errors: Partial<FormErrors<TFormValues>> = {};
 
         if ( validationSchema ) {
-            const validationSchemaErrors = validationSchema( values );
+            const validationSchemaErrors = await validationSchema( values );
             if ( validationSchemaErrors ) {
                 errors = validationSchemaErrors;
             }

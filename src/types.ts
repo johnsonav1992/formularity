@@ -25,7 +25,7 @@ export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 
 export type ValidationHandler<TFormValues extends FormValues> =
-    ( values: TFormValues ) => Partial<FormErrors<TFormValues>> | null;
+    ( values: TFormValues ) => Promise<Partial<FormErrors<TFormValues>> | null> | Partial<FormErrors<TFormValues>>;
 
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;

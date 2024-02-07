@@ -1,7 +1,10 @@
+// Libraries
 import {
     SafeParseError
     , ZodSchema
 } from 'zod';
+
+// Types
 import {
     FormErrors
     , FormValues
@@ -27,14 +30,17 @@ export const parseZodErrors = <
 
 export const zodAdapter = <TFormValues extends FormValues>(
     schema: ZodSchema<TFormValues>
+    , options?: {
+        async?: boolean;
+    }
 ): ValidationHandler<TFormValues> => {
     if ( !( schema instanceof ZodSchema ) ) {
         throw new Error( `You are trying to use a schema that is not a Zod 
             schema with this adapter. Please pass a correct Zod schema to fix this error` );
     }
 
-    return values => {
-        const validationResult = schema.safeParse( values );
+    return async values => {
+        const validationResult = await schema[ options?.async ? 'safeParseAsync' : 'safeParse' ]( values, { async: true } );
 
         if ( validationResult.success ) return null;
 
