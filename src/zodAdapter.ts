@@ -1,13 +1,11 @@
-// export const zodAdapter
-
 import {
     SafeParseError
     , ZodSchema
-    , z
 } from 'zod';
 import {
     FormErrors
     , FormValues
+    , ValidationHandler
 } from './types';
 
 export const parseZodErrors = <T = Record<string, unknown>>( errorObj: SafeParseError<T> ) => {
@@ -25,14 +23,20 @@ export const parseZodErrors = <T = Record<string, unknown>>( errorObj: SafeParse
     return formErrors;
 };
 
-export const zodAdapter = ( schema: unknown ) => {
-    if ( schema instanceof ZodSchema ) return schema;
+export const zodAdapter = <TFormValues extends FormValues>(
+    schema: ZodSchema<TFormValues>
+): ValidationHandler<TFormValues> => {
+    if ( !( schema instanceof ZodSchema ) ) {
+        throw new Error( `You are trying to use a schema that is not a Zod 
+            schema with this adapter. Please pass a correct Zod schema to fix this error` );
+    }
 
-    return null;
+    return values => {
+        const validationResult = schema.safeParse( values );
+
+        if ( validationResult.success ) return null;
+
+        return parseZodErrors( validationResult );
+    };
+
 };
-
-const schema = z.object( {
-    name: z.string()
-} );
-
-const res = zodAdapter( schema );

@@ -1,8 +1,10 @@
+import { z } from 'zod';
 import {
     createFormStore
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
+import { zodAdapter } from '../src/zodAdapter';
 
 const initialValues = {
     name: ''
@@ -12,6 +14,10 @@ const initialValues = {
         nested: ''
     }
 };
+
+const validationSchema = z.object( {
+    name: z.string().min( 1, 'Name must be longer than 1 character' )
+} );
 
 const formStore = createFormStore( initialValues );
 
@@ -25,33 +31,17 @@ const AnotherTest = () => {
             <Formularity
                 formStore={ formStore }
                 onSubmit={ values => alert( values ) }
-                manualValidationHandler={ ( {
-                    name
-                    , email
-                } ) => {
-                    const formErrors: Record<string, string> = {};
-
-                    if ( name.length < 3 ) {
-                        formErrors.name = 'Name is too short!';
-                    }
-
-                    if ( !name ) {
-                        formErrors.name = 'Name is required!';
-                    }
-
-                    if ( !email ) {
-                        formErrors.email = 'Email is required!';
-                    }
-
-                    return formErrors;
-                } }
+                validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {
                     Field
                     , SubmitButton
                 } ) => (
                     <>
-                        <Field name='name' />
+                        <Field
+                            name='name'
+                            showErrors
+                        />
                         <Field name='email' />
                         <SubmitButton>
                             Submit
