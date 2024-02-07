@@ -40,7 +40,11 @@ export const zodAdapter = <TFormValues extends FormValues>(
     }
 
     return async values => {
-        const validationResult = await schema[ options?.async ? 'safeParseAsync' : 'safeParse' ]( values, { async: true } );
+        const validationResult = await schema[
+            options?.async
+                ? 'safeParseAsync'
+                : 'safeParse'
+        ]( values );
 
         if ( validationResult.success ) return null;
 
