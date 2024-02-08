@@ -8,7 +8,6 @@ import React, {
 // Types
 import {
     FormErrors
-    , FormTouched
     , FormValues
 } from './types';
 import {
@@ -77,8 +76,8 @@ export const Field = <
         , ... props
     };
 
-    const error = formularityProps?.errors[ name as keyof FormErrors<FormValues> ];
-    const touched = formularityProps?.touched[ name as keyof FormTouched<FormValues> ];
+    const error = getViaPath( formularityProps?.errors, name ) as keyof FormErrors<TFormValues>;
+    const touched = getViaPath( formularityProps?.touched, name ) as boolean | undefined;
 
     return (
         <ConditionalWrapper

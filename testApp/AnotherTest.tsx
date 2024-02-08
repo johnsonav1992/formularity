@@ -56,6 +56,7 @@ const AnotherTest = () => {
                             <Field
                                 name='name'
                                 showErrors
+                                errorStyles={ { color: 'red' } }
                             />
                         </fieldset>
                         <fieldset
