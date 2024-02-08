@@ -13,10 +13,6 @@ const Comp = ( { something }: { something?: number } ) => {
 const initialValues = {
     name: ''
     , email: ''
-    , choice: false
-    , deep: {
-        nested: ''
-    }
 };
 
 const validationSchema = z.object( {
@@ -41,16 +37,41 @@ const AnotherTest = () => {
                     Field
                     , SubmitButton
                 } ) => (
-                    <>
-                        <Field
-                            name='choice'
-                            value
-                        />
-                        <Field name='email' />
+                    <div
+                        style={ {
+                            width: '30%'
+                            , display: 'flex'
+                            , flexDirection: 'column'
+                            , gap: '.5rem'
+                        } }
+                    >
+                        <fieldset
+                            style={ {
+                                display: 'flex'
+                                , flexDirection: 'column'
+                                , gap: '.5rem'
+                            } }
+                        >
+                            <label htmlFor='name'>Name</label>
+                            <Field
+                                name='name'
+                                showErrors
+                            />
+                        </fieldset>
+                        <fieldset
+                            style={ {
+                                display: 'flex'
+                                , flexDirection: 'column'
+                                , gap: '.5rem'
+                            } }
+                        >
+                            <label htmlFor='email'>Email</label>
+                            <Field name='email' />
+                        </fieldset>
                         <SubmitButton>
                             Submit
                         </SubmitButton>
-                    </>
+                    </div>
                 ) }
             </Formularity>
             <pre>

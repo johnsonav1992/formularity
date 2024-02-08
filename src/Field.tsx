@@ -84,7 +84,7 @@ export const Field = <
         <ConditionalWrapper
             condition={ showErrors }
             wrapper={ children => (
-                <div>
+                <>
                     { children }
                     {
                         error
@@ -95,7 +95,7 @@ export const Field = <
                             </div>
                         )
                     }
-                </div>
+                </>
             ) }
         >
             {

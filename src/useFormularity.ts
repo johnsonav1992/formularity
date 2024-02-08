@@ -217,9 +217,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         store.set( { isSubmitting: true } );
 
-        const validationErrors = validateForm( values );
+        const validationErrors = await validateForm( values );
+        const hasErrors = objectKeys( validationErrors ).length > 0;
 
-        if ( validationErrors ) {
+        if ( hasErrors ) {
             store.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
