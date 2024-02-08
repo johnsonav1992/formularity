@@ -153,8 +153,8 @@ export type FormularityProps<TFormValues extends FormValues = FormValues> =
 
 ////// COMPONENTS //////
 export type FieldComponent<TFormValues extends FormValues>
-    = <TFieldValue extends DeepKeys<TFormValues>>(
-        props: FieldProps<TFormValues, TFieldValue>
+    = <TFieldName extends DeepKeys<TFormValues>, TComponentProps, TShowErrors extends boolean = false>(
+        props: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors>
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;

@@ -28,7 +28,7 @@ import { useFormularityContext } from './Formularity';
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues>
-    , TComponentProps extends Record<string, unknown> = {}
+    , TComponentProps = {}
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
@@ -46,7 +46,7 @@ export type FieldProps<
 export const Field = <
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TComponentProps extends Record<string, unknown> = {}
+    , TComponentProps = {}
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >( {

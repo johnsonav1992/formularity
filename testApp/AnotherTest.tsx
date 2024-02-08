@@ -6,6 +6,10 @@ import {
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
 
+const Comp = ( { something }: { something?: number } ) => {
+    return <div>hey</div>;
+};
+
 const initialValues = {
     name: ''
     , email: ''
@@ -39,8 +43,8 @@ const AnotherTest = () => {
                 } ) => (
                     <>
                         <Field
-                            name='name'
-                            showErrors
+                            name='choice'
+                            value
                         />
                         <Field name='email' />
                         <SubmitButton>
