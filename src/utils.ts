@@ -46,8 +46,8 @@ export const setViaPath = <
     for ( const key of keys ) {
         if ( typeof current[ key ] !== 'object' ) {
             current[ key ] = typeof keys[ 0 ] === 'number'
-                ? [] as TObj[keyof TObj]
-                : {} as TObj[keyof TObj];
+                ? [] as never
+                : {} as never;
         }
         current = current[ key ] as TObj;
     }
@@ -55,10 +55,51 @@ export const setViaPath = <
     if ( Array.isArray( current ) && lastKey === '' ) {
         current.push( newValue );
     } else {
-        current[ lastKey as keyof TObj ] = newValue as TObj[keyof TObj];
+        current[ lastKey as keyof TObj ] = newValue as never;
     }
 
     return obj as TObj;
+};
+
+export const isEqual = <TVal1, TVal2>( value: TVal1, other: TVal2 ) => {
+
+    const deepEqual = ( a: TVal1, b: TVal2 ) => {
+        if ( a as never === b as never ) return true;
+
+        if (
+            typeof a !== 'object'
+            || typeof b !== 'object'
+            || a === null
+            || b === null
+        ) return false;
+
+        const keysA = objectKeys( a );
+        const keysB = objectKeys( b );
+
+        if ( keysA.length !== keysB.length ) return false;
+
+        for ( const key of keysA ) {
+            if ( !keysB.includes( key as never ) || !deepEqual( a[ key as never ], b[ key as never ] ) ) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    return deepEqual( value, other );
+};
+
+export const isEmpty = <TVal>( value: TVal ) => {
+    if ( value == null ) return true;
+
+    if (
+        typeof value === 'object'
+        || typeof value === 'string'
+        || Array.isArray( value )
+    ) return objectKeys( value as never ).length === 0;
+
+    return false;
 };
 
 export const getCheckboxValue = (

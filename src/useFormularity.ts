@@ -8,10 +8,6 @@ import {
     , useSyncExternalStore
 } from 'react';
 
-// Libraries
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
-
 // Types
 import {
     FormErrors
@@ -33,6 +29,8 @@ import {
     , getViaPath
     , objectEntries
     , objectKeys
+    , isEqual
+    , isEmpty
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 import { DeepKeys } from './utilityTypes';
