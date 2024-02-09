@@ -35,6 +35,7 @@ import {
     , objectKeys
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
+import { DeepKeys } from './utilityTypes';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -193,7 +194,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             case /checkbox/.test( type ):
                 finalValue = getCheckboxValue(
-                    getViaPath( values, fieldName ) as Parameters<typeof getCheckboxValue>[0]
+                    getViaPath( values, fieldName as DeepKeys<TFormValues> ) as Parameters<typeof getCheckboxValue>[0]
                     , checked
                     , value
                 );
