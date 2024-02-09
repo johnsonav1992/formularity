@@ -87,8 +87,7 @@ export const isEqual = <TVal1, TVal2>( value: TVal1, other: TVal2 ) => {
         for ( const key of keysA ) {
             if (
                 !keysB.includes( key as never )
-                || !deepEqual( a[ key as never ]
-                    , b[ key as never ] )
+                || !deepEqual( a[ key as never ], b[ key as never ] )
             ) return false;
         }
 
