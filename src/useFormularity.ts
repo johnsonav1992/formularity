@@ -95,7 +95,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( validationSchemaErrors ) {
                 errors = validationSchemaErrors;
             }
-        } else runUserDefinedValidations( values );
+        } else {
+            errors = runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
+        }
 
         setErrors( errors as FormErrors<TFormValues> );
 
@@ -215,7 +217,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
-        store.set( { isSubmitting: true } );
+        store.set( {
+            isSubmitting: true
+            , isValidating: true
+        } );
 
         const validationErrors = await validateForm( values );
         const hasErrors = objectKeys( validationErrors ).length > 0;
@@ -224,6 +229,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             store.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
+                , isValidating: false
             } );
 
             return setErrors( {
@@ -231,6 +237,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 , ...validationErrors
             } as FormErrors<TFormValues> );
         }
+
+        store.set( { isValidating: false } );
 
         await onSubmit?.( currentStore.values );
 

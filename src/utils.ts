@@ -1,22 +1,64 @@
-// Libraries
-import toPath from 'lodash/toPath';
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
-export const getViaPath = (
-    obj: unknown,
-    key: string | string[],
-    def?: unknown,
-    p: number = 0
-) => {
-    const path = toPath( key );
-    while ( obj && p < path.length ) {
-        obj = obj[ path[ p++ ] as keyof typeof obj ];
+const obj = {
+    name: 'John'
+    , address: {
+        street: 'Some Street'
+        , city: 'Some City'
+        , country: 'Some Country'
+    }
+};
+
+export const getViaPath = <
+    TObj
+    , TKey extends DeepKeys<TObj>
+>( obj: TObj, path: TKey ): DeepValue<TObj, TKey> | undefined => {
+    const keys = path.split( /\.|\[|\]/ ).filter( Boolean ) as Array<keyof TObj>;
+
+    let current = obj;
+
+    for ( const key of keys ) {
+        if ( typeof current === 'object' && current !== null && key in current ) {
+            current = current[ key ] as TObj;
+        } else return undefined;
     }
 
-    if ( p !== path.length && !obj ) {
-        return def;
+    return current as DeepValue<TObj, TKey>;
+};
+
+export const setViaPath = <
+    TObj
+    , TPath extends DeepKeys<TObj>
+    , TNewValue
+    >(
+        obj: TObj
+        , path: TPath
+        , newValue: TNewValue
+    ): TObj => {
+    const keys = path.split( /\.|\[|\]/ ).filter( Boolean ) as Array<keyof TObj>;
+    const lastKey = keys.pop();
+
+    let current = obj;
+
+    for ( const key of keys ) {
+        if ( typeof current[ key ] !== 'object' ) {
+            current[ key ] = typeof keys[ 0 ] === 'number'
+                ? [] as TObj[keyof TObj]
+                : {} as TObj[keyof TObj];
+        }
+        current = current[ key ] as TObj;
     }
 
-    return obj === undefined ? def : obj;
+    if ( Array.isArray( current ) && lastKey === '' ) {
+        current.push( newValue );
+    } else {
+        current[ lastKey as keyof TObj ] = newValue as TObj[keyof TObj];
+    }
+
+    return obj as TObj;
 };
 
 export const getCheckboxValue = (
