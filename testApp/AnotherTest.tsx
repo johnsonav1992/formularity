@@ -13,6 +13,7 @@ const initialValues = {
 
 const validationSchema = z.object( {
     name: z.string().min( 1, 'Name must be longer than 1 character' )
+    , email: z.string().email( 'Invalid email' )
 } );
 
 const formStore = createFormStore( initialValues );
@@ -20,13 +21,11 @@ const formStore = createFormStore( initialValues );
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    console.log( formularity.values, formularity.errors );
-
     return (
         <div>
             <Formularity
                 formStore={ formStore }
-                onSubmit={ values => alert( values ) }
+                onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
                 validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {
@@ -63,7 +62,11 @@ const AnotherTest = () => {
                             } }
                         >
                             <label htmlFor='email'>Email</label>
-                            <Field name='email' />
+                            <Field
+                                name='email'
+                                showErrors
+                                errorStyles={ { color: 'red' } }
+                            />
                         </fieldset>
                         <SubmitButton>
                             Submit

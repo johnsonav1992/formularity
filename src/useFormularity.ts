@@ -31,9 +31,13 @@ import {
     , objectKeys
     , isEqual
     , isEmpty
+    , setViaPath
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
-import { DeepKeys } from './utilityTypes';
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -117,11 +121,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
     } );
 
-    const setFieldValue = useEventCallback( ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => {
-        const newValues = {
-            ...values
-            , [ fieldName ]: newValue
-        };
+    const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {
+        const newValues = setViaPath( values, fieldName, newValue );
 
         store.set( { values: newValues } );
 
@@ -203,7 +204,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
             default: finalValue = value;
         }
 
-        setFieldValue( fieldName as keyof TFormValues, finalValue as TFormValues[keyof TFormValues] );
+        setFieldValue(
+            fieldName as DeepKeys<TFormValues>
+            , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
+        );
     } );
 
     const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {

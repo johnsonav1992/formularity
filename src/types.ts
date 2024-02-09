@@ -78,7 +78,10 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the value of a single field
      */
-    setFieldValue: ( fieldName: keyof TFormValues, newValue: TFormValues[keyof TFormValues] ) => void;
+    setFieldValue: <TFieldName extends DeepKeys<TFormValues>>(
+        fieldName: TFieldName
+        , newValue: DeepValue<TFormValues, TFieldName>
+    ) => void;
     /**
      * Set the values of any number of fields simultaneously
      */
