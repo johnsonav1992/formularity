@@ -17,7 +17,9 @@ export const getViaPath = <
     TObj
     , TKey extends DeepKeys<TObj>
 >( obj: TObj, path: TKey ): DeepValue<TObj, TKey> | undefined => {
-    const keys = path.split( /\.|\[|\]/ ).filter( Boolean ) as Array<keyof TObj>;
+    const keys = path
+        .split( /\.|\[|\]/ )
+        .filter( Boolean ) as Array<keyof TObj>;
 
     let current = obj;
 
@@ -39,7 +41,10 @@ export const setViaPath = <
         , path: TPath
         , newValue: TNewValue
     ): TObj => {
-    const keys = path.split( /\.|\[|\]/ ).filter( Boolean ) as Array<keyof TObj>;
+    const keys = path
+        .split( /\.|\[|\]/ )
+        .filter( Boolean ) as Array<keyof TObj>;
+
     const lastKey = keys.pop();
 
     let current = obj;
@@ -80,9 +85,11 @@ export const isEqual = <TVal1, TVal2>( value: TVal1, other: TVal2 ) => {
         if ( keysA.length !== keysB.length ) return false;
 
         for ( const key of keysA ) {
-            if ( !keysB.includes( key as never ) || !deepEqual( a[ key as never ], b[ key as never ] ) ) {
-                return false;
-            }
+            if (
+                !keysB.includes( key as never )
+                || !deepEqual( a[ key as never ]
+                    , b[ key as never ] )
+            ) return false;
         }
 
         return true;
