@@ -133,7 +133,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         store.set( { values: newValues } );
     }, [] );
 
-    const setFieldError = useCallback( ( fieldName: keyof TFormValues, newError: string ) => {
+    const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
         store.set( {
             errors: {
                 ...errors
@@ -146,7 +146,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         store.set( { errors: newErrors } );
     }, [] );
 
-    const setFieldTouched = useEventCallback( ( fieldName: keyof TFormValues, newTouched: boolean ) => {
+    const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
         store.set( {
             touched: {
                 ...touched
@@ -213,7 +213,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {
         const { name: fieldName } = e.target;
 
-        setFieldTouched( fieldName as keyof TFormValues, true );
+        setFieldTouched( fieldName as DeepKeys<TFormValues>, true );
     } );
 
     const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {

@@ -13,26 +13,29 @@ import { SubmitButton } from './SubmitButton';
 import {
     DeepKeys
     , DeepValue
+    , EmptyObject
+    , UnsubScribeFn
 } from './utilityTypes';
 
+////// FORM GENERAL //////
 export type FormValues = Record<PropertyKey, unknown> | null;
 export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
 export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValues, boolean> | EmptyObject;
 
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
-export type EmptyObject = Record<string, never>;
-export type UnsubScribeFn = () => void;
-
+////// VALIDATION //////
 export type ValidationHandler<TFormValues extends FormValues> =
     ( values: TFormValues ) => Promise<Partial<FormErrors<TFormValues>> | null> | Partial<FormErrors<TFormValues>>;
 
+////// STORE //////
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
     set: ( newFormStore: Partial<FormStoreState<TFormValues>> ) => void;
     subscribe: ( callback: () => void ) => UnsubScribeFn;
 };
 
+////// FORM STATE //////
 export type FormStoreState<TFormValues extends FormValues> = {
     /**
      * The initial form values provided by the user at the
@@ -74,6 +77,7 @@ export type FormStoreState<TFormValues extends FormValues> = {
     isEditing: boolean;
 };
 
+////// HANDLERS //////
 export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the value of a single field
@@ -89,7 +93,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the error message of a single field
      */
-    setFieldError: ( fieldName: keyof TFormValues, newError: string ) => void;
+    setFieldError: ( fieldName: DeepKeys<TFormValues>, newError: string ) => void;
     /**
      * Set the error messages of any number of fields simultaneously
      */
@@ -97,7 +101,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the touched status of a single field
      */
-    setFieldTouched: ( fieldName: keyof TFormValues, newTouched: boolean ) => void;
+    setFieldTouched: ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => void;
     /**
      * Set the touched statuses of any number of fields simultaneously
      */
@@ -129,6 +133,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     resetForm: ( newFormValues?: Partial<TFormValues> ) => void;
 };
 
+////// COMPUTED PROPS //////
 export type FormComputedProps<TFormValues extends FormValues> = {
     /**
      * Returns true if any field in the form is dirty
@@ -149,6 +154,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     isFormTouched: boolean;
 };
 
+////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FormHandlers<TFormValues>
@@ -156,7 +162,11 @@ export type FormularityProps<TFormValues extends FormValues = FormValues> =
 
 ////// COMPONENTS //////
 export type FieldComponent<TFormValues extends FormValues>
-    = <TFieldName extends DeepKeys<TFormValues>, TComponentProps, TShowErrors extends boolean = false>(
+    = <
+        TFieldName extends DeepKeys<TFormValues>
+        , TComponentProps
+        , TShowErrors extends boolean = false
+    >(
         props: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors>
     ) => ReactNode;
 

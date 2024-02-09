@@ -2,6 +2,9 @@ export type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
 
+export type EmptyObject = Record<string, never>;
+export type UnsubScribeFn = () => void;
+
 type Keys<TObj, IsRoot, TKey extends string | number> =
     IsRoot extends true
         ? TKey | ( TObj extends unknown[] ? `[${ TKey }]` : never )

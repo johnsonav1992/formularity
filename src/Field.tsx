@@ -8,6 +8,7 @@ import React, {
 // Types
 import {
     FormErrors
+    , FormTouched
     , FormValues
 } from './types';
 import {
@@ -58,26 +59,32 @@ export const Field = <
         , errorStyles
         , ...props
     }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
-    const formularityProps = useFormularityContext();
+    const {
+        values
+        , errors
+        , touched
+        , handleChange
+        , handleBlur
+    } = useFormularityContext();
 
-    const renderedComponent = component as unknown as FC || 'input';
+    const renderedComponent = component as FC || 'input';
 
     const fieldProps = {
         name
-        , value: value || getViaPath( formularityProps?.values, name )
+        , value: value || getViaPath( values, name as DeepKeys<FormValues> )
         , checked: type === 'checkbox'
             ? value == undefined
                 ? checked
-                : !!getViaPath( formularityProps?.values, name )
+                : !!getViaPath( values, name as DeepKeys<FormValues> )
             : undefined
-        , onChange: formularityProps?.handleChange
-        , onBlur: formularityProps?.handleBlur
+        , onChange: handleChange
+        , onBlur: handleBlur
         , type: type || 'text'
         , ... props
     };
 
-    const error = getViaPath( formularityProps?.errors, name ) as keyof FormErrors<TFormValues>;
-    const touched = getViaPath( formularityProps?.touched, name ) as boolean | undefined;
+    const error = getViaPath( errors, name as DeepKeys<FormErrors<FormValues>> );
+    const isTouched = getViaPath( touched, name as DeepKeys<FormTouched<FormValues>> );
 
     return (
         <ConditionalWrapper
@@ -87,7 +94,7 @@ export const Field = <
                     { children }
                     {
                         error
-                        && touched
+                        && isTouched
                         && (
                             <div style={ errorStyles }>
                                 { error }
