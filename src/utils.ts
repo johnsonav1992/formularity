@@ -109,6 +109,30 @@ export const isEmpty = <TVal>( value: TVal ) => {
     return false;
 };
 
+export const cloneDeep = <TObj>( obj: TObj, clonedObjects = new WeakMap() ): TObj => {
+    if ( obj === null || typeof obj !== 'object' ) return obj;
+
+    if ( clonedObjects.has( obj ) ) return clonedObjects.get( obj );
+
+    const clone = Array.isArray( obj ) ? [] : {};
+
+    clonedObjects.set( obj, clone );
+
+    if ( Array.isArray( obj ) ) {
+        for ( let i = 0; i < obj.length; i++ ) {
+            ( clone as unknown[] )[ i ] = cloneDeep( obj[ i ], clonedObjects );
+        }
+    } else {
+        for ( const key in obj ) {
+            if ( key in obj ) {
+                ( clone as TObj )[ key ] = cloneDeep( obj[ key ], clonedObjects );
+            }
+        }
+    }
+
+    return clone as TObj;
+};
+
 export const getCheckboxValue = (
     currentValue: string | unknown[] | boolean,
     checked: boolean,

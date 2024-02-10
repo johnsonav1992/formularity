@@ -38,6 +38,7 @@ import {
     DeepKeys
     , DeepValue
 } from './utilityTypes';
+import { initial } from 'lodash';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -61,6 +62,17 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      */
     validationSchema?: ValidationHandler<TFormValues>;
     /**
+     * This option can be used to pre-populate the form with data 
+     * that replaces the default values passed to the form store.
+     * This is a great option to use when you want to pre-populate a form
+     * with data from a database or API.
+     *
+     * Note: Be cautious as to how you pass this new values object as it can
+     * override desired values if your logic is not set up properly.
+     *
+     */
+    valuesInitializer?: TFormValues;
+    /**
      * Submit handler for the form. This is called when the form is submitted.
      */
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
@@ -71,15 +83,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , isEditing = false
     , manualValidationHandler
     , validationSchema
+    , valuesInitializer
     , onSubmit
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const store = formStore;
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
     const initialValues = useRef( currentStore.initialValues );
+
     const values = currentStore.values;
     const errors = currentStore.errors;
     const touched = currentStore.touched;
+
     const isMounted = useRef<boolean>( false );
 
     useEffect( () => {
@@ -101,6 +116,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } else {
             errors = runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
         }
+
+        // if ( isEmpty(currentStore.errors) && isEmpty(errors) ) return currentStore.errors
 
         setErrors( errors as FormErrors<TFormValues> );
 
@@ -252,7 +269,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     } );
 
-    const resetForm = ( newFormValues?: Partial<TFormValues> ) => {
+    const resetForm = useEventCallback( ( newFormValues?: Partial<TFormValues> ) => {
         store.set( {
             ...getDefaultFormStoreState( initialValues.current )
             , ...( newFormValues && {
@@ -262,7 +279,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 }
             } )
         } as FormStoreState<TFormValues> );
-    };
+    } );
 
     const handleReset = useEventCallback( ( e: FormEvent<HTMLFormElement> ) => {
         e.preventDefault();

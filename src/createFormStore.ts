@@ -5,6 +5,9 @@ import {
     , FormValues
 } from './types';
 
+// Utils
+import { cloneDeep } from './utils';
+
 export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
     let storeState = getDefaultFormStoreState( initialValues );
 
@@ -32,7 +35,7 @@ export const createFormStore = <TFormValues extends FormValues>( initialValues: 
 
 export const getDefaultFormStoreState = <TFormValues extends FormValues>( initialValues: TFormValues ) => {
     const defaultStoreState: FormStoreState<TFormValues> = {
-        values: initialValues
+        values: cloneDeep( initialValues )
         , initialValues
         , errors: {}
         , touched: {}

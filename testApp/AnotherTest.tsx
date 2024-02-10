@@ -26,6 +26,10 @@ const AnotherTest = () => {
             <Formularity
                 formStore={ formStore }
                 onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
+                // valuesInitializer={{
+                //     name: 'Alex'
+                //     , email: 'ajohnson@veryableops.com'
+                // }}
                 validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {

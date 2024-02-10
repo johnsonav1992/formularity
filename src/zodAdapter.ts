@@ -30,9 +30,7 @@ export const parseZodErrors = <
 
 export const zodAdapter = <TFormValues extends FormValues>(
     schema: ZodSchema<TFormValues>
-    , options?: {
-        async?: boolean;
-    }
+    , options?: { async?: boolean; }
 ): ValidationHandler<TFormValues> => {
     if ( !( schema instanceof ZodSchema ) ) {
         throw new Error( `You are trying to use a schema that is not a Zod 
