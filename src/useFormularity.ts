@@ -86,8 +86,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , valuesInitializer
     , onSubmit
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
-    const store = formStore;
-    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
+    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
 
     const initialValues = useRef( currentStore.initialValues );
     const prevValuesInitializer = useRef( cloneDeep( currentStore.initialValues ) );
@@ -107,8 +106,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [ ] );
 
     useEffect( () => {
-        if ( valuesInitializer && ( !isEqual( prevValuesInitializer.current, valuesInitializer ) ) ) {
-            store.set( { values: valuesInitializer } );
+        if (
+            valuesInitializer
+            && isMounted.current
+            && !isEqual( prevValuesInitializer.current, valuesInitializer )
+        ) {
+            formStore.set( { values: valuesInitializer } );
 
             prevValuesInitializer.current = cloneDeep( valuesInitializer );
         }
@@ -150,17 +153,17 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {
         const newValues = setViaPath( values, fieldName, newValue );
 
-        store.set( { values: newValues } );
+        formStore.set( { values: newValues } );
 
         validateForm( newValues );
     } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
-        store.set( { values: newValues } );
+        formStore.set( { values: newValues } );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
-        store.set( {
+        formStore.set( {
             errors: {
                 ...errors
                 , [ fieldName ]: newError
@@ -169,11 +172,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        store.set( { errors: newErrors } );
+        formStore.set( { errors: newErrors } );
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
-        store.set( {
+        formStore.set( {
             touched: {
                 ...touched
                 , [ fieldName ]: newTouched
@@ -184,7 +187,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
-        store.set( { touched: newTouched } );
+        formStore.set( { touched: newTouched } );
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
@@ -246,7 +249,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
-        store.set( {
+        formStore.set( {
             isSubmitting: true
             , isValidating: true
         } );
@@ -255,7 +258,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const hasErrors = objectKeys( validationErrors ).length > 0;
 
         if ( hasErrors ) {
-            store.set( {
+            formStore.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
                 , isValidating: false
@@ -267,11 +270,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
             } as FormErrors<TFormValues> );
         }
 
-        store.set( { isValidating: false } );
+        formStore.set( { isValidating: false } );
 
         await onSubmit?.( currentStore.values );
 
-        store.set( {
+        formStore.set( {
             submitCount: currentStore.submitCount + 1
             , isSubmitting: false
         } );
@@ -279,7 +282,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const resetForm = useEventCallback( ( newFormValues?: Partial<TFormValues> ) => {
-        store.set( {
+        formStore.set( {
             ...getDefaultFormStoreState( initialValues.current )
             , ...( newFormValues && {
                 values: {
