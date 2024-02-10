@@ -129,8 +129,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
             errors = runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
         }
 
-        // if ( isEmpty(currentStore.errors) && isEmpty(errors) ) return currentStore.errors
-
         setErrors( errors as FormErrors<TFormValues> );
 
         return errors;
