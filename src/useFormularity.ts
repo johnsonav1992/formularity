@@ -18,6 +18,10 @@ import {
     , FormularityProps
     , ValidationHandler
 } from './types';
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
 // Hooks
 import { useEventCallback } from './useEventCallback';
@@ -35,10 +39,6 @@ import {
     , cloneDeep
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
-import {
-    DeepKeys
-    , DeepValue
-} from './utilityTypes';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
