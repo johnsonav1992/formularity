@@ -5,6 +5,7 @@ import {
 } from '../src';
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
+import { useState } from 'react';
 
 const initialValues = {
     name: ''
@@ -20,16 +21,17 @@ const formStore = createFormStore( initialValues );
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
+    const [ init, setinit ] = useState( {
+        name: 'Alex'
+        , email: 'ajohnson@veryableops.com'
+    } );
 
     return (
         <div>
             <Formularity
                 formStore={ formStore }
                 onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
-                // valuesInitializer={{
-                //     name: 'Alex'
-                //     , email: 'ajohnson@veryableops.com'
-                // }}
+                valuesInitializer={ init }
                 validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {
@@ -75,6 +77,15 @@ const AnotherTest = () => {
                         <SubmitButton>
                             Submit
                         </SubmitButton>
+                        <button
+                            type='button'
+                            onClick={ () => setinit( {
+                                name: 'blah'
+                                , email: 'blah@blah.com'
+                            } ) }
+                        >
+                            set new initializer
+                        </button>
                     </div>
                 ) }
             </Formularity>

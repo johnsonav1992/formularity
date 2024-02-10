@@ -4,6 +4,7 @@ import {
     , FormStoreState
     , FormValues
 } from './types';
+import { UnsubScribeFn } from './utilityTypes';
 
 // Utils
 import { cloneDeep } from './utils';
@@ -11,7 +12,7 @@ import { cloneDeep } from './utils';
 export const createFormStore = <TFormValues extends FormValues>( initialValues: TFormValues ): FormStore<TFormValues> => {
     let storeState = getDefaultFormStoreState( initialValues );
 
-    const subscribers = new Set<() => void>();
+    const subscribers = new Set<UnsubScribeFn>();
 
     return {
         get: () => storeState

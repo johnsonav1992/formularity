@@ -32,13 +32,13 @@ import {
     , isEqual
     , isEmpty
     , setViaPath
+    , cloneDeep
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 import {
     DeepKeys
     , DeepValue
 } from './utilityTypes';
-import { initial } from 'lodash';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -62,7 +62,7 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      */
     validationSchema?: ValidationHandler<TFormValues>;
     /**
-     * This option can be used to pre-populate the form with data 
+     * This option can be used to pre-populate the form with data
      * that replaces the default values passed to the form store.
      * This is a great option to use when you want to pre-populate a form
      * with data from a database or API.
@@ -90,6 +90,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( store.subscribe, store.get );
 
     const initialValues = useRef( currentStore.initialValues );
+    const prevValuesInitializer = useRef( cloneDeep( currentStore.initialValues ) );
 
     const values = currentStore.values;
     const errors = currentStore.errors;
@@ -103,7 +104,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return () => {
             isMounted.current = false;
         };
-    }, [] );
+    }, [ ] );
+
+    useEffect( () => {
+        if ( valuesInitializer && ( !isEqual( prevValuesInitializer.current, valuesInitializer ) ) ) {
+            store.set( { values: valuesInitializer } );
+
+            prevValuesInitializer.current = cloneDeep( valuesInitializer );
+        }
+    }, [ valuesInitializer ] );
 
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};
