@@ -18,10 +18,7 @@ import {
     , FormularityProps
     , ValidationHandler
 } from './types';
-import {
-    DeepKeys
-    , DeepValue
-} from './utilityTypes';
+import { DeepKeys } from './utilityTypes';
 
 // Hooks
 import { useEventCallback } from './useEventCallback';
@@ -233,7 +230,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         setFieldValue(
             fieldName as DeepKeys<TFormValues>
-            , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
+            , finalValue as TFormValues[keyof TFormValues]
         );
     } );
 
