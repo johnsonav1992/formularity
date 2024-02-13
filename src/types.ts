@@ -12,7 +12,6 @@ import { SubmitButton } from './SubmitButton';
 // Types
 import {
     DeepKeys
-    , DeepValue
     , EmptyObject
     , UnsubScribeFn
 } from './utilityTypes';
@@ -168,15 +167,3 @@ export type FieldComponent<TFormValues extends FormValues>
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;
-
-type obj = {
-    one: {
-        two: [
-            'something'
-        ];
-    };
-};
-
-type access<TFieldName extends DeepKeys<obj>> = DeepValue<obj, TFieldName>;
-
-type actualtest = access<'one.two.0'>;
