@@ -2,6 +2,8 @@ export type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
 
+export type NoInfer<T> = [T][T extends unknown ? 0 : never];
+
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 

@@ -18,7 +18,10 @@ import {
     , FormularityProps
     , ValidationHandler
 } from './types';
-import { DeepKeys } from './utilityTypes';
+import {
+    DeepKeys
+    , NoInfer
+} from './utilityTypes';
 
 // Hooks
 import { useEventCallback } from './useEventCallback';
@@ -68,7 +71,7 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      * override desired values if your logic is not set up properly.
      *
      */
-    valuesInitializer?: TFormValues;
+    valuesInitializer?: NoInfer<TFormValues>;
     /**
      * Submit handler for the form. This is called when the form is submitted.
      */
