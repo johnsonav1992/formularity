@@ -5,18 +5,49 @@ export type Prettify<T> = {
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 
-type Keys<TObj, IsRoot, TKey extends string | number> =
-    IsRoot extends true
-        ? TKey | ( TObj extends unknown[] ? `[${ TKey }]` : never )
-        : `.${ TKey }` | ( TObj extends unknown[] ? `[${ TKey }]` | `.[${ TKey }]` : never );
-
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
     TKey extends string | number
         ? `${ Keys<TObj, IsRoot, TKey> }${ '' | ( TObj[TKey] extends object ? DeepKeys<TObj[TKey], false> : '' ) }`
         : never;
 
-export type DeepValue<TObj, TKey> = TObj extends Record<PropertyKey, unknown>
-    ? TKey extends `${ infer TBranch }.${ infer TDeepKey }`
-        ? DeepValue<TObj[TBranch], TDeepKey>
-        : TObj[TKey & keyof TObj]
-    : never;
+export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
+    ? Left extends keyof Exclude<T, undefined>
+        ? FieldValueOrUndefined<Exclude<T, undefined>[Left], Right> | Extract<T, undefined>
+        : Left extends `${ infer FieldKey }[${ infer IndexKey }]`
+            ? FieldKey extends keyof T
+                ? FieldValueOrUndefined<IndexedFieldValueOrUndefined<T[FieldKey], IndexKey>, Right>
+                : undefined
+            : undefined
+    : P extends keyof T
+        ? T[P]
+        : P extends `${ infer FieldKey }[${ infer IndexKey }]`
+            ? FieldKey extends keyof T
+                ? IndexedFieldValueOrUndefined<T[FieldKey], IndexKey>
+                : undefined
+            : IndexedFieldValueOrUndefined<T, P>;
+
+////// HELPERS //////
+type Keys<TObj, IsRoot, TKey extends string | number> =
+    IsRoot extends true
+        ? TKey | ( TObj extends unknown[] ? `[${ TKey }]` : never )
+        : `.${ TKey }` | ( TObj extends unknown[] ? `[${ TKey }]` | `.[${ TKey }]` : never );
+
+type GetIndexedFieldValue<T, K> = K extends keyof T
+    ? T[K]
+    : K extends `${ number }`
+        ? 'length' extends keyof T
+            ? number extends T['length']
+                ? number extends keyof T
+                    ? T[number]
+                    : undefined
+                : undefined
+            : undefined
+        : undefined;
+
+type FieldValueOrUndefined<T, Key> =
+    | DeepValue<Exclude<T, undefined>, Key>
+    | Extract<T, undefined>;
+
+type IndexedFieldValueOrUndefined<T, Key> =
+    | GetIndexedFieldValue<Exclude<T, undefined>, Key>
+    | Extract<T, undefined>;
