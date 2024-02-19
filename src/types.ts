@@ -12,6 +12,7 @@ import { SubmitButton } from './SubmitButton';
 // Types
 import {
     DeepKeys
+    , DeepValue
     , EmptyObject
     , UnsubScribeFn
 } from './utilityTypes';
@@ -160,10 +161,11 @@ export type FormularityProps<TFormValues extends FormValues = FormValues> =
 export type FieldComponent<TFormValues extends FormValues>
     = <
         TFieldName extends DeepKeys<TFormValues>
-        , TComponentProps
+        , TComponentProps = {}
         , TShowErrors extends boolean = false
+        , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >(
-        props: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors>
+        props: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue>
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;

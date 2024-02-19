@@ -24,20 +24,11 @@ const formStore = createFormStore( initialValues );
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    const init = {
-        name: 'YO'
-        , email: 'XXXXXXXXX'
-        // , hobbies: [
-        //     { name: 'soccer' }
-        // ]
-    };
-
     return (
         <div>
             <Formularity
                 formStore={ formStore }
                 onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
-                valuesInitializer={ init }
                 validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {
@@ -62,8 +53,7 @@ const AnotherTest = () => {
                             <label htmlFor='name'>Name</label>
                             <Field
                                 name='name'
-                                showErrors
-                                errorStyles={ { color: 'red' } }
+                                value=''
                             />
                         </fieldset>
                         <fieldset
