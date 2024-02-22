@@ -116,18 +116,22 @@ export type FormHandlers<TFormValues extends FormValues> = {
      */
     handleBlur: ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => void;
     /**
+     * Helper method for submitting the form imperatively
+     */
+    submitForm: () => Promise<void>;
+    /**
      * Helper method for handling form submission
      */
     handleSubmit: ( e: FormEvent<HTMLFormElement> ) => void | Promise<void>;
-    /**
-     * Helper method for handling form reset
-     */
-    handleReset: ( e: FormEvent<HTMLFormElement> ) => void;
     /**
      * Reset the form imperatively and optional set all or some of the
      * form values to new values(s)
      */
     resetForm: ( newFormValues?: Partial<TFormValues> ) => void;
+    /**
+     * Helper method for handling form reset
+     */
+    handleReset: ( e: FormEvent<HTMLFormElement> ) => void;
 };
 
 ////// COMPUTED PROPS //////

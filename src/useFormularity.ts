@@ -243,10 +243,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         setFieldTouched( fieldName as DeepKeys<TFormValues>, true );
     } );
 
-    const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
-        e.persist();
-        e.preventDefault();
-
+    const submitForm = async () => {
         formStore.set( {
             isSubmitting: true
             , isValidating: true
@@ -276,7 +273,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
             submitCount: currentStore.submitCount + 1
             , isSubmitting: false
         } );
+    };
 
+    const handleSubmit = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
+        e.persist();
+        e.preventDefault();
+
+        submitForm();
     } );
 
     const resetForm = useEventCallback( ( newFormValues?: Partial<TFormValues> ) => {
@@ -323,6 +326,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , setTouched
         , handleChange
         , handleBlur
+        , submitForm
         , handleSubmit
         , resetForm
         , handleReset
