@@ -14,7 +14,6 @@ import {
 import {
     DeepKeys
     , DeepValue
-    , EmptyObject
     , NoInfer
 } from './utilityTypes';
 
@@ -30,7 +29,7 @@ import { useFormularityContext } from './Formularity';
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TComponentProps = EmptyObject
+    , TComponentProps = {}
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
@@ -39,7 +38,7 @@ export type FieldProps<
         value?: TFieldValue;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
         checked?: boolean;
-        component?: FC<TComponentProps> | ( string & {} );
+        component?: FC<TComponentProps> | keyof JSX.IntrinsicElements;
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
     }
@@ -47,10 +46,10 @@ export type FieldProps<
 
 export const Field = <
     TFormValues extends FormValues
-    , TFieldName extends DeepKeys<TFormValues>
-    , TComponentProps
-    , TShowErrors extends boolean
-    , TFieldValue extends DeepValue<TFormValues, TFieldName>
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TComponentProps = {}
+    , TShowErrors extends boolean = false
+    , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >( {
         name
         , value
