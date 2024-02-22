@@ -14,6 +14,8 @@ import {
 import {
     DeepKeys
     , DeepValue
+    , EmptyObject
+    , NoInfer
 } from './utilityTypes';
 
 // Utils
@@ -27,21 +29,21 @@ import { useFormularityContext } from './Formularity';
 
 export type FieldProps<
     TFormValues extends FormValues
-    , TFieldName extends DeepKeys<TFormValues>
-    , TComponentProps
-    , TShowErrors extends boolean
-    , TFieldValue extends DeepValue<TFormValues, TFieldName>
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TComponentProps = EmptyObject
+    , TShowErrors extends boolean = false
+    , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
     & {
         name: TFieldName;
         value?: TFieldValue;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
         checked?: boolean;
-        component?: FC<TComponentProps>;
+        component?: FC<TComponentProps> | ( string & {} );
         showErrors?: TShowErrors;
-        errorStyles?: TShowErrors extends true ? CSSProperties : never;
+        errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
     }
-    & TComponentProps;
+    & NoInfer<TComponentProps>;
 
 export const Field = <
     TFormValues extends FormValues

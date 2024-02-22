@@ -6,6 +6,10 @@ import {
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
 
+const Comp = ( { yo }: { yo?: string} ) => {
+    return null;
+};
+
 const initialValues = {
     name: ''
     , email: ''
@@ -53,7 +57,6 @@ const AnotherTest = () => {
                             <label htmlFor='name'>Name</label>
                             <Field
                                 name='name'
-                                value=''
                             />
                         </fieldset>
                         <fieldset
@@ -66,8 +69,7 @@ const AnotherTest = () => {
                             <label htmlFor='email'>Email</label>
                             <Field
                                 name='email'
-                                showErrors
-                                errorStyles={ { color: 'red' } }
+                                value=''
                             />
                         </fieldset>
                         <SubmitButton>
