@@ -16,6 +16,7 @@ import {
     , EmptyObject
     , UnsubScribeFn
 } from './utilityTypes';
+import { CreateFormStoreParams } from './createFormStore';
 
 ////// FORM GENERAL //////
 export type FormValues = Record<PropertyKey, unknown> | null;
@@ -75,6 +76,14 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * of initializing the form based on the logic of their application.
      */
     isEditing: boolean;
+    /**
+     * Manual validation handler passed to the form store instance
+     */
+    manualValidationHandler?: CreateFormStoreParams<TFormValues>['manualValidationHandler'];
+    /**
+     * Validation schema passed to the form store instance
+     */
+    validationSchema?: CreateFormStoreParams<TFormValues>['validationSchema'];
 };
 
 ////// HANDLERS //////

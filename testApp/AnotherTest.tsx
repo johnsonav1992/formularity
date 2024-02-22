@@ -23,7 +23,10 @@ const validationSchema = z.object( {
     , email: z.string().email( 'Invalid email' )
 } );
 
-const formStore = createFormStore( initialValues );
+const formStore = createFormStore( {
+    initialValues
+    , validationSchema: zodAdapter( validationSchema )
+} );
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
@@ -33,7 +36,6 @@ const AnotherTest = () => {
             <Formularity
                 formStore={ formStore }
                 onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
-                validationSchema={ zodAdapter( validationSchema ) }
             >
                 { ( {
                     Field
