@@ -83,6 +83,7 @@ const AnotherTest = () => {
                             <label htmlFor='name'>Name</label>
                             <Field
                                 name='email'
+                                component={ Comp }
                             />
                         </fieldset>
                         <fieldset

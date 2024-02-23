@@ -26,13 +26,15 @@ import { ConditionalWrapper } from './ConditionalWrapper';
 // Hooks
 import { useFormularityContext } from './Formularity';
 
+type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
+
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TComponentProps = {}
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-> = Omit<ComponentProps<'input'>, 'name' | 'value' | 'type' | 'checked'>
+> = Omit<ComponentProps<'input'>, DuplicateProps>
     & {
         name: TFieldName;
         value?: TFieldValue;
@@ -42,7 +44,7 @@ export type FieldProps<
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
     }
-    & NoInfer<TComponentProps>;
+    & Omit<NoInfer<TComponentProps>, DuplicateProps>;
 
 export const Field = <
     TFormValues extends FormValues
