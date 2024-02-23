@@ -13,9 +13,7 @@ const Comp = ( { yo }: { yo?: string} ) => {
 const initialValues = {
     name: ''
     , email: ''
-    , hobbies: [
-        { name: 'soccer' }
-    ]
+    , hobbies: 'soccer'
 };
 
 const validationSchema = z.object( {
@@ -27,6 +25,32 @@ const formStore = createFormStore( {
     initialValues
     , validationSchema: zodAdapter( validationSchema )
 } );
+
+const ChildComponent = () => {
+    const {
+        values
+        , handleChange
+    } = useFormularity( { formStore } );
+
+    return (
+        <>
+            <select
+                multiple
+                name='hobbies'
+                value={ values.hobbies }
+                onChange={ handleChange }
+                style={ {
+                    width: '200px'
+                    , marginTop: '16px'
+                } }
+            >
+                <option value='soccer'>Soccer</option>
+                <option value='cooking'>Cooking</option>
+                <option value='cycling'>Cycling</option>
+            </select>
+        </>
+    );
+};
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
@@ -80,6 +104,7 @@ const AnotherTest = () => {
                     </div>
                 ) }
             </Formularity>
+            <ChildComponent />
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
             </pre>
