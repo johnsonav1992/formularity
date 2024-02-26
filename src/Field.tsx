@@ -79,7 +79,7 @@ export const Field = <
     const fieldProps = {
         name
         , value: value || getViaPath( values, name as DeepKeys<FormValues> )
-        , checked: type == 'checkbox'
+        , checked: ( isSilentExternalCheckbox || type === 'checkbox' )
             ? value == undefined
                 ? checked
                 : !!getViaPath( values, name as DeepKeys<FormValues> )

@@ -57,6 +57,8 @@ const ChildComponent = () => {
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
+    console.log( 'render' );
+
     return (
         <div>
             <Formularity
@@ -84,10 +86,9 @@ const AnotherTest = () => {
                             } }
                         >
                             <label htmlFor='name'>Name</label>
-                            { /* <Field
-                                name='email'
-                                component={ Comp }
-                            /> */ }
+                            <Field
+                                name='name'
+                            />
                         </fieldset>
                         <fieldset
                             style={ {
@@ -97,10 +98,9 @@ const AnotherTest = () => {
                             } }
                         >
                             <label htmlFor='email'>Email</label>
-                            { /* <Field
+                            <Field
                                 name='email'
-                                value=''
-                            /> */ }
+                            />
                         </fieldset>
                         <div>
                             <Field
@@ -116,9 +116,9 @@ const AnotherTest = () => {
                 ) }
             </Formularity>
             { /* <ChildComponent /> */ }
-            <pre>
+            { /* <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
-            </pre>
+            </pre> */ }
         </div>
     );
 };
