@@ -57,8 +57,6 @@ const ChildComponent = () => {
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    console.log( 'render' );
-
     return (
         <div>
             <Formularity

@@ -181,8 +181,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
-        // e.persist();
-
         let finalValue;
 
         const {
