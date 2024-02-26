@@ -3,7 +3,6 @@ import React, {
     , ComponentProps
     , FC
     , HTMLInputTypeAttribute
-    , useEffect
 } from 'react';
 
 // Types
@@ -73,15 +72,9 @@ export const Field = <
 
     const renderedComponent = component as FC || 'input';
 
-    const isSilentCheckbox = type == undefined && ( checked == true || checked == false );
-
-    useEffect( () => {
-        if ( isSilentCheckbox ) {
-            console.warn( `It looks like you are trying to implement
-            a checkbox without the type='checkbox' property. Please add it
-            so that the checkbox works correctly` );
-        }
-    }, [] );
+    const isSilentExternalCheckbox = type == undefined
+        && component
+        && ( checked == true || checked == false );
 
     const fieldProps = {
         name
@@ -93,7 +86,7 @@ export const Field = <
             : undefined
         , onChange: handleChange
         , onBlur: handleBlur
-        , type: type
+        , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props
     };
 
