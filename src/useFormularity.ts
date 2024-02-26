@@ -160,6 +160,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
+        if ( isEqual( newErrors, errors ) ) return;
+
         formStore.set( { errors: newErrors } );
     }, [] );
 
@@ -208,7 +210,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 }
             }
                 break;
-            case ( /checkbox/.test( type ) || checked != undefined ):
+            case ( /checkbox/.test( type ) || checked ):
                 finalValue = getCheckboxValue(
                     getViaPath( values, fieldName as DeepKeys<TFormValues> ) as Parameters<typeof getCheckboxValue>[0]
                     , checked

@@ -73,13 +73,13 @@ export const Field = <
     const renderedComponent = component as FC || 'input';
 
     const isSilentExternalCheckbox = type == undefined
-        && component
+        && !!component
         && ( checked == true || checked == false );
 
     const fieldProps = {
         name
         , value: value || getViaPath( values, name as DeepKeys<FormValues> )
-        , checked: ( isSilentExternalCheckbox || type === 'checkbox' )
+        , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
                 ? checked
                 : !!getViaPath( values, name as DeepKeys<FormValues> )

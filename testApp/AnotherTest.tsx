@@ -102,13 +102,7 @@ const AnotherTest = () => {
                                 name='email'
                             />
                         </fieldset>
-                        <div>
-                            <Field
-                                name='choice'
-                                component={ Checkbox }
-                                checked={ values.choice }
-                            />
-                        </div>
+                        <div />
                         <SubmitButton>
                             Submit
                         </SubmitButton>
