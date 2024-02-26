@@ -5,6 +5,7 @@ import {
 } from '../src';
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
+import { Checkbox } from '@mui/material';
 
 const Comp = ( { yo }: { yo?: string} ) => {
     return null;
@@ -14,6 +15,7 @@ const initialValues = {
     name: ''
     , email: ''
     , hobbies: 'soccer'
+    , choice: false
 };
 
 const validationSchema = z.object( {
@@ -64,6 +66,7 @@ const AnotherTest = () => {
                 { ( {
                     Field
                     , SubmitButton
+                    , values
                 } ) => (
                     <div
                         style={ {
@@ -81,10 +84,10 @@ const AnotherTest = () => {
                             } }
                         >
                             <label htmlFor='name'>Name</label>
-                            <Field
+                            { /* <Field
                                 name='email'
                                 component={ Comp }
-                            />
+                            /> */ }
                         </fieldset>
                         <fieldset
                             style={ {
@@ -94,18 +97,25 @@ const AnotherTest = () => {
                             } }
                         >
                             <label htmlFor='email'>Email</label>
-                            <Field
+                            { /* <Field
                                 name='email'
                                 value=''
-                            />
+                            /> */ }
                         </fieldset>
+                        <div>
+                            <Field
+                                name='choice'
+                                component={ Checkbox }
+                                checked={ values.choice }
+                            />
+                        </div>
                         <SubmitButton>
                             Submit
                         </SubmitButton>
                     </div>
                 ) }
             </Formularity>
-            <ChildComponent />
+            { /* <ChildComponent /> */ }
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
             </pre>

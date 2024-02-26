@@ -3,6 +3,7 @@ import React, {
     , ComponentProps
     , FC
     , HTMLInputTypeAttribute
+    , useEffect
 } from 'react';
 
 // Types
@@ -44,7 +45,7 @@ export type FieldProps<
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
     }
-    & Omit<NoInfer<TComponentProps>, DuplicateProps>;
+    & NoInfer<TComponentProps>;
 
 export const Field = <
     TFormValues extends FormValues
@@ -72,17 +73,27 @@ export const Field = <
 
     const renderedComponent = component as FC || 'input';
 
+    const isSilentCheckbox = type == undefined && ( checked == true || checked == false );
+
+    useEffect( () => {
+        if ( isSilentCheckbox ) {
+            console.warn( `It looks like you are trying to implement
+            a checkbox without the type='checkbox' property. Please add it
+            so that the checkbox works correctly` );
+        }
+    }, [] );
+
     const fieldProps = {
         name
         , value: value || getViaPath( values, name as DeepKeys<FormValues> )
-        , checked: type === 'checkbox'
+        , checked: type == 'checkbox'
             ? value == undefined
                 ? checked
                 : !!getViaPath( values, name as DeepKeys<FormValues> )
             : undefined
         , onChange: handleChange
         , onBlur: handleBlur
-        , type: type || 'text'
+        , type: type
         , ... props
     };
 

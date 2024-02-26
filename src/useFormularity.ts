@@ -196,6 +196,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         const { checked } = e.target as HTMLInputElement;
 
+        console.log( checked, type );
+
         // determine field type -> number, range, checkbox, multiselect or other stock input
         switch ( true ) {
             case /number|range/.test( type ): {
@@ -208,7 +210,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 }
             }
                 break;
-            case /checkbox/.test( type ):
+            case ( /checkbox/.test( type ) || checked != undefined ):
                 finalValue = getCheckboxValue(
                     getViaPath( values, fieldName as DeepKeys<TFormValues> ) as Parameters<typeof getCheckboxValue>[0]
                     , checked
