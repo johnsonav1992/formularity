@@ -28,6 +28,14 @@ export type CreateFormStoreParams<TFormValues extends FormValues> = {
      * Must be wrapped in a provided or a custom-built adapter
      */
     validationSchema?: ValidationHandler<NoInfer<TFormValues>>;
+    /**
+     * Optional location for putting a submit handler. This is uncommon
+     * and it is preferred that the submit handler be passed as a prop to
+     * ```<Formularity />```. This should only be used if submission must occur
+     * from outside the ```Formularity``` instance. ***This ```onSubmit``` will take
+     * precedence over onSubmit passed as a prop.***
+     */
+    onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
 export const createFormStore = <TFormValues extends FormValues>( formStoreParams: CreateFormStoreParams<TFormValues> ): FormStore<TFormValues> => {
@@ -35,6 +43,7 @@ export const createFormStore = <TFormValues extends FormValues>( formStoreParams
         ...getDefaultFormStoreState( formStoreParams.initialValues )
         , manualValidationHandler: formStoreParams.manualValidationHandler
         , validationSchema: formStoreParams.validationSchema
+        , onSubmit: formStoreParams.onSubmit
     };
 
     const subscribers = new Set<UnsubScribeFn>();

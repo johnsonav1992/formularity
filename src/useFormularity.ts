@@ -77,6 +77,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const validationSchema = currentStore.validationSchema;
     const manualValidationHandler = currentStore.manualValidationHandler;
+    const submitHandler = currentStore.onSubmit || onSubmit;
 
     const initialValues = useRef( currentStore.initialValues );
     const prevValuesInitializer = useRef( cloneDeep( currentStore.initialValues ) );
@@ -257,7 +258,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         formStore.set( { isValidating: false } );
 
-        await onSubmit?.( currentStore.values );
+        await submitHandler?.( currentStore.values );
 
         formStore.set( {
             submitCount: currentStore.submitCount + 1

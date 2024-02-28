@@ -22,12 +22,14 @@ const validationSchema = z.object( {
 const formStore = createFormStore( {
     initialValues
     , validationSchema: zodAdapter( validationSchema )
+    , onSubmit: values => console.log( 'heyya!!!' )
 } );
 
-const ChildComponent = () => {
+const OutsideComponent = () => {
     const {
         values
         , handleChange
+        , submitForm
     } = useFormularity( { formStore } );
 
     return (
@@ -46,6 +48,9 @@ const ChildComponent = () => {
                 <option value='cooking'>Cooking</option>
                 <option value='cycling'>Cycling</option>
             </select>
+            <button onClick={ submitForm }>
+                SUBMIT
+            </button>
         </>
     );
 };
@@ -110,7 +115,7 @@ const AnotherTest = () => {
                     </div>
                 ) }
             </Formularity>
-            <ChildComponent />
+            <OutsideComponent />
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
             </pre>

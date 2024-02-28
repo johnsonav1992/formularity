@@ -84,6 +84,11 @@ export type FormStoreState<TFormValues extends FormValues> = {
      * Validation schema passed to the form store instance
      */
     validationSchema?: CreateFormStoreParams<TFormValues>['validationSchema'];
+    /**
+     * Optional top-level submit handler *See ```CreateFormStoreParams``` type for full
+     * description/usage
+     */
+    onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
 ////// HANDLERS //////
