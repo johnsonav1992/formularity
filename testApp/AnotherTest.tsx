@@ -1,20 +1,16 @@
 import { z } from 'zod';
 import {
-    createFormStore
+    FieldComponent
+    , createFormStore
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
-import { Checkbox } from '@mui/material';
-
-const Comp = ( { yo }: { yo?: string} ) => {
-    return null;
-};
 
 const initialValues = {
     name: ''
     , email: ''
-    , hobbies: 'soccer'
+    , hobbies: [ 'soccer' ]
     , choice: false
 };
 
@@ -54,6 +50,12 @@ const ChildComponent = () => {
     );
 };
 
+const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
+    return (
+        <Field name='email' />
+    );
+};
+
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
@@ -66,7 +68,6 @@ const AnotherTest = () => {
                 { ( {
                     Field
                     , SubmitButton
-                    , values
                 } ) => (
                     <div
                         style={ {
@@ -86,6 +87,7 @@ const AnotherTest = () => {
                             <label htmlFor='name'>Name</label>
                             <Field
                                 name='name'
+                                showErrors
                             />
                         </fieldset>
                         <fieldset
@@ -98,19 +100,20 @@ const AnotherTest = () => {
                             <label htmlFor='email'>Email</label>
                             <Field
                                 name='email'
+                                showErrors
                             />
                         </fieldset>
-                        <div />
+                        <NestedFormWithField Field={ Field } />
                         <SubmitButton>
                             Submit
                         </SubmitButton>
                     </div>
                 ) }
             </Formularity>
-            { /* <ChildComponent /> */ }
-            { /* <pre>
+            <ChildComponent />
+            <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
-            </pre> */ }
+            </pre>
         </div>
     );
 };
