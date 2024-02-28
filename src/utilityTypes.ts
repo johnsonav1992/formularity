@@ -6,6 +6,7 @@ export type NoInfer<T> = [T][T extends unknown ? 0 : never];
 
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
+export type Subscriber = () => void;
 
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
     TKey extends string | number

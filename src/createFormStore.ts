@@ -8,7 +8,7 @@ import {
 
 import {
     NoInfer
-    , UnsubScribeFn
+    , Subscriber
 } from './utilityTypes';
 
 // Utils
@@ -47,7 +47,7 @@ export const createFormStore = <TFormValues extends FormValues>( formStoreParams
         , onSubmit: formStoreParams.onSubmit
     };
 
-    const subscribers = new Set<UnsubScribeFn>();
+    const subscribers = new Set<Subscriber>();
 
     return {
         get: () => storeState
