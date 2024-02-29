@@ -7,10 +7,17 @@ import {
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
 
-const initialValues = {
+type TestValues = {
+    name: string;
+    email: string;
+    hobbies: string[];
+    choice: boolean;
+};
+
+const initialValues: TestValues = {
     name: ''
     , email: ''
-    , hobbies: [ 'soccer' ]
+    , hobbies: [ ]
     , choice: false
 };
 
@@ -57,7 +64,7 @@ const OutsideComponent = () => {
 
 const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
     return (
-        <Field name='email' />
+        <Field name='hobbies' />
     );
 };
 

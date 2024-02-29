@@ -30,10 +30,14 @@ export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
             : IndexedFieldValueOrUndefined<T, P>;
 
 ////// HELPERS //////
+type RemoveArrayMethods<T> = T extends number ? number : T extends keyof unknown[] ? never : T;
+
+type IsNumberKey<TKey> = TKey extends number ? TKey : never;
+
 type Keys<TObj, IsRoot, TKey extends string | number> =
     IsRoot extends true
-        ? TKey | ( TObj extends unknown[] ? `[${ TKey }]` : never )
-        : `.${ TKey }` | ( TObj extends unknown[] ? `[${ TKey }]` | `.[${ TKey }]` : never );
+        ? TKey | ( TObj extends unknown[] ? `[${ IsNumberKey<TKey> }]` : never )
+        : `.${ RemoveArrayMethods<TKey> }` | ( TObj extends unknown[] ? `[${ IsNumberKey<TKey> }]` | `.[${ IsNumberKey<TKey> }]` : never );
 
 type GetIndexedFieldValue<T, K> = K extends keyof T
     ? T[K]
