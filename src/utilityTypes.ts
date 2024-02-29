@@ -30,7 +30,11 @@ export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
             : IndexedFieldValueOrUndefined<T, P>;
 
 ////// HELPERS //////
-type RemoveArrayMethods<T> = T extends number ? number : T extends keyof unknown[] ? never : T;
+type RemoveArrayMethods<T> = T extends number
+    ? number
+    : T extends keyof unknown[]
+        ? never
+        : T;
 
 type IsNumberKey<TKey> = TKey extends number ? TKey : never;
 
