@@ -80,6 +80,7 @@ const AnotherTest = () => {
                 { ( {
                     Field
                     , SubmitButton
+                    , ResetButton
                 } ) => (
                     <div
                         style={ {
@@ -119,6 +120,9 @@ const AnotherTest = () => {
                         <SubmitButton>
                             Submit
                         </SubmitButton>
+                        <ResetButton>
+                            Reset
+                        </ResetButton>
                     </div>
                 ) }
             </Formularity>

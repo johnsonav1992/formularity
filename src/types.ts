@@ -8,6 +8,7 @@ import {
 // Components
 import { FieldProps } from './Field';
 import { SubmitButton } from './SubmitButton';
+import { ResetButton } from './ResetButton';
 
 // Types
 import {
@@ -187,3 +188,4 @@ export type FieldComponent<TFormValues extends FormValues>
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;
+export type ResetButtonComponent = typeof ResetButton;

@@ -8,12 +8,14 @@ import {
 import { Form } from './Form';
 import { Field } from './Field';
 import { SubmitButton } from './SubmitButton';
+import { ResetButton } from './ResetButton';
 
 // Types
 import {
     FieldComponent
     , FormValues
     , FormularityProps
+    , ResetButtonComponent
     , SubmitButtonComponent
 } from './types';
 import {
@@ -30,6 +32,7 @@ type FormularityComponentProps<TFormValues extends FormValues> =
             & {
                 Field: FieldComponent<TFormValues>;
                 SubmitButton: SubmitButtonComponent;
+                ResetButton: ResetButtonComponent;
             }
         ) => ReactNode;
     };
@@ -47,6 +50,7 @@ export const Formularity = <TFormValues extends FormValues>( {
         ...formularity
         , Field
         , SubmitButton
+        , ResetButton
     } );
 
     return (
