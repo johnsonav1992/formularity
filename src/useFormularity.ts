@@ -161,8 +161,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        if ( isEqual( newErrors, errors ) ) return;
-
         formStore.set( { errors: newErrors } );
     }, [] );
 
