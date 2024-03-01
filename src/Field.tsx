@@ -3,6 +3,7 @@ import React, {
     , ComponentProps
     , FC
     , HTMLInputTypeAttribute
+    , ReactNode
 } from 'react';
 
 // Types
@@ -48,6 +49,7 @@ export type FieldProps<
         component?: FC<TComponentProps> | keyof IntrinsicFormElements;
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
+        children?: ReactNode;
     };
 
 export const Field = <
@@ -119,6 +121,7 @@ export const Field = <
                 React.createElement<typeof fieldProps>(
                     renderedComponent
                     , fieldProps
+                    , props.children
                 )
             }
         </ConditionalWrapper>
