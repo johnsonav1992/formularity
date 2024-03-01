@@ -14,6 +14,7 @@ import {
 import {
     DeepKeys
     , DeepValue
+    , IntrinsicFormElements
     , NoInfer
 } from './utilityTypes';
 
@@ -31,25 +32,28 @@ type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TComponentProps = {}
+    , TComponentProps = keyof IntrinsicFormElements
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-> = Omit<ComponentProps<'input'>, DuplicateProps>
-    & {
+> = ( TComponentProps extends undefined
+        ? Omit<ComponentProps<'input'>, DuplicateProps>
+        : TComponentProps extends keyof IntrinsicFormElements
+            ? Omit<ComponentProps<TComponentProps>, DuplicateProps>
+            : Omit<NoInfer<TComponentProps>, DuplicateProps>
+    ) & {
         name: TFieldName;
         value?: TFieldValue;
         type?: HTMLInputTypeAttribute | ( string & {} ) | undefined ;
         checked?: boolean;
-        component?: FC<TComponentProps> | keyof JSX.IntrinsicElements;
+        component?: FC<TComponentProps> | keyof IntrinsicFormElements;
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
-    }
-    & NoInfer<TComponentProps>;
+    };
 
 export const Field = <
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TComponentProps = {}
+    , TComponentProps = keyof IntrinsicFormElements
     , TShowErrors extends boolean = false
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >( {
@@ -112,7 +116,7 @@ export const Field = <
             ) }
         >
             {
-                React.createElement(
+                React.createElement<typeof fieldProps>(
                     renderedComponent
                     , fieldProps
                 )

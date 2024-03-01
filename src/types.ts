@@ -15,6 +15,7 @@ import {
     DeepKeys
     , DeepValue
     , EmptyObject
+    , IntrinsicFormElements
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
@@ -180,7 +181,7 @@ export type FormularityProps<TFormValues extends FormValues = FormValues> =
 export type FieldComponent<TFormValues extends FormValues>
     = <
         TFieldName extends DeepKeys<TFormValues>
-        , TComponentProps = {}
+        , TComponentProps = keyof IntrinsicFormElements
         , TShowErrors extends boolean = false
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >(

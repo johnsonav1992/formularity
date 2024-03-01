@@ -6,6 +6,7 @@ import {
 } from '../src';
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
+import { TextField } from '@mui/material';
 
 type TestValues = {
     name: string;
@@ -97,10 +98,11 @@ const AnotherTest = () => {
                                 , gap: '.5rem'
                             } }
                         >
-                            <label htmlFor='name'>Name</label>
                             <Field
                                 name='name'
-                                showErrors
+                                component={ TextField }
+                                label='name'
+                                size='small'
                             />
                         </fieldset>
                         <fieldset
@@ -110,14 +112,20 @@ const AnotherTest = () => {
                                 , gap: '.5rem'
                             } }
                         >
-                            <label htmlFor='email'>Email</label>
                             <Field
                                 name='email'
+                                component={ TextField }
+                                label='email'
+                                size='small'
                                 showErrors
                             />
                         </fieldset>
                         <NestedFormWithField Field={ Field } />
-                        <SubmitButton>
+                        <SubmitButton
+                            component='div'
+                            variant='contained'
+                            color='secondary'
+                        >
                             Submit
                         </SubmitButton>
                         <ResetButton>
