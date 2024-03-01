@@ -80,7 +80,7 @@ export const Field = <
 
     const isSilentExternalCheckbox = type == undefined
         && !!component
-        && ( checked == true || checked == false );
+        && checked != undefined;
 
     const fieldProps = {
         name
