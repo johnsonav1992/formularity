@@ -6,7 +6,7 @@ import {
 // Hooks
 import { useFormularityContext } from './Formularity';
 
-type FormProps = PropsWithChildren<{}> & ComponentProps<'form'>;
+export type FormProps = PropsWithChildren<{}> & ComponentProps<'form'>;
 
 export const Form = ( {
     children

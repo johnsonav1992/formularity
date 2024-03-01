@@ -23,7 +23,7 @@ import {
     , useFormularity
 } from './useFormularity';
 
-type FormularityComponentProps<TFormValues extends FormValues> =
+export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
     & {
         useFormComponent?: boolean;

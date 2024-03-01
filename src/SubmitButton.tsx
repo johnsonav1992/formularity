@@ -4,7 +4,7 @@ import React, {
     , ReactNode
 } from 'react';
 
-type SubmitButtonProps<TComponentProps extends Record<string, unknown> = {}> =
+export type SubmitButtonProps<TComponentProps extends Record<string, unknown> = {}> =
     ComponentProps<'button'>
     & { component?: ReactNode }
     & TComponentProps;
