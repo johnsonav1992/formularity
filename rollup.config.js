@@ -8,7 +8,7 @@ module.exports = {
     , output: {
         dir: 'dist'
         , format: 'esm'
-        , sourcemap: true
+        , sourcemap: false
     }
     , plugins: [
         peerDepsExternal()
