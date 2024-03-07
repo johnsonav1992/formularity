@@ -115,28 +115,26 @@ export const useFormularity = <TFormValues extends FormValues>( {
             const validationSchemaErrors = await validationSchema( values );
             if ( validationSchemaErrors ) {
                 errors = validationSchemaErrors;
+                setErrors( errors as FormErrors<TFormValues> );
             }
-        } else {
+        } else if ( manualValidationHandler ) {
             errors = runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
+            setErrors( errors as FormErrors<TFormValues> );
         }
-
-        setErrors( errors as FormErrors<TFormValues> );
 
         return errors;
     } );
 
     const runUserDefinedValidations = useEventCallback( ( values: TFormValues ) => {
-        if ( manualValidationHandler ) {
-            const validationErrors = manualValidationHandler( values );
+        const validationErrors = manualValidationHandler?.( values );
 
-            if ( isEmpty( validationErrors ) ) {
-                return setErrors( {} );
-            } else {
-                setErrors( validationErrors as FormErrors<TFormValues> );
-            }
-
-            return validationErrors;
+        if ( isEmpty( validationErrors ) ) {
+            return setErrors( {} );
+        } else {
+            setErrors( validationErrors as FormErrors<TFormValues> );
         }
+
+        return validationErrors;
     } );
 
     const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {
