@@ -1,6 +1,6 @@
 {
   "name": "formularity",
-  "version": "0.1.8-alpha",
+  "version": "0.1.9-alpha",
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
@@ -38,6 +38,7 @@
     "@mui/material": "^5.15.7",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
