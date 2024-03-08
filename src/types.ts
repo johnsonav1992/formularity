@@ -30,7 +30,7 @@ export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullabl
 
 ////// FIELD REGISTRATION //////
 export type FieldRegistry<TFormValues extends FormValues> =
-    Record<DeepKeys<TFormValues>, SingleFieldValidator<TFormValues>>
+    Record<DeepKeys<TFormValues>, SingleFieldValidator<TFormValues> | null>
     | EmptyObject;
 
 export type NewFieldRegistration<
@@ -38,7 +38,7 @@ export type NewFieldRegistration<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
     name: TFieldName;
-    validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>>;
+    validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>> | null;
 };
 
 export type FieldRegistration<TFormValues extends FormValues> = {

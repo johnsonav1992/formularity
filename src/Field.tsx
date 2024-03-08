@@ -12,6 +12,7 @@ import {
     FormErrors
     , FormTouched
     , FormValues
+    , SingleFieldValidator
 } from './types';
 import {
     DeepKeys
@@ -50,6 +51,7 @@ export type FieldProps<
         component?: FC<TComponentProps> | keyof IntrinsicFormElements;
         showErrors?: TShowErrors;
         errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
+        validator?: SingleFieldValidator<NoInfer<TFormValues>, NoInfer<TFieldName>>;
         children?: ReactNode;
     };
 
@@ -67,6 +69,7 @@ export const Field = <
         , component
         , showErrors
         , errorStyles
+        , validator
         , ...props
     }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
     const {
@@ -82,7 +85,7 @@ export const Field = <
     useEffect( () => {
         registerField( {
             name
-            , validationHandler: () => {}
+            , validationHandler: validator || null
         } as never );
 
         return () => {
