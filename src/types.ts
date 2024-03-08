@@ -16,6 +16,7 @@ import {
     , DeepValue
     , EmptyObject
     , IntrinsicFormElements
+    , NoInfer
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
@@ -27,9 +28,27 @@ export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValu
 
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
+////// FIELD REGISTRATION //////
+export type FieldRegistration<
+    TFormValues extends FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = {
+    name: TFieldName;
+    validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>>;
+};
+
+export type FieldRegistry<TFormValues extends FormValues> =
+    Record<DeepKeys<TFormValues>, SingleFieldValidator<TFormValues>>
+    | EmptyObject;
+
 ////// VALIDATION //////
 export type ValidationHandler<TFormValues extends FormValues> =
     ( values: TFormValues ) => Promise<Partial<FormErrors<TFormValues>> | null> | Partial<FormErrors<TFormValues>>;
+
+export type SingleFieldValidator<
+    TFormValues extends FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | null> | string | null;
 
 ////// STORE //////
 export type FormStore<TFormValues extends FormValues> = {

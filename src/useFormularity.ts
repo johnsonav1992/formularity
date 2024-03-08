@@ -10,7 +10,9 @@ import {
 
 // Types
 import {
-    FormErrors
+    FieldRegistration
+    , FieldRegistry
+    , FormErrors
     , FormStore
     , FormStoreState
     , FormTouched
@@ -88,13 +90,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isMounted = useRef<boolean>( false );
 
+    const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
+
     useEffect( () => {
         isMounted.current = true;
 
         return () => {
             isMounted.current = false;
         };
-    }, [ ] );
+    }, [] );
 
     useEffect( () => {
         if (
@@ -107,6 +111,20 @@ export const useFormularity = <TFormValues extends FormValues>( {
             prevValuesInitializer.current = cloneDeep( valuesInitializer );
         }
     }, [ valuesInitializer ] );
+
+    const registerField = useCallback(
+        <TFieldName extends DeepKeys<TFormValues>>(
+            newFieldRegistration: FieldRegistration<TFormValues, TFieldName>
+        ) => {
+            const {
+                name
+                , validationHandler
+            } = newFieldRegistration;
+
+            fieldRegistry.current[ name ] = validationHandler as never;
+        }
+        , []
+    );
 
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};
