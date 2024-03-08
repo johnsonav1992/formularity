@@ -33,35 +33,35 @@ const formStore = createFormStore( {
     , onSubmit: values => console.log( 'heyya!!!' )
 } );
 
-const OutsideComponent = () => {
-    const {
-        values
-        , handleChange
-        , submitForm
-    } = useFormularity( { formStore } );
+// const OutsideComponent = () => {
+//     const {
+//         values
+//         , handleChange
+//         , submitForm
+//     } = useFormularity( { formStore } );
 
-    return (
-        <>
-            <select
-                multiple
-                name='hobbies'
-                value={ values.hobbies }
-                onChange={ handleChange }
-                style={ {
-                    width: '200px'
-                    , marginTop: '16px'
-                } }
-            >
-                <option value='soccer'>Soccer</option>
-                <option value='cooking'>Cooking</option>
-                <option value='cycling'>Cycling</option>
-            </select>
-            <button onClick={ submitForm }>
-                SUBMIT
-            </button>
-        </>
-    );
-};
+//     return (
+//         <>
+//             <select
+//                 multiple
+//                 name='hobbies'
+//                 value={ values.hobbies }
+//                 onChange={ handleChange }
+//                 style={ {
+//                     width: '200px'
+//                     , marginTop: '16px'
+//                 } }
+//             >
+//                 <option value='soccer'>Soccer</option>
+//                 <option value='cooking'>Cooking</option>
+//                 <option value='cycling'>Cycling</option>
+//             </select>
+//             <button onClick={ submitForm }>
+//                 SUBMIT
+//             </button>
+//         </>
+//     );
+// };
 
 const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
     return (
@@ -134,7 +134,7 @@ const AnotherTest = () => {
                     </div>
                 ) }
             </Formularity>
-            <OutsideComponent />
+            { /* <OutsideComponent /> */ }
             <pre>
                 { JSON.stringify( formularity, null, '\t' ) }
             </pre>

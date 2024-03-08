@@ -29,7 +29,11 @@ export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValu
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
 ////// FIELD REGISTRATION //////
-export type FieldRegistration<
+export type FieldRegistry<TFormValues extends FormValues> =
+    Record<DeepKeys<TFormValues>, SingleFieldValidator<TFormValues>>
+    | EmptyObject;
+
+export type NewFieldRegistration<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
@@ -37,9 +41,18 @@ export type FieldRegistration<
     validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>>;
 };
 
-export type FieldRegistry<TFormValues extends FormValues> =
-    Record<DeepKeys<TFormValues>, SingleFieldValidator<TFormValues>>
-    | EmptyObject;
+export type FieldRegistration<TFormValues extends FormValues> = {
+    /**
+     * Function for adding a field to the registry
+     */
+    registerField: <TFieldName extends DeepKeys<TFormValues>>(
+        newFieldRegistration: NewFieldRegistration<TFormValues, TFieldName>
+    ) => void;
+    /**
+     * Function for removing a field from the registry
+     */
+    unregisterField: <TFieldName extends DeepKeys<TFormValues>>( fieldName: TFieldName ) => void;
+};
 
 ////// VALIDATION //////
 export type ValidationHandler<TFormValues extends FormValues> =
@@ -193,6 +206,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
+    & FieldRegistration<TFormValues>
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
 

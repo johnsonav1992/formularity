@@ -10,7 +10,7 @@ import {
 
 // Types
 import {
-    FieldRegistration
+    NewFieldRegistration
     , FieldRegistry
     , FormErrors
     , FormStore
@@ -92,6 +92,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
 
+    console.log( fieldRegistry );
+
     useEffect( () => {
         isMounted.current = true;
 
@@ -114,14 +116,23 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const registerField = useCallback(
         <TFieldName extends DeepKeys<TFormValues>>(
-            newFieldRegistration: FieldRegistration<TFormValues, TFieldName>
+            newFieldRegistration: NewFieldRegistration<TFormValues, TFieldName>
         ) => {
             const {
                 name
                 , validationHandler
             } = newFieldRegistration;
 
+            if ( fieldRegistry.current[ name ] ) return;
+
             fieldRegistry.current[ name ] = validationHandler as never;
+        }
+        , []
+    );
+
+    const unregisterField = useCallback(
+        <TFieldName extends DeepKeys<TFormValues>>( fieldName: TFieldName ) => {
+            delete fieldRegistry.current[ fieldName ];
         }
         , []
     );
@@ -323,6 +334,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , errors
         , touched
         , initialValues: initialValues.current
+        , registerField
+        , unregisterField
         , setFieldValue
         , setValues
         , setFieldError

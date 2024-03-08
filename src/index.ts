@@ -15,7 +15,4 @@ export {
     , setViaPath
 } from './utils';
 
-export {
-    createFormStore
-    , CreateFormStoreParams
-} from './createFormStore';
+export { createFormStore } from './createFormStore';

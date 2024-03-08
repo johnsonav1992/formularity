@@ -4,6 +4,7 @@ import React, {
     , FC
     , HTMLInputTypeAttribute
     , ReactNode
+    , useEffect
 } from 'react';
 
 // Types
@@ -74,7 +75,20 @@ export const Field = <
         , touched
         , handleChange
         , handleBlur
+        , registerField
+        , unregisterField
     } = useFormularityContext();
+
+    useEffect( () => {
+        registerField( {
+            name
+            , validationHandler: () => {}
+        } as never );
+
+        return () => {
+            unregisterField( name as never );
+        };
+    }, [ name ] );
 
     const renderedComponent = component as FC || 'input';
 
