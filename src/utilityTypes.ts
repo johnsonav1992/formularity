@@ -8,6 +8,8 @@ export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
 
+export type Nullish = null | undefined;
+
 export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
     'input'
     | 'label'

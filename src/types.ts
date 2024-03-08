@@ -17,6 +17,7 @@ import {
     , EmptyObject
     , IntrinsicFormElements
     , NoInfer
+    , Nullish
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
@@ -61,7 +62,7 @@ export type ValidationHandler<TFormValues extends FormValues> =
 export type SingleFieldValidator<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-> = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | null> | string | null;
+> = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | Nullish> | string | Nullish;
 
 ////// STORE //////
 export type FormStore<TFormValues extends FormValues> = {

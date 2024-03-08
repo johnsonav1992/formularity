@@ -103,6 +103,9 @@ const AnotherTest = () => {
                                 component={ TextField }
                                 label='name'
                                 size='small'
+                                validator={ name => {
+                                    if ( name.length < 1 ) return 'too short!';
+                                } }
                             />
                         </fieldset>
                         <fieldset
