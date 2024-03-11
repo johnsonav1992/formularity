@@ -159,6 +159,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
             }
 
             setErrors( errors as FormErrors<TFormValues> );
+        } else {
+            if ( hasSingleFieldValidators ) {
+                errors = await runAllSingleFieldValidators( errors );
+                setErrors( errors as FormErrors<TFormValues> );
+            }
         }
 
         return errors;
