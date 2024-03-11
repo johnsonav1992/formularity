@@ -18,6 +18,7 @@ import {
     , FormTouched
     , FormValues
     , FormularityProps
+    , SingleFieldValidator
 } from './types';
 import {
     DeepKeys
@@ -92,8 +93,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
 
-    console.log( fieldRegistry );
-
     useEffect( () => {
         isMounted.current = true;
 
@@ -139,23 +138,37 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};
+        const hasSingleFieldValidators = Object.values( fieldRegistry.current ).some( Boolean );
 
         if ( validationSchema ) {
             const validationSchemaErrors = await validationSchema( values );
             if ( validationSchemaErrors ) {
                 errors = validationSchemaErrors;
+
+                if ( hasSingleFieldValidators ) {
+                    for ( const [ fieldName, fieldValidator ] of objectEntries( fieldRegistry.current ) ) {
+                        const fieldErrorOrNull = await runSingleFieldValidation( fieldValidator as never, fieldName );
+
+                        if ( fieldErrorOrNull ) {
+                            errors = {
+                                ...errors
+                                , [ fieldName ]: fieldErrorOrNull
+                            } as FormErrors<TFormValues>;
+                        }
+                    }
+                }
                 setErrors( errors as FormErrors<TFormValues> );
             }
         } else if ( manualValidationHandler ) {
-            errors = runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
+            errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
             setErrors( errors as FormErrors<TFormValues> );
         }
 
         return errors;
     } );
 
-    const runUserDefinedValidations = useEventCallback( ( values: TFormValues ) => {
-        const validationErrors = manualValidationHandler?.( values );
+    const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {
+        const validationErrors = await manualValidationHandler?.( values );
 
         if ( isEmpty( validationErrors ) ) {
             return setErrors( {} );
@@ -164,6 +177,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         return validationErrors;
+    } );
+
+    const runSingleFieldValidation = useEventCallback( async (
+        fieldValidator: SingleFieldValidator<TFormValues>
+        , fieldName: DeepKeys<TFormValues>
+    ) => {
+        const fieldValue = getViaPath( values, fieldName );
+        const fieldErrorOrNull = await fieldValidator( fieldValue as never );
+
+        if ( fieldErrorOrNull ) return fieldErrorOrNull;
+
+        return null;
     } );
 
     const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {
