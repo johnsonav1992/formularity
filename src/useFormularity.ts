@@ -146,21 +146,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 errors = validationSchemaErrors;
 
                 if ( hasSingleFieldValidators ) {
-                    for ( const [ fieldName, fieldValidator ] of objectEntries( fieldRegistry.current ) ) {
-                        const fieldErrorOrNull = await runSingleFieldValidation( fieldValidator as never, fieldName );
-
-                        if ( fieldErrorOrNull ) {
-                            errors = {
-                                ...errors
-                                , [ fieldName ]: fieldErrorOrNull
-                            } as FormErrors<TFormValues>;
-                        }
-                    }
+                    errors = await runAllSingleFieldValidators( errors );
                 }
+
                 setErrors( errors as FormErrors<TFormValues> );
             }
         } else if ( manualValidationHandler ) {
             errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
+
+            if ( hasSingleFieldValidators ) {
+                errors = await runAllSingleFieldValidators( errors );
+            }
+
             setErrors( errors as FormErrors<TFormValues> );
         }
 
@@ -189,6 +186,23 @@ export const useFormularity = <TFormValues extends FormValues>( {
         if ( fieldErrorOrNull ) return fieldErrorOrNull;
 
         return null;
+    } );
+
+    const runAllSingleFieldValidators = useEventCallback( async ( errors: Partial<FormErrors<TFormValues>> ) => {
+        for ( const [ fieldName, fieldValidator ] of objectEntries( fieldRegistry.current ) ) {
+            const fieldErrorOrNull = fieldValidator
+                ? await runSingleFieldValidation( fieldValidator as never, fieldName )
+                : null;
+
+            if ( fieldErrorOrNull ) {
+                errors = {
+                    ...errors
+                    , [ fieldName ]: fieldErrorOrNull
+                } as FormErrors<TFormValues>;
+            }
+        }
+
+        return errors;
     } );
 
     const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {

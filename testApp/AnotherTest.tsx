@@ -23,8 +23,7 @@ const initialValues: TestValues = {
 };
 
 const validationSchema = z.object( {
-    name: z.string().min( 1, 'Name must be longer than 1 character' )
-    , email: z.string().email( 'Invalid email' )
+    email: z.string().email( 'Invalid email' )
 } );
 
 const formStore = createFormStore( {
@@ -106,6 +105,7 @@ const AnotherTest = () => {
                                 validator={ name => {
                                     if ( name.length < 1 ) return 'too short!';
                                 } }
+                                showErrors
                             />
                         </fieldset>
                         <fieldset
