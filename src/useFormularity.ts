@@ -68,6 +68,11 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      * Submit handler for the form. This is called when the form is submitted.
      */
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
+    /**
+     * If set to true, the form will validate on blur.
+     * *default: true
+     */
+    validateOnBlur?: boolean;
 };
 
 export const useFormularity = <TFormValues extends FormValues>( {
@@ -75,6 +80,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , isEditing = false
     , valuesInitializer
     , onSubmit
+    , validateOnBlur = true
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
 
@@ -200,10 +206,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 : null;
 
             if ( fieldErrorOrNull ) {
-                errors = {
-                    ...errors
-                    , [ fieldName ]: fieldErrorOrNull
-                } as FormErrors<TFormValues>;
+                errors = setViaPath(
+                    errors,
+                    fieldName as DeepKeys<Partial<FormErrors<TFormValues>>>
+                    , fieldErrorOrNull
+                );
             }
         }
 
@@ -223,12 +230,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
-        formStore.set( {
-            errors: {
-                ...errors
-                , [ fieldName ]: newError
-            } as FormErrors<TFormValues>
-        } );
+        const newFieldErrors = setViaPath(
+            errors
+            , fieldName as DeepKeys<FormErrors<TFormValues>>
+            , newError
+        );
+
+        formStore.set( { errors: newFieldErrors } );
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
@@ -236,14 +244,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
-        formStore.set( {
-            touched: {
-                ...touched
-                , [ fieldName ]: newTouched
-            } as FormTouched<TFormValues>
-        } );
+        const newFieldTouched = setViaPath(
+            touched
+            , fieldName as DeepKeys<FormTouched<TFormValues>>
+            , newTouched
+        );
 
-        validateForm( values );
+        formStore.set( { touched: newFieldTouched } );
+
+        validateOnBlur && validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
