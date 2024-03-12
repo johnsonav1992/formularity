@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import {
-    FieldComponent
-    , createFormStore
+    createFormStore
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
@@ -11,19 +10,18 @@ import { TextField } from '@mui/material';
 type TestValues = {
     name: string;
     email: string;
-    hobbies: string[];
     choice: boolean;
 };
 
 const initialValues: TestValues = {
     name: ''
     , email: ''
-    , hobbies: [ ]
     , choice: false
 };
 
 const validationSchema = z.object( {
-    email: z.string().email( 'Invalid email' )
+    name: z.string().min( 3 )
+    , email: z.string().email( 'Invalid email' )
 } );
 
 const formStore = createFormStore( {
@@ -62,11 +60,11 @@ const formStore = createFormStore( {
 //     );
 // };
 
-const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
-    return (
-        <Field name='hobbies' />
-    );
-};
+// const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
+//     return (
+//         <Field name='hobbies' />
+//     );
+// };
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
@@ -123,7 +121,7 @@ const AnotherTest = () => {
                                 showErrors
                             />
                         </fieldset>
-                        <NestedFormWithField Field={ Field } />
+                        { /* <NestedFormWithField Field={ Field } /> */ }
                         <SubmitButton
                             component='div'
                             variant='contained'
