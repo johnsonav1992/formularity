@@ -70,7 +70,7 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
     /**
      * If set to true, the form will validate on blur.
-     * *default: true
+     * @default true
      */
     validateOnBlur?: boolean;
 };
