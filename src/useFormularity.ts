@@ -146,10 +146,23 @@ export const useFormularity = <TFormValues extends FormValues>( {
         let errors: Partial<FormErrors<TFormValues>> = {};
         const hasSingleFieldValidators = Object.values( fieldRegistry.current ).some( Boolean );
 
-        if ( validationSchema ) {
-            const validationSchemaErrors = await validationSchema( values );
-            if ( validationSchemaErrors ) {
-                errors = validationSchemaErrors;
+        switch ( true ) {
+            case !!validationSchema: {
+                const validationSchemaErrors = await validationSchema( values );
+
+                if ( validationSchemaErrors ) {
+                    errors = validationSchemaErrors;
+
+                    if ( hasSingleFieldValidators ) {
+                        errors = await runAllSingleFieldValidators( errors );
+                    }
+
+                    setErrors( errors as FormErrors<TFormValues> );
+                }
+            }
+                break;
+            case !!manualValidationHandler: {
+                errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
 
                 if ( hasSingleFieldValidators ) {
                     errors = await runAllSingleFieldValidators( errors );
@@ -157,16 +170,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
                 setErrors( errors as FormErrors<TFormValues> );
             }
-        } else if ( manualValidationHandler ) {
-            errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
-
-            if ( hasSingleFieldValidators ) {
-                errors = await runAllSingleFieldValidators( errors );
-            }
-
-            setErrors( errors as FormErrors<TFormValues> );
-        } else {
-            if ( hasSingleFieldValidators ) {
+                break;
+            default: {
                 errors = await runAllSingleFieldValidators( errors );
                 setErrors( errors as FormErrors<TFormValues> );
             }
