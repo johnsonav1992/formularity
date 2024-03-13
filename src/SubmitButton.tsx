@@ -22,6 +22,10 @@ export type SubmitButtonProps<
     , TComponentProps = {}
 > = {
         /**
+         * Child elements of the button
+         */
+        children?: ReactNode;
+        /**
          * Component to be rendered. Must be a custom component that ultimately
          * renders an HTML button in order to work properly.
          */
@@ -52,7 +56,7 @@ export type SubmitButtonProps<
     } & ( NoInfer<TComponentProps> extends undefined
             ? Omit<ComponentProps<'button'>, 'type' | 'children'>
                 : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
-    ) & { children?: ReactNode };
+    );
 
 export const SubmitButton = <
     TDisableInvalid extends boolean
