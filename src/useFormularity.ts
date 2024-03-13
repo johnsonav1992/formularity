@@ -258,15 +258,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newError
         );
 
-        if ( !isEqual( errors, newFieldErrors ) ) {
-            formStore.set( { errors: newFieldErrors } );
-        }
+        formStore.set( { errors: newFieldErrors } );
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        if ( !isEqual( errors, newErrors ) ) {
-            formStore.set( { errors: newErrors } );
-        }
+        formStore.set( { errors: newErrors } );
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
@@ -276,17 +272,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newTouched
         );
 
-        if ( !isEqual( touched, newFieldTouched ) ) {
-            formStore.set( { touched: newFieldTouched } );
-        }
+        formStore.set( { touched: newFieldTouched } );
 
         validateOnBlur && validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
-        if ( !isEqual( touched, newTouched ) ) {
-            formStore.set( { touched: newTouched } );
-        }
+        formStore.set( { touched: newTouched } );
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
@@ -352,10 +344,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const hasErrors = objectKeys( validationErrors ).length > 0;
 
         if ( hasErrors ) {
+            const newTouched = objectKeys( validationErrors )
+                .reduce<FormTouched<TFormValues>>( ( acc, key ) => {
+                    acc[ key ] = true as never;
+
+                    return acc;
+                }, {} );
+
             formStore.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
                 , isValidating: false
+                , touched: newTouched
             } );
 
             return setErrors( {

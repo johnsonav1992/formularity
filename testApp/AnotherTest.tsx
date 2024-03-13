@@ -123,9 +123,8 @@ const AnotherTest = () => {
                         </fieldset>
                         { /* <NestedFormWithField Field={ Field } /> */ }
                         <SubmitButton
-                            component='div'
-                            variant='contained'
-                            color='secondary'
+                            disableInvalid
+                            disabledMode='after-first-submission'
                         >
                             Submit
                         </SubmitButton>
