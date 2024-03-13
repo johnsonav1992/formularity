@@ -241,11 +241,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newError
         );
 
-        formStore.set( { errors: newFieldErrors } );
+        if ( !isEqual( errors, newFieldErrors ) ) {
+            formStore.set( { errors: newFieldErrors } );
+        }
     }, [] );
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        formStore.set( { errors: newErrors } );
+        if ( !isEqual( errors, newErrors ) ) {
+            formStore.set( { errors: newErrors } );
+        }
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
@@ -255,13 +259,17 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newTouched
         );
 
-        formStore.set( { touched: newFieldTouched } );
+        if ( !isEqual( touched, newFieldTouched ) ) {
+            formStore.set( { touched: newFieldTouched } );
+        }
 
         validateOnBlur && validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
-        formStore.set( { touched: newTouched } );
+        if ( !isEqual( touched, newTouched ) ) {
+            formStore.set( { touched: newTouched } );
+        }
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
