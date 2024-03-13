@@ -124,7 +124,7 @@ const AnotherTest = () => {
                         { /* <NestedFormWithField Field={ Field } /> */ }
                         <SubmitButton
                             disableInvalid
-                            disabledMode='after-first-submission'
+                            disabledMode='errors-only'
                         >
                             Submit
                         </SubmitButton>
