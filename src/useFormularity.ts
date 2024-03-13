@@ -19,6 +19,7 @@ import {
     , FormValues
     , FormularityProps
     , SingleFieldValidator
+    , FieldRegistration
 } from './types';
 import {
     DeepKeys
@@ -133,14 +134,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
             fieldRegistry.current[ name ] = validationHandler as never;
         }
         , []
-    );
+    ) as FieldRegistration['registerField'];
 
     const unregisterField = useCallback(
         <TFieldName extends DeepKeys<TFormValues>>( fieldName: TFieldName ) => {
             delete fieldRegistry.current[ fieldName ];
         }
         , []
-    );
+    ) as FieldRegistration['unregisterField'];
 
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};

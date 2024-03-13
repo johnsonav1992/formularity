@@ -37,7 +37,7 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
         ) => ReactNode;
     };
 
-const FormularityContext = createContext<FormularityProps<FormValues> | null>( null );
+const FormularityContext = createContext<FormularityProps | null>( null );
 
 export const Formularity = <TFormValues extends FormValues>( {
     children

@@ -42,7 +42,7 @@ export type NewFieldRegistration<
     validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>> | null;
 };
 
-export type FieldRegistration<TFormValues extends FormValues> = {
+export type FieldRegistration<TFormValues extends FormValues = FormValues> = {
     /**
      * Function for adding a field to the registry
      */
@@ -207,7 +207,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
-    & FieldRegistration<TFormValues>
+    & FieldRegistration
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
 
