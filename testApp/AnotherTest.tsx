@@ -129,7 +129,7 @@ const AnotherTest = () => {
                             component={ Button }
                             variant='contained'
                             disableInvalid
-                            disabledMode='if-not-dirty'
+                            disabledMode='after-first-submission'
                         >
                             Submit
                         </SubmitButton>

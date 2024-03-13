@@ -19,7 +19,7 @@ import {
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
-    , TComponentProps = {}
+    , TComponentProps
 > = {
         /**
          * Child elements of the button
@@ -38,19 +38,22 @@ export type SubmitButtonProps<
         /**
          * Method for determining when the submit button should be disabled
          *
-         * *note - All options assume the form is invalid at the time of rendering
-         * the disabled state (errors exist in the form)
+         * *note - All options assume the form is invalid (contains errors) at
+         * the time of rendering the disabled state
+         *
          * Options:
          *
-         * 1. `'after-first-submission'`: Disables the button only after submitting once and errors still exist
-         * 2. `'after-first-submission-editing'`: Disables the button only after submitting once unless in editing state
-         * 3. `'if-not-dirty'`: Checks to see if the form is also dirty and will disable if no changes have been made to the form
-         * 4. `'errors-only'`: Will disable the form regardless of any criteria other than presence of errors
+         * 1. `'after-first-submission'`: Disables the button only after one submission
+         * 2. `'after-first-submission-editing'`: Disables the button only after one submission unless in editing state
+         * 3. `'not-dirty'`: Checks to see if the form is also dirty and will disable if no changes have been made to the form
+         * 4. `'errors-only'`: Will disable the form regardless of any criteria other than `isValid`
+         *
+         * @default 'errors-only'
          */
         disabledMode?: NoInfer<TDisableInvalid> extends true
             ? 'after-first-submission'
                 | 'after-first-submission-editing'
-                | 'if-not-dirty'
+                | 'not-dirty'
                 | 'errors-only'
             : never;
     } & ( NoInfer<TComponentProps> extends undefined
@@ -84,13 +87,15 @@ export const SubmitButton = <
                     return disableAfterFirstSubmit( formularityCtx );
                 case 'after-first-submission-editing':
                     return disableAfterFirstSubmitUnlessEditing( formularityCtx );
-                case 'if-not-dirty':
+                case 'not-dirty':
                     return isFormDisabledNotDirty( formularityCtx );
                 case 'errors-only':
                 default:
                     return !isValid;
             }
         }
+
+        return false;
     };
 
     const submitButtonProps = {
