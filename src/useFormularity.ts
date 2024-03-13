@@ -145,6 +145,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let errors: Partial<FormErrors<TFormValues>> = {};
         const hasSingleFieldValidators = Object.values( fieldRegistry.current ).some( Boolean );
+        const singleValidatorKeys = hasSingleFieldValidators
+            ? objectEntries( fieldRegistry.current )
+                .filter( ( [ _, validator ] ) => !!validator )
+                .map( ( [ key ] ) => key )
+            : [];
 
         switch ( true ) {
             case !!validationSchema: {
@@ -155,6 +160,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 }
 
                 if ( hasSingleFieldValidators ) {
+                    for ( const error in errors ) {
+                        if ( singleValidatorKeys.includes( error as never ) ) {
+                            delete errors[ error as keyof Partial<FormErrors<TFormValues>> ];
+                        }
+                    }
+
                     errors = await runAllSingleFieldValidators( errors );
                 }
 
@@ -165,6 +176,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
 
                 if ( hasSingleFieldValidators ) {
+                    for ( const error in errors ) {
+                        if ( singleValidatorKeys.includes( error as never ) ) {
+                            delete errors[ error as keyof Partial<FormErrors<TFormValues>> ];
+                        }
+                    }
+
                     errors = await runAllSingleFieldValidators( errors );
                 }
 
