@@ -1,26 +1,31 @@
 // Types
-import {
-    FormComputedProps
-    , FormStoreState
-    , FormValues
-} from './types';
+import { FormularityProps } from './types';
 
-export const disableAfterFirstSubmitUnlessEditing = <TFormValues extends FormValues>(
-    submitCount: FormStoreState<TFormValues>['submitCount']
-    , isValid: FormComputedProps<TFormValues>['isValid']
-    , dirty: FormComputedProps<TFormValues>['isDirty']
-    , isEditing?: FormStoreState<TFormValues>['isEditing']
-) => {
+export const disableAfterFirstSubmit = ( {
+    submitCount
+    , isValid
+}: FormularityProps ) => {
+    return submitCount > 0
+        ? !isValid
+        : false;
+};
+
+export const disableAfterFirstSubmitUnlessEditing = ( {
+    submitCount
+    , isValid
+    , isDirty
+    , isEditing
+}: FormularityProps ) => {
     return submitCount > 0
         ? !isValid
         : isEditing
-            ? !dirty
+            ? !isDirty
             : false;
 };
 
-export const isFormDisabled = <TFormValues extends FormValues>(
-    isValid: FormComputedProps<TFormValues>['isValid']
-    , dirty: FormComputedProps<TFormValues>['isDirty']
-) => {
-    return !( isValid && dirty );
+export const isFormDisabledNotDirty = ( {
+    isValid
+    , isDirty
+}: FormularityProps ) => {
+    return !( isValid && isDirty );
 };
