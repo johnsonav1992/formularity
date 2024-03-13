@@ -3,8 +3,14 @@ import React, {
     , FC
     , ReactNode
 } from 'react';
+
+// Types
 import { NoInfer } from './utilityTypes';
+
+// Context
 import { useFormularityContext } from './Formularity';
+
+// Utils
 import {
     disableAfterFirstSubmit
     , disableAfterFirstSubmitUnlessEditing
