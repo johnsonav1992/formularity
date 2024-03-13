@@ -77,7 +77,6 @@ export const SubmitButton = <
                 case 'if-not-dirty':
                     return isFormDisabledNotDirty( formularityCtx );
                 case 'errors-only':
-                    return !isValid;
                 default:
                     return !isValid;
             }
