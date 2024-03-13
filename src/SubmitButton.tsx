@@ -66,11 +66,11 @@ export const SubmitButton = <
     const getDisabledLogic = () => {
         if ( props.disabled ) return props.disabled;
 
-        if ( disableInvalid == null ) {
-            return true;
-        }
-
         const isValid = !!formularityCtx.isValid;
+
+        if ( disableInvalid == null ) {
+            return !isValid;
+        }
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {
