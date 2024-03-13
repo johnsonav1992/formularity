@@ -46,9 +46,7 @@ export type SubmitButtonProps<
     } & ( NoInfer<TComponentProps> extends undefined
             ? Omit<ComponentProps<'button'>, 'type' | 'children'>
                 : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
-    ) & {
-        children?: ReactNode;
-    };
+    ) & { children?: ReactNode };
 
 export const SubmitButton = <
     TDisableInvalid extends boolean
