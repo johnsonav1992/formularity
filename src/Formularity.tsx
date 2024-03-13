@@ -54,7 +54,8 @@ export const Formularity = <TFormValues extends FormValues>( {
     } );
 
     return (
-        <FormularityContext.Provider value={ formularity }>
+        // Want to try to remove this type assertion later if possible
+        <FormularityContext.Provider value={ formularity as FormularityProps<FormValues> }>
             {
                 useFormComponent
                     ? (

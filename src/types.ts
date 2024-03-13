@@ -207,7 +207,7 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
-    & FieldRegistration
+    & FieldRegistration<TFormValues>
     & FormHandlers<TFormValues>
     & FormComputedProps<TFormValues>;
 
