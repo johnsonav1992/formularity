@@ -13,16 +13,13 @@ import {
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
-    , TComponentProps extends Record<string, unknown> = {}
-> =
-    ComponentProps<'button'>
-    & {
+    , TComponentProps = {}
+> = {
         /**
-         * Component to be rendered. Must be either an HTML 'button' component
-         * or a custom component that ultimately renders an HTML button
-         * in order to work properly.
+         * Component to be rendered. Must be a custom component that ultimately
+         * renders an HTML button in order to work properly.
          */
-        component?: ReactNode;
+        component?: FC<TComponentProps>;
         /**
          * Disable the button if any errors exist in the form
          * @default true
@@ -46,12 +43,16 @@ export type SubmitButtonProps<
                 | 'if-not-dirty'
                 | 'errors-only'
             : never;
-    }
-    & TComponentProps;
+    } & ( NoInfer<TComponentProps> extends undefined
+            ? Omit<ComponentProps<'button'>, 'type' | 'children'>
+                : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
+    ) & {
+        children?: ReactNode;
+    };
 
 export const SubmitButton = <
     TDisableInvalid extends boolean
-    , TComponentProps extends Record<string, unknown> = {}
+    , TComponentProps
 >( {
         component
         , disableInvalid
@@ -64,13 +65,10 @@ export const SubmitButton = <
     const renderedComponent = ( component as unknown as FC ) || 'button';
 
     const getDisabledLogic = () => {
-        if ( props.disabled ) return props.disabled;
-
         const isValid = !!formularityCtx.isValid;
 
-        if ( disableInvalid == null ) {
-            return !isValid;
-        }
+        if ( 'disabled' in props && props.disabled ) return props.disabled;
+        if ( disableInvalid == null ) return !isValid;
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {

@@ -5,7 +5,10 @@ import {
 } from '../src';
 import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
-import { TextField } from '@mui/material';
+import {
+    Button
+    , TextField
+} from '@mui/material';
 
 type TestValues = {
     name: string;
@@ -123,8 +126,10 @@ const AnotherTest = () => {
                         </fieldset>
                         { /* <NestedFormWithField Field={ Field } /> */ }
                         <SubmitButton
+                            component={ Button }
+                            variant='contained'
                             disableInvalid
-                            disabledMode='errors-only'
+                            disabledMode='if-not-dirty'
                         >
                             Submit
                         </SubmitButton>
