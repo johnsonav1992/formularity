@@ -345,10 +345,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         if ( hasErrors ) {
             const newTouched = objectKeys( validationErrors )
-                .reduce<FormTouched<TFormValues>>( ( acc, key ) => {
-                    acc[ key ] = true as never;
+                .reduce<FormTouched<TFormValues>>( ( errorsObj, key ) => {
+                    errorsObj[ key ] = true as never;
 
-                    return acc;
+                    return errorsObj;
                 }, {} );
 
             formStore.set( {
