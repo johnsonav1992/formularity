@@ -56,21 +56,25 @@ export type SubmitButtonProps<
                 | 'not-dirty'
                 | 'errors-only'
             : never;
-    } & ( NoInfer<TComponentProps> extends undefined
+    }
+    & (
+        NoInfer<TComponentProps> extends undefined
             ? Omit<ComponentProps<'button'>, 'type' | 'children'>
-                : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
+            : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
     );
 
 export const SubmitButton = <
-    TDisableInvalid extends boolean
-    , TComponentProps
->( {
-        component
-        , disableInvalid
-        , disabledMode
-        , children
-        , ...props
-    }: SubmitButtonProps<TDisableInvalid, TComponentProps> ) => {
+        TDisableInvalid extends boolean
+        , TComponentProps
+    >(
+        {
+            component
+            , disableInvalid
+            , disabledMode
+            , children
+            , ...props
+        }: SubmitButtonProps<TDisableInvalid, TComponentProps>
+    ) => {
     const formularityCtx = useFormularityContext();
 
     const renderedComponent = ( component as unknown as FC ) || 'button';
