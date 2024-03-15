@@ -73,7 +73,7 @@ export const SubmitButton = <
     ) => {
     const formularityCtx = useFormularityContext();
 
-    const renderedComponent = ( component as unknown as FC ) || 'button';
+    const renderedComponent = component as FC || 'button';
 
     const getDisabledLogic = () => {
         const isValid = !!formularityCtx.isValid;
