@@ -19,7 +19,7 @@ import {
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
-    , TComponentProps = ComponentProps<'button'>
+    , TComponentProps = undefined
 > = {
         /**
          * Child elements of the button
@@ -29,7 +29,7 @@ export type SubmitButtonProps<
          * Component to be rendered. Must be a custom component that ultimately
          * renders an HTML button in order to work properly.
          */
-        component?: FC<TComponentProps>;
+        component?: FC<TComponentProps> | 'button';
         /**
          * Disable the button if any errors exist in the form
          * @default true
@@ -57,11 +57,15 @@ export type SubmitButtonProps<
                 | 'errors-only'
             : never;
     }
-    & Omit<NoInfer<TComponentProps>, 'type' | 'children'>;
+    & (
+        TComponentProps extends 'button' | undefined
+            ? ComponentProps<'button'>
+            : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
+    );
 
 export const SubmitButton = <
         TDisableInvalid extends boolean
-        , TComponentProps = ComponentProps<'button'>
+        , TComponentProps = undefined
     >(
         {
             component
