@@ -19,7 +19,7 @@ import {
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
-    , TComponentProps = undefined
+    , TComponentProps = ComponentProps<'button'>
 > = {
         /**
          * Child elements of the button
@@ -57,15 +57,11 @@ export type SubmitButtonProps<
                 | 'errors-only'
             : never;
     }
-    & (
-        TComponentProps extends undefined
-            ? Omit<ComponentProps<'button'>, 'type' | 'children'>
-            : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
-    );
+    & Omit<NoInfer<TComponentProps>, 'type' | 'children'>;
 
 export const SubmitButton = <
         TDisableInvalid extends boolean
-        , TComponentProps = undefined
+        , TComponentProps = ComponentProps<'button'>
     >(
         {
             component
