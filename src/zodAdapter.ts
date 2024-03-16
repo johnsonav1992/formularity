@@ -1,6 +1,7 @@
 // Libraries
 import {
     SafeParseError
+    , ZodObject
     , ZodSchema
 } from 'zod';
 
@@ -8,45 +9,58 @@ import {
 import {
     FormErrors
     , FormValues
+    , SingleFieldValidator
     , ValidationHandler
 } from './types';
 
 export const parseZodErrors = <
-    TFormValues extends FormValues
-    , T extends SafeParseError<TFormValues>
->( errorObj: T ) => {
+    T extends SafeParseError<TFormValues>
+    , TFormValues extends FormValues = FormValues
+>( errorObj: T, singleFieldValidation?: boolean ) => {
     const flattenedZodErrors = errorObj.error.flatten();
-    const fieldErrors = flattenedZodErrors.fieldErrors;
+    const fieldErrors = flattenedZodErrors[ singleFieldValidation ? 'formErrors' : 'fieldErrors' ];
+
+    //just return all field errors for the single field -> for singleFieldValidators
+    if ( Array.isArray( fieldErrors ) ) return fieldErrors.join( ',' );
 
     const formErrors: FormErrors<TFormValues> = {};
 
     for ( const fieldError in fieldErrors ) {
-        //@ts-expect-error -> TODO: need to figure out this indexing issue
+        //@ts-expect-error -> TS can't wrap its head around setting properties to this empty object
         formErrors[ fieldError ] = fieldErrors[ fieldError as keyof typeof fieldErrors ]?.join( ',' );
     }
 
-    return formErrors;
+    return formErrors as FormErrors<TFormValues>;
 };
 
-export const zodAdapter = <TFormValues extends FormValues>(
-    schema: ZodSchema<TFormValues>
+export const zodAdapter = <TSchema = FormValues>(
+    schema: ZodSchema<TSchema>
     , options?: { async?: boolean }
-): ValidationHandler<TFormValues> => {
+): ValidationHandler<FormValues> | SingleFieldValidator<FormValues> => {
     if ( !( schema instanceof ZodSchema ) ) {
         throw new Error( `You are trying to use a schema that is not a Zod 
             schema with this adapter. Please pass a correct Zod schema to fix this error` );
     }
 
-    return async values => {
+    const isSingleFieldValidation = !( schema instanceof ZodObject );
+
+    const parseErrors = async ( valueOrValues: TSchema ) => {
         const validationResult = await schema[
             options?.async
                 ? 'safeParseAsync'
                 : 'safeParse'
-        ]( values );
+        ]( valueOrValues );
 
         if ( validationResult.success ) return null;
 
-        return parseZodErrors( validationResult );
+        return parseZodErrors( validationResult, isSingleFieldValidation );
     };
+
+    const singleFieldValidator = ( value => parseErrors( value ) ) as SingleFieldValidator<FormValues>;
+    const validationHandler = ( values => parseErrors( values as TSchema ) ) as ValidationHandler<FormValues>;
+
+    if ( isSingleFieldValidation ) return singleFieldValidator;
+
+    return validationHandler;
 
 };

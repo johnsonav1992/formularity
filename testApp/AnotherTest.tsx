@@ -103,9 +103,7 @@ const AnotherTest = () => {
                                 component={ TextField }
                                 label='name'
                                 size='small'
-                                validator={ name => {
-                                    if ( name.length < 1 ) return 'too short!';
-                                } }
+                                validator={ zodAdapter( z.string().min( 3 ) ) }
                                 showErrors
                             />
                         </fieldset>
