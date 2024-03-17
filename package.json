@@ -4,7 +4,7 @@
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["dist"],
+  "files": ["/dist"],
   "scripts": {
     "start": "vite",
     "build": "rollup -c",
