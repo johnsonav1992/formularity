@@ -11,7 +11,10 @@ import {
     , SingleFieldValidator
     , ValidationHandler
 } from './types';
-import { DeepKeys } from './utilityTypes';
+import {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
 
 export const parseZodErrors = <
     T extends SafeParseError<TFormValues>
@@ -33,16 +36,13 @@ export const parseZodErrors = <
     return formErrors as FormErrors<TFormValues>;
 };
 
-export function zodAdapter<
-    TSchemaInput
-    , TFormValues extends FormValues = FormValues
->(
-    schema: ZodSchema<TSchemaInput>
+export function zodAdapter<TFormValues extends FormValues = FormValues>(
+    schema: ZodSchema<TFormValues>
     , options?: { async?: boolean; isField?: never }
-    ): ValidationHandler<TFormValues>;
+): ValidationHandler<TFormValues>;
 
 export function zodAdapter<
-    TSchemaInput
+    TSchemaInput extends DeepValue<TFormValues, TFieldName>
     , TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 >(
