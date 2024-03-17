@@ -1,4 +1,4 @@
-# Formularity
+<img src="./assets/formularity_logo_small.png" alt="drawing" width="300"/>
 
 The last React form library you will ever need!
 
