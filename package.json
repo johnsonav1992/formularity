@@ -1,6 +1,6 @@
 {
   "name": "formularity",
-  "version": "0.1.10-alpha",
+  "version": "0.1.11-alpha",
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
