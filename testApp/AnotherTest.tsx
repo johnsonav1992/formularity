@@ -103,7 +103,7 @@ const AnotherTest = () => {
                                 component={ TextField }
                                 label='name'
                                 size='small'
-                                validator={ zodAdapter( z.string().min( 3 ) ) }
+                                validator={ zodAdapter( z.string().min( 3 ), { isField: true } ) }
                                 showErrors
                             />
                         </fieldset>

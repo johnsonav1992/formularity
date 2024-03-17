@@ -1,7 +1,6 @@
 // Libraries
 import {
     SafeParseError
-    , ZodObject
     , ZodSchema
 } from 'zod';
 
@@ -12,6 +11,7 @@ import {
     , SingleFieldValidator
     , ValidationHandler
 } from './types';
+import { DeepKeys } from './utilityTypes';
 
 export const parseZodErrors = <
     T extends SafeParseError<TFormValues>
@@ -33,18 +33,40 @@ export const parseZodErrors = <
     return formErrors as FormErrors<TFormValues>;
 };
 
-export const zodAdapter = <TSchema = FormValues>(
-    schema: ZodSchema<TSchema>
-    , options?: { async?: boolean }
-): ValidationHandler<FormValues> | SingleFieldValidator<FormValues> => {
+export function zodAdapter<
+    TSchemaInput
+    , TFormValues extends FormValues = FormValues
+>(
+    schema: ZodSchema<TSchemaInput>
+    , options?: { async?: boolean; isField?: never }
+    ): ValidationHandler<TFormValues>;
+
+export function zodAdapter<
+    TSchemaInput
+    , TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+>(
+    schema: ZodSchema<TSchemaInput>
+    , options?: { async?: boolean; isField?: true }
+): SingleFieldValidator<TFormValues, TFieldName>;
+
+export function zodAdapter<
+    TSchemaInput
+    , TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> (
+    schema: ZodSchema<TSchemaInput>
+    , options?: { async?: boolean; isField?: boolean }
+) {
+
     if ( !( schema instanceof ZodSchema ) ) {
         throw new Error( `You are trying to use a schema that is not a Zod 
             schema with this adapter. Please pass a correct Zod schema to fix this error` );
     }
 
-    const isSingleFieldValidation = !( schema instanceof ZodObject );
+    const isSingleFieldValidation = options?.isField;
 
-    const parseErrors = async ( valueOrValues: TSchema ) => {
+    const handler = async ( valueOrValues: TFormValues | TSchemaInput ) => {
         const validationResult = await schema[
             options?.async
                 ? 'safeParseAsync'
@@ -56,11 +78,8 @@ export const zodAdapter = <TSchema = FormValues>(
         return parseZodErrors( validationResult, isSingleFieldValidation );
     };
 
-    const singleFieldValidator = ( value => parseErrors( value ) ) as SingleFieldValidator<FormValues>;
-    const validationHandler = ( values => parseErrors( values as TSchema ) ) as ValidationHandler<FormValues>;
+    if ( isSingleFieldValidation ) return handler as SingleFieldValidator<TFormValues, TFieldName>;
 
-    if ( isSingleFieldValidation ) return singleFieldValidator;
+    return handler as ValidationHandler<TFormValues>;
 
-    return validationHandler;
-
-};
+}
