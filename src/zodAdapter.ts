@@ -21,7 +21,7 @@ export const parseZodErrors = <
     const fieldErrors = flattenedZodErrors[ singleFieldValidation ? 'formErrors' : 'fieldErrors' ];
 
     //just return all field errors for the single field -> for singleFieldValidators
-    if ( Array.isArray( fieldErrors ) ) return fieldErrors.join( ',' );
+    if ( Array.isArray( fieldErrors ) && singleFieldValidation ) return fieldErrors.join( ',' );
 
     const formErrors: FormErrors<TFormValues> = {};
 
