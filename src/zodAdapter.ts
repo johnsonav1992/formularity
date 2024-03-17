@@ -56,7 +56,7 @@ export function zodAdapter<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > (
     schema: ZodSchema<TSchemaInput>
-    , options?: { async?: boolean; isField?: boolean }
+    , options?: { async?: boolean; isField?: boolean | never }
 ) {
 
     if ( !( schema instanceof ZodSchema ) ) {
