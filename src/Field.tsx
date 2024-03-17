@@ -95,8 +95,9 @@ export type FieldProps<
          * @returns error string or null/undefined if no error is found. *required
          *
          * @example
-         * //manual validator:
+         * manual validator:
          *
+         * ```
          * ( value ) => {
          *     if ( value.length < 5 ) {
          *         return 'Value must be at least 5 characters';
@@ -104,6 +105,17 @@ export type FieldProps<
          *
          *     return null;
          * };
+         * ```
+         *
+         * 3rd party adapter:
+         *
+         * *Note - must use the
+         * ```{ isField: true }```
+         * option in order for the adapter to work properly.
+         *
+         *```
+         * validator={ zodAdapter( z.string().min(5) ) }
+         * ```
          */
         validator?: SingleFieldValidator<NoInfer<TFormValues>, NoInfer<TFieldName>>;
         /**
