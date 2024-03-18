@@ -56,6 +56,10 @@ export type SubmitButtonProps<
                 | 'not-dirty'
                 | 'errors-only'
             : never;
+        /**
+         * Disable the button during form submission
+         */
+        disableWhileSubmitting?: boolean;
     }
     & (
         TComponentProps extends 'button' | undefined
@@ -71,6 +75,7 @@ export const SubmitButton = <
             component
             , disableInvalid
             , disabledMode
+            , disableWhileSubmitting
             , children
             , ...props
         }: SubmitButtonProps<TDisableInvalid, TComponentProps>
@@ -84,6 +89,7 @@ export const SubmitButton = <
 
         if ( 'disabled' in props && props.disabled ) return props.disabled;
         if ( disableInvalid == null ) return !isValid;
+        if ( disableWhileSubmitting && formularityCtx.isSubmitting ) return true;
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {
