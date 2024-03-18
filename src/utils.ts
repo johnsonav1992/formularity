@@ -4,13 +4,13 @@ import {
     , DeepValue
 } from './utilityTypes';
 
-export const objectKeys = <TObj extends object>( obj: TObj ) => obj && Object.keys( obj ) as Array<keyof TObj>;
+export const objectKeys = <TObj extends object>( obj: TObj ) => Object.keys( obj ) as Array<keyof TObj>;
 
 type ValueOf<T> = T[keyof T];
 type Entries<T> = [keyof T, ValueOf<T>][];
 
 export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
-    return obj && Object.entries( obj ) as Entries<T>;
+    return Object.entries( obj ) as Entries<T>;
 };
 
 export const getViaPath = <
