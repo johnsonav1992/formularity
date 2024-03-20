@@ -2,6 +2,7 @@ import React, {
     ComponentProps
     , FC
     , ReactNode
+    , memo
 } from 'react';
 
 export type ResetButtonProps<TComponentProps extends Record<string, unknown> = {}> =
@@ -9,7 +10,7 @@ export type ResetButtonProps<TComponentProps extends Record<string, unknown> = {
     & { component?: ReactNode }
     & TComponentProps;
 
-export const ResetButton = <TComponentProps extends Record<string, unknown> = {}>( {
+export const ResetButton = memo( <TComponentProps extends Record<string, unknown> = {}>( {
     component
     , children
     , ...props
@@ -26,4 +27,6 @@ export const ResetButton = <TComponentProps extends Record<string, unknown> = {}
         , resetButtonProps
         , children
     );
-};
+} );
+
+ResetButton.displayName = 'ResetButton';
