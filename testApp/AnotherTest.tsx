@@ -131,7 +131,10 @@ const AnotherTest = () => {
                         >
                             Submit
                         </SubmitButton>
-                        <ResetButton>
+                        <ResetButton
+                            component={ Button }
+                            variant='outlined'
+                        >
                             Reset
                         </ResetButton>
                     </div>
