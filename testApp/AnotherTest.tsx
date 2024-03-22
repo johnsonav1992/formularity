@@ -7,6 +7,7 @@ import { Formularity } from '../src/Formularity';
 import { zodAdapter } from '../src/zodAdapter';
 import {
     Button
+    , Stack
     , TextField
 } from '@mui/material';
 
@@ -110,20 +111,27 @@ const AnotherTest = () => {
                             helperText={ touched.email && errors.email }
                             error={ !!errors.email && touched.email }
                         />
-                        <SubmitButton
-                            component={ Button }
-                            variant='contained'
-                            disableInvalid
-                            disabledMode='after-first-submission'
+                        <Stack
+                            direction='row'
+                            gap='1rem'
                         >
-                            Submit
-                        </SubmitButton>
-                        <ResetButton
-                            component={ Button }
-                            variant='outlined'
-                        >
-                            Reset
-                        </ResetButton>
+                            <ResetButton
+                                component={ Button }
+                                variant='outlined'
+                                fullWidth
+                            >
+                                Reset
+                            </ResetButton>
+                            <SubmitButton
+                                component={ Button }
+                                variant='contained'
+                                fullWidth
+                                disableInvalid
+                                disabledMode='after-first-submission'
+                            >
+                                Submit
+                            </SubmitButton>
+                        </Stack>
                     </div>
                 ) }
             </Formularity>
