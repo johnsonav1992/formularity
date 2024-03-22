@@ -82,6 +82,8 @@ const AnotherTest = () => {
                     Field
                     , SubmitButton
                     , ResetButton
+                    , errors
+                    , touched
                 } ) => (
                     <div
                         style={ {
@@ -91,38 +93,23 @@ const AnotherTest = () => {
                             , gap: '.5rem'
                         } }
                     >
-                        <fieldset
-                            style={ {
-                                display: 'flex'
-                                , flexDirection: 'column'
-                                , gap: '.5rem'
-                            } }
-                        >
-                            <Field
-                                name='name'
-                                component={ TextField }
-                                label='name'
-                                size='small'
-                                validator={ zodAdapter( z.string().min( 3, 'WRONG!' ), { isField: true } ) }
-                                showErrors
-                            />
-                        </fieldset>
-                        <fieldset
-                            style={ {
-                                display: 'flex'
-                                , flexDirection: 'column'
-                                , gap: '.5rem'
-                            } }
-                        >
-                            <Field
-                                name='email'
-                                component={ TextField }
-                                label='email'
-                                size='small'
-                                showErrors
-                            />
-                        </fieldset>
-                        { /* <NestedFormWithField Field={ Field } /> */ }
+                        <Field
+                            name='name'
+                            component={ TextField }
+                            label='name'
+                            size='small'
+                            validator={ zodAdapter( z.string().min( 3, 'WRONG!' ), { isField: true } ) }
+                            helperText={ touched.name && errors.name }
+                            error={ !!errors.name && touched.name }
+                        />
+                        <Field
+                            name='email'
+                            component={ TextField }
+                            label='email'
+                            size='small'
+                            helperText={ touched.email && errors.email }
+                            error={ !!errors.email && touched.email }
+                        />
                         <SubmitButton
                             component={ Button }
                             variant='contained'
