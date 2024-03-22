@@ -263,6 +263,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
         if ( isEqual( errors, newErrors ) ) return;
+
         formStore.set( { errors: newErrors } );
     }, [] );
 
@@ -279,6 +280,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
+        if ( isEqual( touched, newTouched ) ) return;
+
         formStore.set( { touched: newTouched } );
     }, [] );
 
@@ -352,17 +355,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     return errorsObj;
                 }, {} );
 
-            formStore.set( {
+            return formStore.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
                 , isValidating: false
                 , touched: newTouched
+                , errors: {
+                    ...errors
+                    , ...validationErrors
+                } as FormErrors<TFormValues>
             } );
-
-            return setErrors( {
-                ...errors
-                , ...validationErrors
-            } as FormErrors<TFormValues> );
         }
 
         formStore.set( { isValidating: false } );
