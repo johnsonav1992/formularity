@@ -39,7 +39,26 @@ export type NewFieldRegistration<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
     name: TFieldName;
+    /**
+     * single field validator that is passed to the field
+     */
     validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>> | null;
+    /**
+     * Any ID that may be passed to the field
+     */
+    fieldId?: string | number;
+    /**
+     * The position of the field in the form (i.e. is this field the first, second, fifth field?)
+     */
+    fieldPosition?: number;
+    /**
+     * Initial placeholder text of the field
+     */
+    placeholder?: string;
+    /**
+     * type of the field for registration purposes (parent can have access)
+     */
+    type?: string;
 };
 
 export type FieldRegistration<TFormValues extends FormValues = FormValues> = {
