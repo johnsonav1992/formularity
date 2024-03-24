@@ -98,6 +98,8 @@ const AnotherTest = () => {
                             component={ TextField }
                             label='name'
                             size='small'
+                            placeholder='Hey!'
+                            fieldPosition={ 1 }
                             validator={ zodAdapter( z.string().min( 3, 'WRONG!' ), { isField: true } ) }
                             helperText={ touched.name && errors.name }
                             error={ !!errors.name && touched.name }
@@ -109,6 +111,10 @@ const AnotherTest = () => {
                             size='small'
                             helperText={ touched.email && errors.email }
                             error={ !!errors.email && touched.email }
+                        />
+                        <Field
+                            name='choice'
+                            type='checkbox'
                         />
                         <Stack
                             direction='row'
