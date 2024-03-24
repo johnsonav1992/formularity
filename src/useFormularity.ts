@@ -149,7 +149,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const hasSingleFieldValidators = Object.values( fieldRegistry.current ).some( Boolean );
         const singleValidatorKeys = hasSingleFieldValidators
             ? objectEntries( fieldRegistry.current )
-                .filter( ( [ _, validator ] ) => !!validator )
+                .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
                 .map( ( [ key ] ) => key )
             : [];
 
@@ -224,9 +224,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const runAllSingleFieldValidators = useEventCallback( async ( errors: Partial<FormErrors<TFormValues>> ) => {
-        for ( const [ fieldName, fieldValidator ] of objectEntries( fieldRegistry.current ) ) {
-            const fieldErrorOrNull = fieldValidator
-                ? await runSingleFieldValidation( fieldValidator as never, fieldName )
+        for ( const [ fieldName, registration ] of objectEntries( fieldRegistry.current ) ) {
+            const fieldErrorOrNull = registration?.validationHandler
+                ? await runSingleFieldValidation( registration?.validationHandler, fieldName )
                 : null;
 
             if ( fieldErrorOrNull ) {
