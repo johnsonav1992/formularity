@@ -1,7 +1,4 @@
-import {
-    ZodSchema
-    , z
-} from 'zod';
+import { z } from 'zod';
 import {
     createFormStore
     , useFormularity
@@ -105,8 +102,8 @@ const AnotherTest = () => {
                             fieldPosition={ 1 }
                             validator={
                                 zodAdapter(
-                                    z.string()
-                                    , { isField: true }
+                                    z.string().min( 3 )
+                                    , { isField: false }
                                 )
                             }
                             helperText={ touched.name && errors.name }
