@@ -99,8 +99,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
 
-    console.log( fieldRegistry.current );
-
     useEffect( () => {
         isMounted.current = true;
 

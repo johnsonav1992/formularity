@@ -1,4 +1,7 @@
-import { z } from 'zod';
+import {
+    ZodSchema
+    , z
+} from 'zod';
 import {
     createFormStore
     , useFormularity
@@ -24,7 +27,7 @@ const initialValues: TestValues = {
 };
 
 const validationSchema = z.object( {
-    name: z.string().min( 3 )
+    name: z.string().min( 3, 'Must be at least 3 characters' )
     , email: z.string().email( 'Invalid email' )
 } );
 
@@ -102,7 +105,7 @@ const AnotherTest = () => {
                             fieldPosition={ 1 }
                             validator={
                                 zodAdapter(
-                                    z.string().min( 3, 'WRONG!' )
+                                    z.string()
                                     , { isField: true }
                                 )
                             }

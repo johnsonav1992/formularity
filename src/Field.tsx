@@ -117,7 +117,7 @@ export type FieldProps<
          * validator={ zodAdapter( z.string().min(5) ) }
          * ```
          */
-        validator?: SingleFieldValidator<NoInfer<TFormValues>, NoInfer<TFieldName>>;
+        validator?: SingleFieldValidator<TFormValues, TFieldName>;
         /**
          * The position of the field in the form (i.e. is this field the first, second, fifth field?)
          */
