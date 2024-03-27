@@ -114,7 +114,9 @@ export type FieldProps<
          * option in order for the adapter to work properly.
          *
          *```
-         * validator={ zodAdapter( z.string().min(5) ) }
+         * import { zodAdapter } from 'formularity-zod-adapter';
+         *
+         * validator={ zodAdapter( z.string().min(5), { isField: true } ) }
          * ```
          */
         validator?: SingleFieldValidator<NoInfer<TFormValues>, NoInfer<TFieldName>>;
