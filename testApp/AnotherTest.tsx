@@ -4,7 +4,7 @@ import {
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
-import { zodAdapter } from '../src/zodAdapter';
+import { zodAdapter } from 'formularity-zod-adapter';
 import {
     Button
     , Stack
@@ -100,7 +100,12 @@ const AnotherTest = () => {
                             size='small'
                             placeholder='Hey!'
                             fieldPosition={ 1 }
-                            validator={ zodAdapter( z.string().min( 3, 'WRONG!' ), { isField: true } ) }
+                            validator={
+                                zodAdapter(
+                                    z.string().min( 3, 'WRONG!' )
+                                    , { isField: true }
+                                )
+                            }
                             helperText={ touched.name && errors.name }
                             error={ !!errors.name && touched.name }
                         />

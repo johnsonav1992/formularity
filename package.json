@@ -4,7 +4,10 @@
   "description": "The last React form library you will ever need!",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["/dist", "!/dist/testApp"],
+  "files": [
+    "/dist",
+    "!/dist/testApp"
+  ],
   "scripts": {
     "start": "vite",
     "build": "rollup -c",
@@ -50,6 +53,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",
+    "formularity-zod-adapter": "^0.0.5-alpha",
     "johnsonav-eslint-config": "^0.0.4",
     "npm": "^10.4.0",
     "react": "^18.2.0",

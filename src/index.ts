@@ -16,3 +16,8 @@ export {
 } from './utils';
 
 export { createFormStore } from './createFormStore';
+
+export type {
+    DeepKeys
+    , DeepValue
+} from './utilityTypes';
