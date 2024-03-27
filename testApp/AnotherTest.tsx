@@ -100,12 +100,12 @@ const AnotherTest = () => {
                             size='small'
                             placeholder='Hey!'
                             fieldPosition={ 1 }
-                            validator={
-                                zodAdapter(
-                                    z.string().min( 3 )
-                                    , { isField: false }
-                                )
-                            }
+                            // validator={
+                            //     zodAdapter(
+                            //         z.string().min( 3 )
+                            //         , { isField: false }
+                            //     )
+                            // }
                             helperText={ touched.name && errors.name }
                             error={ !!errors.name && touched.name }
                         />
