@@ -30,7 +30,7 @@ const validationSchema = z.object( {
 
 const formStore = createFormStore( {
     initialValues
-    , validationSchema: zodAdapter( validationSchema )
+    , validationSchema: zodAdapter( validationSchema ) // TODO: FIX SINGLE VALIDATOR
 } );
 
 // const OutsideComponent = () => {
