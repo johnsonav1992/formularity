@@ -32,6 +32,17 @@ export const getViaPath = <
     return current as DeepValue<TObj, TKey>;
 };
 
+const initialValues = {
+    name: ''
+    , email: ''
+    , choice: false
+    , deep: {
+        nested: 'hey'
+    }
+};
+
+const res = getViaPath( initialValues, 'deep.nested' );
+
 export const setViaPath = <
     TObj
     , TPath extends DeepKeys<TObj>

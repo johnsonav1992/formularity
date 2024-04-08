@@ -24,8 +24,8 @@ import { CreateFormStoreParams } from './createFormStore';
 
 ////// FORM GENERAL //////
 export type FormValues = Record<PropertyKey, unknown> | null;
-export type FormErrors<TFormValues extends FormValues> = Record<keyof TFormValues, string> | EmptyObject;
-export type FormTouched<TFormValues extends FormValues> = Record<keyof TFormValues, boolean> | EmptyObject;
+export type FormErrors<TFormValues extends FormValues> = Record<DeepKeys<TFormValues>, string> | EmptyObject;
+export type FormTouched<TFormValues extends FormValues> = Record<DeepKeys<TFormValues>, boolean> | EmptyObject;
 
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
