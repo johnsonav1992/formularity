@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import {
     createFormStore
-    , getViaPath
     , useFormularity
 } from '../src';
 import { Formularity } from '../src/Formularity';
@@ -18,13 +17,10 @@ type TestValues = {
     choice: boolean;
 };
 
-const initialValues = {
+const initialValues: TestValues = {
     name: ''
     , email: ''
     , choice: false
-    , deep: {
-        nested: 'hey'
-    }
 };
 
 const validationSchema = z.object( {
@@ -76,10 +72,6 @@ const formStore = createFormStore( {
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    const errors = formularity.errors;
-
-    const res = getViaPath( errors, 'deep.nested' );
-
     return (
         <div>
             <Formularity
@@ -115,7 +107,7 @@ const AnotherTest = () => {
                             //     )
                             // }
                             helperText={ touched.name && errors.name }
-                            error={ !!errors.name && touched.name }
+                            error={ !!errors && touched.name }
                         />
                         <Field
                             name='email'

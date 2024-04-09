@@ -25,7 +25,7 @@ export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
 >;
 
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
-    TKey extends string | number
+    TKey extends string | number | undefined
         ? `${ Keys<TObj, IsRoot, TKey> }${ '' | ( TObj[TKey] extends object ? DeepKeys<TObj[TKey], false> : '' ) }`
         : never;
 
