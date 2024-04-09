@@ -29,7 +29,9 @@ export type FormErrors<TFormValues extends FormValues> = {
     [K in keyof TFormValues]: TFormValues[K] extends infer O extends object ? O : string;
 } | EmptyObject;
 
-export type FormTouched<TFormValues extends FormValues> = Record<DeepKeys<TFormValues>, boolean> | EmptyObject;
+export type FormTouched<TFormValues extends FormValues> = {
+    [K in keyof TFormValues]: TFormValues[K] extends infer O extends object ? O : boolean;
+} | EmptyObject;
 
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 
