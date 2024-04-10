@@ -15,12 +15,18 @@ type TestValues = {
     name: string;
     email: string;
     choice: boolean;
+    deep: {
+        nested: string;
+    };
 };
 
 const initialValues: TestValues = {
     name: ''
     , email: ''
     , choice: false
+    , deep: {
+        nested: ''
+    }
 };
 
 const validationSchema = z.object( {
