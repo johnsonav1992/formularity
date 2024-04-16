@@ -409,6 +409,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             .filter( ( [ field, value ] ) => {
                 if ( typeof value === 'object' ) {
                     return true;
+                    // TODO: recurse here and figure out if the inner fields are touched
                 }
                 return value !== initialValues.current?.[ field ];
             } )
@@ -416,8 +417,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isValid = objectKeys( errors ).length === 0;
 
+    // TODO: this needs to be deep as well
     const isFormTouched = objectKeys( touched ).length > 0;
 
+    // TODO: get this one figured out too...
     const areAllFieldsTouched = objectKeys( fieldRegistry.current ).length === getAllKeys( touched ).length;
 
     console.log( 'all touched', areAllFieldsTouched );
