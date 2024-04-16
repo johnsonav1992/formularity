@@ -127,6 +127,7 @@ const AnotherTest = () => {
                             name='choice'
                             type='checkbox'
                         />
+                        <Field name='deep.nested' />
                         <Stack
                             direction='row'
                             gap='1rem'

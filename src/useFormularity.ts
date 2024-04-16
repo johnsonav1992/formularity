@@ -39,6 +39,7 @@ import {
     , isEmpty
     , setViaPath
     , cloneDeep
+    , getAllKeys
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -405,12 +406,22 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const dirtyFields = values
         && objectEntries( values )
-            .filter( ( [ field, value ] ) => value !== initialValues.current?.[ field ] )
+            .filter( ( [ field, value ] ) => {
+                if ( typeof value === 'object' ) {
+                    return true;
+                }
+                return value !== initialValues.current?.[ field ];
+            } )
             .flatMap( ( [ field ] ) => field );
 
     const isValid = objectKeys( errors ).length === 0;
 
     const isFormTouched = objectKeys( touched ).length > 0;
+
+    const areAllFieldsTouched = objectKeys( fieldRegistry.current ).length === getAllKeys( touched ).length;
+
+    console.log( 'all touched', areAllFieldsTouched );
+    console.log( fieldRegistry.current );
 
     return {
         ...currentStore

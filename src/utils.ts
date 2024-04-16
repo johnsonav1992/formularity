@@ -13,6 +13,24 @@ export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
     return Object.entries( obj ) as Entries<T>;
 };
 
+export const getAllKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
+    const keys: DeepKeys<TObj>[] = [];
+
+    let key: keyof TObj;
+    for ( key in obj ) {
+        if ( Object.prototype.hasOwnProperty.call( obj, key ) ) {
+            keys.push( key as DeepKeys<TObj> );
+
+            if ( typeof obj[ key ] === 'object' ) {
+                keys.push(
+                    ...getAllKeys( obj[ key ] as object )
+                        .map( subKey => `${ String( key ) }.${ subKey }` as DeepKeys<TObj> ) );
+            }
+        }
+    }
+    return keys;
+};
+
 export const getViaPath = <
     TObj
     , TKey extends DeepKeys<TObj>
@@ -31,17 +49,6 @@ export const getViaPath = <
 
     return current as DeepValue<TObj, TKey>;
 };
-
-const initialValues = {
-    name: ''
-    , email: ''
-    , choice: false
-    , deep: {
-        nested: 'hey'
-    }
-};
-
-const res = getViaPath( initialValues, 'deep.nested' );
 
 export const setViaPath = <
     TObj
