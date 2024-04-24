@@ -39,7 +39,8 @@ import {
     , isEmpty
     , setViaPath
     , cloneDeep
-    , getAllKeys
+    , deepObjectKeys
+    , hasSameNestedKeys
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -417,14 +418,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isValid = objectKeys( errors ).length === 0;
 
-    // TODO: this needs to be deep as well
-    const isFormTouched = objectKeys( touched ).length > 0;
+    const isFormTouched = deepObjectKeys( touched ).length > 0;
 
-    // TODO: get this one figured out too...
-    const areAllFieldsTouched = objectKeys( fieldRegistry.current ).length === getAllKeys( touched ).length;
-
-    console.log( 'all touched', areAllFieldsTouched );
-    console.log( fieldRegistry.current );
+    const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
     return {
         ...currentStore
@@ -451,5 +447,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , isEditing
         , dirtyFields
         , isFormTouched
+        , areAllFieldsTouched
     };
 };

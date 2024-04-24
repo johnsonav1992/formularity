@@ -13,7 +13,7 @@ export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
     return Object.entries( obj ) as Entries<T>;
 };
 
-export const getAllKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
+export const deepObjectKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
     const keys: DeepKeys<TObj>[] = [];
 
     let key: keyof TObj;
@@ -23,12 +23,36 @@ export const getAllKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
 
             if ( typeof obj[ key ] === 'object' ) {
                 keys.push(
-                    ...getAllKeys( obj[ key ] as object )
+                    ...deepObjectKeys( obj[ key ] as object )
                         .map( subKey => `${ String( key ) }.${ subKey }` as DeepKeys<TObj> ) );
             }
         }
     }
     return keys;
+};
+
+export const hasSameNestedKeys = <T, U>( obj1: T, obj2: U ) => {
+    const countNestedKeys = <TObj>( obj: TObj ): number => {
+        let count = 0;
+        for ( const key in obj ) {
+            if ( Array.isArray( obj[ key ] ) ) {
+                for ( const item of obj[ key ] as unknown[] ) {
+                    if ( typeof item === 'object' ) {
+                        count += countNestedKeys( item );
+                    } else {
+                        count++;
+                    }
+                }
+            } else if ( typeof obj[ key ] === 'object' ) {
+                count += 1 + countNestedKeys( obj[ key ] );
+            } else {
+                count++;
+            }
+        }
+        return count;
+    };
+
+    return countNestedKeys( obj1 ) === countNestedKeys( obj2 );
 };
 
 export const getViaPath = <

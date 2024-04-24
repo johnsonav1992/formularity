@@ -230,6 +230,10 @@ export type FormComputedProps<TFormValues extends FormValues> = {
      * Returns true if any field in the form is touched
      */
     isFormTouched: boolean;
+    /**
+     * Returns `true` if every field (all nested fields included) are touched
+     */
+    areAllFieldsTouched: boolean;
 };
 
 ////// FORMULARITY PROPS //////
