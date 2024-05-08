@@ -10,13 +10,14 @@ import {
     , Stack
     , TextField
 } from '@mui/material';
+import { deepObjectKeys } from '../src/utils';
 
 type TestValues = {
     name: string;
     email: string;
     choice: boolean;
     deep: {
-        nested: string;
+        nested: number[];
     };
 };
 
@@ -25,7 +26,7 @@ const initialValues: TestValues = {
     , email: ''
     , choice: false
     , deep: {
-        nested: ''
+        nested: []
     }
 };
 
@@ -77,6 +78,9 @@ const formStore = createFormStore( {
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
+
+    const test = formularity.touched.deep.nested[ 0 ];
+    const t2 = formularity.errors.deep.nested[ 0 ];
 
     return (
         <div>
