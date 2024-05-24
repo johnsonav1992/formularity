@@ -160,9 +160,9 @@ export const Field = <
     useEffect( () => {
         registerField( {
             name
+            , type
             , validationHandler: validator || null
             , fieldId: 'id' in props ? props.id : null
-            , type: type
         } as never );
 
         return () => {

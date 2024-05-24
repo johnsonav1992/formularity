@@ -10,7 +10,6 @@ import {
     , Stack
     , TextField
 } from '@mui/material';
-import { deepObjectKeys } from '../src/utils';
 
 type TestValues = {
     name: string;
@@ -42,47 +41,11 @@ const formStore = createFormStore( {
     , validationSchema: zodAdapter( validationSchema ) // TODO: FIX SINGLE VALIDATOR
 } );
 
-// const OutsideComponent = () => {
-//     const {
-//         values
-//         , handleChange
-//         , submitForm
-//     } = useFormularity( { formStore } );
-
-//     return (
-//         <>
-//             <select
-//                 multiple
-//                 name='hobbies'
-//                 value={ values.hobbies }
-//                 onChange={ handleChange }
-//                 style={ {
-//                     width: '200px'
-//                     , marginTop: '16px'
-//                 } }
-//             >
-//                 <option value='soccer'>Soccer</option>
-//                 <option value='cooking'>Cooking</option>
-//                 <option value='cycling'>Cycling</option>
-//             </select>
-//             <button onClick={ submitForm }>
-//                 SUBMIT
-//             </button>
-//         </>
-//     );
-// };
-
-// const NestedFormWithField = ( { Field }: { Field: FieldComponent<typeof initialValues>} ) => {
-//     return (
-//         <Field name='hobbies' />
-//     );
-// };
-
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
     const test = formularity.touched.email;
-    const t2 = formularity.errors.array[ 0 ].hey;
+    const t2 = formularity.errors.array?.[ 0 ]?.hey;
     const t3 = formularity.dirtyFields[ 0 ];
 
     return (
