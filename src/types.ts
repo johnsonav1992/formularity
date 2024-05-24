@@ -57,7 +57,7 @@ export type FormTouched<TFormValues extends FormValues> = {
             : boolean;
 };
 
-export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
+export type DirtyFields<TFormValues extends FormValues> = Array<DeepKeys<NonNullable<TFormValues>>>;
 
 ////// FIELD REGISTRATION //////
 export type FieldRegistry<TFormValues extends FormValues> =

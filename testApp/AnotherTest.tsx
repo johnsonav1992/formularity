@@ -83,6 +83,7 @@ const AnotherTest = () => {
 
     const test = formularity.touched.email;
     const t2 = formularity.errors.array;
+    const t3 = formularity.dirtyFields[ 0 ];
 
     return (
         <div>
