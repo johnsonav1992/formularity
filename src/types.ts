@@ -31,7 +31,7 @@ export type FormErrors<TFormValues extends FormValues> = {
             ? U extends FormValues
                 ? FormErrors<U>
                 : never
-            : U extends number | boolean
+            : U extends number | boolean | string
                 ? string
                 : never>
         : TFormValues[K] extends object
@@ -47,7 +47,7 @@ export type FormTouched<TFormValues extends FormValues> = {
             ? U extends FormValues
                 ? FormTouched<U>
                 : never
-            : U extends number | boolean
+            : U extends number | boolean | string
                 ? boolean
                 : never>
         : TFormValues[K] extends object
@@ -55,7 +55,7 @@ export type FormTouched<TFormValues extends FormValues> = {
                 ? FormTouched<TFormValues[K]>
                 : never
             : boolean;
-};
+} | EmptyObject;
 
 export type DirtyFields<TFormValues extends FormValues> = Array<DeepKeys<NonNullable<TFormValues>>>;
 
