@@ -19,6 +19,7 @@ import {
     , FormValues
     , FormularityProps
     , SingleFieldValidator
+    , DirtyFields
 } from './types';
 import {
     DeepKeys
@@ -353,13 +354,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     errorsObj[ key ] = true as never;
 
                     return errorsObj;
-                }, {} );
+                }, {} as never );
 
             return formStore.set( {
                 submitCount: currentStore.submitCount + 1
                 , isSubmitting: false
                 , isValidating: false
-                , touched: newTouched
+                , touched: newTouched as FormTouched<TFormValues>
                 , errors: {
                     ...errors
                     , ...validationErrors
@@ -414,7 +415,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 }
                 return value !== initialValues.current?.[ field ];
             } )
-            .flatMap( ( [ field ] ) => field );
+            .flatMap( ( [ field ] ) => field ) as DirtyFields<TFormValues>; // TODO: shouldn't need this when this is finished;
 
     const isValid = objectKeys( errors ).length === 0;
 

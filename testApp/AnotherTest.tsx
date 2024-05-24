@@ -112,7 +112,6 @@ const AnotherTest = () => {
                             label='name'
                             size='small'
                             placeholder='Hey!'
-                            fieldPosition={ 1 }
                             // validator={
                             //     zodAdapter(
                             //         z.string().min( 3 )

@@ -78,14 +78,6 @@ export type NewFieldRegistration<
      */
     fieldId?: string | number;
     /**
-     * The position of the field in the form (i.e. is this field the first, second, fifth field?)
-     */
-    fieldPosition?: number;
-    /**
-     * Initial placeholder text of the field
-     */
-    placeholder?: string;
-    /**
      * type of the field for registration purposes (parent can have access)
      */
     type?: string;

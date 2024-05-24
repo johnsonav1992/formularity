@@ -121,10 +121,6 @@ export type FieldProps<
          */
         validator?: SingleFieldValidator<TFormValues, TFieldName>;
         /**
-         * The position of the field in the form (i.e. is this field the first, second, fifth field?)
-         */
-        fieldPosition?: number;
-        /**
          * Children that may need to be passed to the `<Field />` component.
          *
          * *This will generally only be used for components like `<select />` or
@@ -148,7 +144,6 @@ export const Field = <
         , showErrors
         , errorStyles
         , validator
-        , fieldPosition
         , ...props
     }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
 
@@ -167,8 +162,6 @@ export const Field = <
             name
             , validationHandler: validator || null
             , fieldId: 'id' in props ? props.id : null
-            , fieldPosition: fieldPosition || null
-            , placeholder: 'placeholder' in props ? props.placeholder : null
             , type: type
         } as never );
 
