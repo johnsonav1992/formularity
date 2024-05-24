@@ -78,3 +78,15 @@ type FieldValueOrUndefined<T, Key> =
 type IndexedFieldValueOrUndefined<T, Key> =
     | GetIndexedFieldValue<Exclude<T, undefined>, Key>
     | Extract<T, undefined>;
+
+export type MapNestedPrimitivesTo<TObj, Output = string> = {
+    [K in keyof TObj]?: TObj[K] extends Array<infer U>
+        ? Array<U extends object
+                ? MapNestedPrimitivesTo<U>
+            : U extends number | boolean | string
+                ? Output
+                : never>
+        : TObj[K] extends object
+                ? MapNestedPrimitivesTo<TObj[K]>
+                : Output;
+};

@@ -16,6 +16,7 @@ import {
     , DeepValue
     , EmptyObject
     , IntrinsicFormElements
+    , MapNestedPrimitivesTo
     , NoInfer
     , Nullish
     , UnsubScribeFn
@@ -24,39 +25,8 @@ import { CreateFormStoreParams } from './createFormStore';
 
 ////// FORM GENERAL //////
 export type FormValues = Record<PropertyKey, unknown> | null;
-
-export type FormErrors<TFormValues extends FormValues> = {
-    [K in keyof TFormValues]?: TFormValues[K] extends Array<infer U>
-        ? Array<U extends object
-            ? U extends FormValues
-                ? FormErrors<U>
-                : never
-            : U extends number | boolean | string
-                ? string
-                : never>
-        : TFormValues[K] extends object
-            ? TFormValues[K] extends FormValues
-                ? FormErrors<TFormValues[K]>
-                : never
-            : string;
-} | EmptyObject;
-
-export type FormTouched<TFormValues extends FormValues> = {
-    [K in keyof TFormValues]?: TFormValues[K] extends Array<infer U>
-        ? Array<U extends object
-            ? U extends FormValues
-                ? FormTouched<U>
-                : never
-            : U extends number | boolean | string
-                ? boolean
-                : never>
-        : TFormValues[K] extends object
-            ? TFormValues[K] extends FormValues
-                ? FormTouched<TFormValues[K]>
-                : never
-            : boolean;
-} | EmptyObject;
-
+export type FormErrors<TFormValues extends FormValues> = MapNestedPrimitivesTo<TFormValues, string> | EmptyObject;
+export type FormTouched<TFormValues extends FormValues> = MapNestedPrimitivesTo<TFormValues, boolean> | EmptyObject;
 export type DirtyFields<TFormValues extends FormValues> = Array<DeepKeys<NonNullable<TFormValues>>>;
 
 ////// FIELD REGISTRATION //////
