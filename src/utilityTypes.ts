@@ -4,6 +4,7 @@ export type Prettify<T> = {
 
 export type NoInfer<T> = [T][T extends unknown ? 0 : never];
 
+export type Primitive = string | number | boolean;
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
@@ -81,12 +82,14 @@ type IndexedFieldValueOrUndefined<T, Key> =
 
 export type MapNestedPrimitivesTo<TObj, Output = string> = {
     [K in keyof TObj]?: TObj[K] extends Array<infer U>
-        ? Array<U extends object
+        ? Array<
+            U extends object
                 ? MapNestedPrimitivesTo<U>
-            : U extends number | boolean | string
-                ? Output
-                : never>
+                : U extends Primitive
+                    ? Output
+                    : never
+            >
         : TObj[K] extends object
-                ? MapNestedPrimitivesTo<TObj[K]>
-                : Output;
+            ? MapNestedPrimitivesTo<TObj[K]>
+            : Output;
 };
