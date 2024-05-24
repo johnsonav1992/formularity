@@ -26,19 +26,36 @@ import { CreateFormStoreParams } from './createFormStore';
 export type FormValues = Record<PropertyKey, unknown> | null;
 
 export type FormErrors<TFormValues extends FormValues> = {
-    [K in keyof TFormValues]: TFormValues[K] extends infer O
-        extends object
-            ? O
+    [K in keyof TFormValues]: TFormValues[K] extends Array<infer U>
+        ? Array<U extends object
+            ? U extends FormValues
+                ? FormErrors<U>
+                : never
+            : U extends number | boolean
+                ? string
+                : never>
+        : TFormValues[K] extends object
+            ? TFormValues[K] extends FormValues
+                ? FormErrors<TFormValues[K]>
+                : never
             : string;
 } | EmptyObject;
 
 export type FormTouched<TFormValues extends FormValues> = {
-    [K in keyof TFormValues]: TFormValues[K] extends infer O extends object
-        ? O extends FormValues
-            ? FormTouched<O>
-            : boolean
-        : O;
-} | EmptyObject;
+    [K in keyof TFormValues]: TFormValues[K] extends Array<infer U>
+        ? Array<U extends object
+            ? U extends FormValues
+                ? FormTouched<U>
+                : never
+            : U extends number | boolean
+                ? boolean
+                : never>
+        : TFormValues[K] extends object
+            ? TFormValues[K] extends FormValues
+                ? FormTouched<TFormValues[K]>
+                : never
+            : boolean;
+};
 
 export type DirtyFields<TFormValues extends FormValues> = Array<keyof NonNullable<TFormValues>>;
 

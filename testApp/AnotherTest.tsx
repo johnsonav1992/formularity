@@ -19,6 +19,7 @@ type TestValues = {
     deep: {
         nested: number[];
     };
+    array: { hey: number }[];
 };
 
 const initialValues: TestValues = {
@@ -28,6 +29,7 @@ const initialValues: TestValues = {
     , deep: {
         nested: []
     }
+    , array: [ { hey: 0 } ]
 };
 
 const validationSchema = z.object( {
@@ -79,8 +81,8 @@ const formStore = createFormStore( {
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    const test = formularity.touched.deep.nested[ 0 ];
-    const t2 = formularity.errors.deep.nested[ 0 ];
+    const test = formularity.touched.email;
+    const t2 = formularity.errors.array;
 
     return (
         <div>
