@@ -82,7 +82,7 @@ const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
     const test = formularity.touched.email;
-    const t2 = formularity.errors.array;
+    const t2 = formularity.errors.array[ 0 ].hey;
     const t3 = formularity.dirtyFields[ 0 ];
 
     return (
