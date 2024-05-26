@@ -20,6 +20,7 @@ import {
     , FormularityProps
     , SingleFieldValidator
     , DirtyFields
+    , ValidationHandler
 } from './types';
 import {
     DeepKeys
@@ -146,7 +147,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     );
 
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
-        let errors: Partial<FormErrors<TFormValues>> = {};
+        let newErrors: Partial<FormErrors<TFormValues>> = {};
         const hasSingleFieldValidators = Object.values( fieldRegistry.current ).some( Boolean );
         const singleValidatorKeys = hasSingleFieldValidators
             ? objectEntries( fieldRegistry.current )
@@ -154,50 +155,42 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 .map( ( [ key ] ) => key )
             : [];
 
+        const validationRunner = async ( validationHandlerToRun: ValidationHandler<TFormValues> ) => {
+            const validationErrors = await validationHandlerToRun( values );
+
+            if ( validationErrors ) {
+                newErrors = validationErrors;
+            }
+
+            if ( hasSingleFieldValidators ) {
+                for ( const error in newErrors ) {
+                    if ( singleValidatorKeys.includes( error as never ) ) {
+                        delete newErrors[ error as keyof Partial<FormErrors<TFormValues>> ];
+                    }
+                }
+
+                newErrors = await runAllSingleFieldValidators( newErrors );
+            }
+
+            // If the errors haven't changed, skip render cycle and just return the errors
+            if ( isEqual( newErrors, errors ) ) return newErrors;
+
+            setErrors( newErrors );
+            return newErrors;
+        };
+
         switch ( true ) {
-            case !!validationSchema: {
-                const validationSchemaErrors = await validationSchema( values );
-
-                if ( validationSchemaErrors ) {
-                    errors = validationSchemaErrors;
-                }
-
-                if ( hasSingleFieldValidators ) {
-                    for ( const error in errors ) {
-                        if ( singleValidatorKeys.includes( error as never ) ) {
-                            delete errors[ error as keyof Partial<FormErrors<TFormValues>> ];
-                        }
-                    }
-
-                    errors = await runAllSingleFieldValidators( errors );
-                }
-
-                setErrors( errors as FormErrors<TFormValues> );
-            }
+            case !!validationSchema: validationRunner( validationSchema );
                 break;
-            case !!manualValidationHandler: {
-                errors = await runUserDefinedValidations( values ) as Partial<FormErrors<TFormValues>>;
-
-                if ( hasSingleFieldValidators ) {
-                    for ( const error in errors ) {
-                        if ( singleValidatorKeys.includes( error as never ) ) {
-                            delete errors[ error as keyof Partial<FormErrors<TFormValues>> ];
-                        }
-                    }
-
-                    errors = await runAllSingleFieldValidators( errors );
-                }
-
-                setErrors( errors as FormErrors<TFormValues> );
-            }
+            case !!manualValidationHandler: validationRunner( runUserDefinedValidations as ValidationHandler<TFormValues> );
                 break;
             default: {
-                errors = await runAllSingleFieldValidators( errors );
-                setErrors( errors as FormErrors<TFormValues> );
+                newErrors = await runAllSingleFieldValidators( newErrors );
+                setErrors( newErrors as FormErrors<TFormValues> );
             }
         }
 
-        return errors;
+        return newErrors;
     } );
 
     const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {

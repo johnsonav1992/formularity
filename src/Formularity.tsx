@@ -1,7 +1,7 @@
 import {
     ReactNode
     , createContext
-    , use
+    , useContext
 } from 'react';
 
 // Components
@@ -69,7 +69,7 @@ export const Formularity = <TFormValues extends FormValues>( {
 };
 
 export const useFormularityContext = () => {
-    const formularity = use( FormularityContext );
+    const formularity = useContext( FormularityContext );
 
     if ( !formularity ) {
         throw new Error(

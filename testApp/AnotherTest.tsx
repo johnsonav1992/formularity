@@ -82,7 +82,7 @@ const AnotherTest = () => {
                             //     )
                             // }
                             helperText={ touched.name && errors.name }
-                            error={ !!errors && touched.name }
+                            error={ !!errors.name && touched.name }
                         />
                         <Field
                             name='email'
@@ -102,7 +102,6 @@ const AnotherTest = () => {
                             gap='1rem'
                         >
                             <ResetButton
-                                //@ts-ignore -> MUI not compat. w/ React 19 yet
                                 component={ Button }
                                 variant='outlined'
                                 fullWidth
