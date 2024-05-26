@@ -102,6 +102,7 @@ const AnotherTest = () => {
                             gap='1rem'
                         >
                             <ResetButton
+                                //@ts-ignore -> MUI not compat. w/ React 19 yet
                                 component={ Button }
                                 variant='outlined'
                                 fullWidth
