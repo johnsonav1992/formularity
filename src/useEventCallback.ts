@@ -7,7 +7,7 @@ import {
 type AnyFunction = ( ...args: unknown[] ) => void;
 
 export const useEventCallback = <T extends AnyFunction>( fn: T ): T => {
-    const ref = useRef<AnyFunction>();
+    const ref = useRef<AnyFunction>( () => {} );
 
     useLayoutEffect( () => {
         ref.current = fn;
