@@ -44,8 +44,8 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "@vitejs/plugin-react": "^4.2.1",
@@ -56,8 +56,8 @@
     "formularity-zod-adapter": "^0.0.9-alpha",
     "johnsonav-eslint-config": "^0.0.4",
     "npm": "^10.4.0",
-    "react": "^19.0.0-rc-935180c7e0-20240524",
-    "react-dom": "^19.0.0-rc-935180c7e0-20240524",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "rollup": "^3.29.4",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "typescript": "^5.3.3",
@@ -66,12 +66,6 @@
   },
   "dependencies": {
     "tslib": "^2.6.2",
-    "zod": "^3.22.4",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
-  },
-  "overrides": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
+    "zod": "^3.22.4"
   }
 }
