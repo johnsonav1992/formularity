@@ -80,25 +80,25 @@ export const SubmitButton = <
             , ...props
         }: SubmitButtonProps<TDisableInvalid, TComponentProps>
     ) => {
-    const formularityCtx = useFormularityContext();
+    const formularity = useFormularityContext();
 
     const renderedComponent = component as FC || 'button';
 
     const getDisabledLogic = () => {
-        const isValid = !!formularityCtx.isValid;
+        const isValid = !!formularity.isValid;
 
         if ( 'disabled' in props && props.disabled ) return props.disabled;
         if ( disableInvalid == null ) return !isValid;
-        if ( disableWhileSubmitting && formularityCtx.isSubmitting ) return true;
+        if ( disableWhileSubmitting && formularity.isSubmitting ) return true;
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {
                 case 'after-first-submission':
-                    return disableAfterFirstSubmit( formularityCtx );
+                    return disableAfterFirstSubmit( formularity );
                 case 'after-first-submission-editing':
-                    return disableAfterFirstSubmitUnlessEditing( formularityCtx );
+                    return disableAfterFirstSubmitUnlessEditing( formularity );
                 case 'not-dirty':
-                    return isFormDisabledNotDirty( formularityCtx );
+                    return isFormDisabledNotDirty( formularity );
                 case 'errors-only':
                 default:
                     return !isValid;

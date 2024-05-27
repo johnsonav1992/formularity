@@ -7,6 +7,7 @@ import { Formularity } from '../src/Formularity';
 import { zodAdapter } from 'formularity-zod-adapter';
 import {
     Button
+    , CircularProgress
     , Stack
     , TextField
 } from '@mui/material';
@@ -18,7 +19,6 @@ type TestValues = {
     deep: {
         nested: number[];
     };
-    array: { hey: number }[];
 };
 
 const initialValues: TestValues = {
@@ -28,7 +28,6 @@ const initialValues: TestValues = {
     , deep: {
         nested: []
     }
-    , array: [ { hey: 0 } ]
 };
 
 const validationSchema = z.object( {
@@ -47,14 +46,19 @@ const AnotherTest = () => {
     console.log( 'RENDER' );
 
     const test = formularity.touched.email;
-    const t2 = formularity.errors.array?.[ 0 ]?.hey;
     const t3 = formularity.dirtyFields[ 0 ];
 
     return (
         <div>
             <Formularity
                 formStore={ formStore }
-                onSubmit={ values => alert( JSON.stringify( values, null, '\t' ) ) }
+                onSubmit={ values => {
+                    return new Promise( resolve => setTimeout( () => {
+                        console.log( 'SUBMITTED' );
+                        resolve();
+                    }
+                    , 3000 ) );
+                } }
             >
                 { ( {
                     Field
@@ -62,6 +66,7 @@ const AnotherTest = () => {
                     , ResetButton
                     , errors
                     , touched
+                    , isSubmitting
                 } ) => (
                     <div
                         style={ {
@@ -117,7 +122,12 @@ const AnotherTest = () => {
                                 disableInvalid
                                 disabledMode='after-first-submission'
                             >
-                                Submit
+                                { isSubmitting
+                                    ? (
+                                        <CircularProgress color='inherit' />
+                                    )
+                                    : 'Submit'
+                                }
                             </SubmitButton>
                         </Stack>
                     </div>
