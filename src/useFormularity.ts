@@ -421,7 +421,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isDirty = !isEqual( values, initialValues.current );
     const dirtyFields = getKeysWithDiffs( values, initialValues.current );
 
-    const isValid = objectKeys( errors ).length === 0;
+    const isValid = deepObjectKeys( errors ).length === 0;
 
     const isFormTouched = deepObjectKeys( touched ).length > 0;
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
