@@ -285,7 +285,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newTouched
         );
 
-        // TODO: Need to find a create way to cut down on a render here
+        // TODO: Need to find a creative way to cut down on a render here
         // (Try to get touched and validations to update in one render)
 
         formStore.set( { touched: newFieldTouched } );
