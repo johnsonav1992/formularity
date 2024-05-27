@@ -23,7 +23,8 @@ import {
     , ValidationHandler
 } from './types';
 import {
-    DeepKeys
+    CheckboxValue
+    , DeepKeys
     , NoInfer
 } from './utilityTypes';
 
@@ -78,6 +79,11 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      */
     validateOnBlur?: boolean;
     /**
+     * If set to true, the form will validate on each field change.
+     * @default true
+     */
+    validateOnChange?: boolean;
+    /**
      * If set to true, the form will validate on submit.
      * **It is very rare that this would ever be turned off, but
      * it is included here for niche cases where that may be needed
@@ -92,6 +98,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , valuesInitializer
     , onSubmit
     , validateOnBlur = true
+    , validateOnChange = true
     , validateOnSubmit = true
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
@@ -248,11 +255,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         formStore.set( { values: newValues } );
 
-        validateForm( newValues );
+        validateOnChange && validateForm( newValues );
     } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
         formStore.set( { values: newValues } );
+
+        validateOnChange && validateForm( newValues );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
@@ -276,23 +285,25 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newTouched
         );
 
-        formStore.set( { touched: newFieldTouched } );
+        // TODO: Need to find a create way to cut down on a render here
+        // (Try to get touched and validations to update in one render)
 
+        formStore.set( { touched: newFieldTouched } );
         validateOnBlur && validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
         if ( isEqual( touched, newTouched ) ) return;
 
-        formStore.set( { touched: newTouched } );
+        validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
         let finalValue;
 
+        const fieldName = e.target.name as DeepKeys<TFormValues>;
         const {
             value
-            , name: fieldName
             , type
         } = e.target;
 
@@ -317,7 +328,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             case ( /checkbox/.test( type ) || checked ):
                 finalValue = getCheckboxValue(
-                    getViaPath( values, fieldName as DeepKeys<TFormValues> ) as Parameters<typeof getCheckboxValue>[0]
+                    getViaPath( values, fieldName ) as CheckboxValue
                     , checked
                     , value
                 );
@@ -329,15 +340,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         setFieldValue(
-            fieldName as DeepKeys<TFormValues>
+            fieldName
             , finalValue as TFormValues[keyof TFormValues]
         );
     } );
 
     const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {
-        const { name: fieldName } = e.target;
+        const fieldName = e.target.name as DeepKeys<TFormValues>;
 
-        setFieldTouched( fieldName as DeepKeys<TFormValues>, true );
+        setFieldTouched( fieldName, true );
     } );
 
     const submitForm = async () => {

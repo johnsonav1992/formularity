@@ -27,6 +27,8 @@ export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
     | 'optgroup'
 >;
 
+export type CheckboxValue = string | boolean | unknown[];
+
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
     TKey extends string | number | undefined
         ? `${ Keys<TObj, IsRoot, TKey> }${ '' | ( TObj[TKey] extends object ? DeepKeys<TObj[TKey], false> : '' ) }`
