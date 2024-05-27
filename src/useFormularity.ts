@@ -77,6 +77,13 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      * @default true
      */
     validateOnBlur?: boolean;
+    /**
+     * If set to true, the form will validate on submit.
+     * **It is very rare that this would ever be turned off, but
+     * it is included here for niche cases where that may be needed
+     * @default true
+     */
+    validateOnSubmit?: boolean;
 };
 
 export const useFormularity = <TFormValues extends FormValues>( {
@@ -85,6 +92,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , valuesInitializer
     , onSubmit
     , validateOnBlur = true
+    , validateOnSubmit = true
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
 
@@ -335,33 +343,35 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const submitForm = async () => {
         formStore.set( {
             isSubmitting: true
-            , isValidating: true
+            , isValidating: !!validateOnSubmit
         } );
 
-        const validationErrors = await validateForm( values );
-        const hasErrors = objectKeys( validationErrors ).length > 0;
+        if ( validateOnSubmit ) {
+            const validationErrors = await validateForm( values );
+            const hasErrors = objectKeys( validationErrors ).length > 0;
 
-        if ( hasErrors ) {
-            const newTouched = objectKeys( validationErrors )
-                .reduce<FormTouched<TFormValues>>( ( errorsObj, key ) => {
-                    errorsObj[ key ] = true as never;
+            if ( hasErrors ) {
+                const newTouched = objectKeys( validationErrors )
+                    .reduce<FormTouched<TFormValues>>( ( errorsObj, key ) => {
+                        errorsObj[ key ] = true as never;
 
-                    return errorsObj;
-                }, {} as never );
+                        return errorsObj;
+                    }, {} as never );
 
-            return formStore.set( {
-                submitCount: currentStore.submitCount + 1
-                , isSubmitting: false
-                , isValidating: false
-                , touched: newTouched as FormTouched<TFormValues>
-                , errors: {
-                    ...errors
-                    , ...validationErrors
-                } as FormErrors<TFormValues>
-            } );
+                return formStore.set( {
+                    submitCount: currentStore.submitCount + 1
+                    , isSubmitting: false
+                    , isValidating: false
+                    , touched: newTouched as FormTouched<TFormValues>
+                    , errors: {
+                        ...errors
+                        , ...validationErrors
+                    } as FormErrors<TFormValues>
+                } );
+            }
+
+            formStore.set( { isValidating: false } );
         }
-
-        formStore.set( { isValidating: false } );
 
         await submitHandler?.( currentStore.values );
 
