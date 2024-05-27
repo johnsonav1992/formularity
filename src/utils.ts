@@ -16,19 +16,45 @@ export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
 export const deepObjectKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
     const keys: DeepKeys<TObj>[] = [];
 
-    let key: keyof TObj;
-    for ( key in obj ) {
-        if ( Object.prototype.hasOwnProperty.call( obj, key ) ) {
-            keys.push( key as DeepKeys<TObj> );
+    const getDeepKeys = ( currentObj: TObj, path: string ) => {
+        if ( typeof currentObj !== 'object' || currentObj === null ) return;
 
-            if ( typeof obj[ key ] === 'object' ) {
-                keys.push(
-                    ...deepObjectKeys( obj[ key ] as object )
-                        .map( subKey => `${ String( key ) }.${ subKey }` as DeepKeys<TObj> ) );
+        for ( const key in currentObj ) {
+            if ( Object.prototype.hasOwnProperty.call( currentObj, key ) ) {
+                const fullPath = path ? `${ path }.${ key }` : key;
+
+                keys.push( fullPath as DeepKeys<TObj> );
+
+                if ( Array.isArray( currentObj[ key ] ) ) {
+                    ( currentObj[ key ] as unknown[] ).forEach( ( item: unknown, index: number ) => {
+                        const arrayPath = `${ fullPath }[${ index }]`;
+
+                        keys.push( arrayPath as DeepKeys<TObj> );
+                        getDeepKeys( item as TObj, arrayPath );
+                    } );
+                } else if ( typeof currentObj[ key ] === 'object' ) {
+                    getDeepKeys( currentObj[ key ] as TObj, fullPath );
+                }
             }
         }
-    }
+    };
+
+    getDeepKeys( obj, '' );
+
     return keys;
+};
+
+export const getKeysWithDiffs = <TObj, TCompareObj>( obj: TObj, obj2: TCompareObj ): DeepKeys<TObj>[] => {
+    const allKeys = deepObjectKeys( obj );
+
+    const keysWithDiffs = allKeys.filter( key => {
+        const objValue = getViaPath( obj, key );
+        const initialValue = getViaPath( obj2, key as never );
+
+        return !isEqual( objValue, initialValue );
+    } );
+
+    return keysWithDiffs;
 };
 
 export const hasSameNestedKeys = <T, U>( obj1: T, obj2: U ) => {
@@ -66,9 +92,21 @@ export const getViaPath = <
     let current = obj;
 
     for ( const key of keys ) {
-        if ( typeof current === 'object' && current !== null && key in current ) {
+        if ( Array.isArray( current ) ) {
+            const index = parseInt( key as string, 10 );
+
+            if ( isNaN( index ) ) return undefined;
+
+            current = current[ index ];
+        } else if (
+            typeof current === 'object'
+            && current !== null
+            && key in current
+        ) {
             current = current[ key ] as TObj;
-        } else return undefined;
+        } else {
+            return undefined;
+        }
     }
 
     return current as DeepValue<TObj, TKey>;

@@ -19,7 +19,6 @@ import {
     , FormValues
     , FormularityProps
     , SingleFieldValidator
-    , DirtyFields
     , ValidationHandler
 } from './types';
 import {
@@ -44,6 +43,7 @@ import {
     , cloneDeep
     , deepObjectKeys
     , hasSameNestedKeys
+    , getKeysWithDiffs
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -419,22 +419,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const isDirty = !isEqual( values, initialValues.current );
-
-    const dirtyFields = values
-        && objectEntries( values )
-            .filter( ( [ field, value ] ) => {
-                if ( typeof value === 'object' ) {
-                    return true;
-                    // TODO: recurse here and figure out if the inner fields are touched
-                }
-                return value !== initialValues.current?.[ field ];
-            } )
-            .flatMap( ( [ field ] ) => field ) as DirtyFields<TFormValues>; // TODO: shouldn't need this when this is finished;
+    const dirtyFields = getKeysWithDiffs( values, initialValues.current );
 
     const isValid = objectKeys( errors ).length === 0;
 
     const isFormTouched = deepObjectKeys( touched ).length > 0;
-
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
     return {
