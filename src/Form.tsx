@@ -4,7 +4,7 @@ import {
 } from 'react';
 
 // Hooks
-import { useFormularityContext } from './Formularity';
+import { useFormularityContext } from './FormularityContext';
 
 export type FormProps = PropsWithChildren<{}> & ComponentProps<'form'>;
 

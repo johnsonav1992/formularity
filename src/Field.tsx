@@ -28,7 +28,7 @@ import { getViaPath } from './utils';
 import { ConditionalWrapper } from './ConditionalWrapper';
 
 // Hooks
-import { useFormularityContext } from './Formularity';
+import { useFormularityContext } from './FormularityContext';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
