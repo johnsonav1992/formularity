@@ -2,6 +2,8 @@ import {
     createContext
     , useContext
 } from 'react';
+
+// Types
 import { FormularityProps } from './types';
 
 export const FormularityContext = createContext<FormularityProps | null>( null );
