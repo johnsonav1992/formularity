@@ -164,15 +164,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let newErrors: Partial<FormErrors<TFormValues>> = {};
 
-        const hasSingleFieldValidators
-            = Object.values( fieldRegistry.current )
-                .some( registryEntry => !!registryEntry?.validationHandler );
-
-        const singleValidatorKeys = hasSingleFieldValidators
-            ? objectEntries( fieldRegistry.current )
+        const singleValidatorKeys = objectEntries( fieldRegistry.current )
                 .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
-                .map( ( [ key ] ) => key )
-            : [];
+                .map( ( [ key ] ) => key );
 
         const validationRunner = async ( validationHandlerToRun: ValidationHandler<TFormValues> ) => {
             const validationErrors = await validationHandlerToRun( values );
@@ -181,7 +175,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 newErrors = validationErrors;
             }
 
-            if ( hasSingleFieldValidators ) {
+            if ( singleValidatorKeys.length ) {
                 for ( const error in newErrors ) {
                     if ( singleValidatorKeys.includes( error as never ) ) {
                         delete newErrors[ error as keyof Partial<FormErrors<TFormValues>> ];
