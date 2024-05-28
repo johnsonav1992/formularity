@@ -165,8 +165,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         let newErrors: Partial<FormErrors<TFormValues>> = {};
 
         const singleValidatorKeys = objectEntries( fieldRegistry.current )
-                .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
-                .map( ( [ key ] ) => key );
+            .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
+            .map( ( [ key ] ) => key );
 
         const validationRunner = async ( validationHandlerToRun: ValidationHandler<TFormValues> ) => {
             const validationErrors = await validationHandlerToRun( values );
