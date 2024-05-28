@@ -8,7 +8,7 @@ import React, {
 import { NoInfer } from './utilityTypes';
 
 // Context
-import { useFormularityContext } from './Formularity';
+import { useFormularityContext } from './FormularityContext';
 
 // Utils
 import {
