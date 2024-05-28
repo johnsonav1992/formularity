@@ -288,6 +288,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , newTouched
         );
 
+        console.log( newFieldTouched );
+
         // TODO: Need to find a creative way to cut down on a render here
         // (Try to get touched and validations to update in one render)
 
@@ -349,6 +351,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {
+        console.log( 'blur' );
         const fieldName = e.target.name as DeepKeys<TFormValues>;
 
         setFieldTouched( fieldName, true );

@@ -74,7 +74,7 @@ export type FieldProps<
         component?: FC<TComponentProps> | keyof IntrinsicFormElements;
         /**
          * Quick utility prop to show errors for the field
-         * should their be validation set up for it. Defaults to false.
+         * should there be validation set up for it. Defaults to false.
          *
          * This prop is optional and may not be used so error display can be handled elsewhere.
          */
