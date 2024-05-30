@@ -17,14 +17,16 @@ type BasicTestFormValues = {
 
 const validationSchema = z.object( {
     name: z.object( {
-        first: z.string().min( 1 )
-        , last: z.string().min( 1 )
+        first: z.string().min( 1, 'First name is required' )
+        , last: z.string().min( 1, 'Last name is required' )
     } )
-    , email: z.string().email()
-    , acknowledgement: z.boolean()
+    , email: z.string().email( 'Invalid email' )
+    , acknowledgement: z.boolean().refine( val => val === true, 'Must acknowledge!' )
 } );
 
-const formStore = createFormStore<BasicTestFormValues>( {
+const schema = zodAdapter( validationSchema );
+
+const formStore = createFormStore( {
     initialValues: {
         name: {
             first: ''
@@ -33,7 +35,7 @@ const formStore = createFormStore<BasicTestFormValues>( {
         , email: ''
         , acknowledgement: false
     }
-    , validationSchema: zodAdapter( validationSchema )
+    , validationSchema: schema
 } );
 
 const inputStyles: CSSProperties = {
@@ -43,6 +45,10 @@ const inputStyles: CSSProperties = {
 
 const labelStyles: CSSProperties = {
     fontSize: '1.5rem'
+};
+
+const errorStyles: CSSProperties = {
+    color: 'red'
 };
 
 const BasicTest = () => {
@@ -74,6 +80,13 @@ const BasicTest = () => {
                         name='name.first'
                         style={ inputStyles }
                         showErrors
+                        errorStyles={ errorStyles }
+                        validator={ zodAdapter(
+                            z.string()
+                                .min( 3, 'Must have 3 or more chars!' )
+                            , { isField: true }
+                        ) }
+                        // validator={ val => { return val; } }
                     />
                     <label
                         htmlFor='name.first'
@@ -85,6 +98,7 @@ const BasicTest = () => {
                         name='name.last'
                         style={ inputStyles }
                         showErrors
+                        errorStyles={ errorStyles }
                     />
                     <label
                         htmlFor='name.first'
@@ -96,6 +110,7 @@ const BasicTest = () => {
                         name='email'
                         style={ inputStyles }
                         showErrors
+                        errorStyles={ errorStyles }
                     />
                     <label htmlFor='name.first'>
                         Do you acknowledge the terms?
@@ -108,6 +123,7 @@ const BasicTest = () => {
                             , width: '20px'
                         } }
                         showErrors
+                        errorStyles={ errorStyles }
                     />
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
