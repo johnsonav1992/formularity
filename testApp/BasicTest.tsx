@@ -24,7 +24,7 @@ const validationSchema = z.object( {
     , acknowledgement: z.boolean()
 } );
 
-const formStore = createFormStore( {
+const formStore = createFormStore<BasicTestFormValues>( {
     initialValues: {
         name: {
             first: ''
