@@ -4,7 +4,7 @@ import {
     , createFormStore
 } from '../src';
 import { z } from 'zod';
-import { zodAdapter } from 'formularity-zod-adapter';
+import { zodAdapter } from '../src/zodAdapter';
 
 type BasicTestFormValues = {
     name: {
@@ -26,7 +26,7 @@ const validationSchema = z.object( {
 
 const schema = zodAdapter( validationSchema );
 
-const formStore = createFormStore( {
+const formStore = createFormStore<BasicTestFormValues>( {
     initialValues: {
         name: {
             first: ''
@@ -81,12 +81,12 @@ const BasicTest = () => {
                         style={ inputStyles }
                         showErrors
                         errorStyles={ errorStyles }
-                        validator={ zodAdapter(
-                            z.string()
-                                .min( 3, 'Must have 3 or more chars!' )
-                            , { isField: true }
-                        ) }
-                        // validator={ val => { return val; } }
+                        validator={
+                            zodAdapter(
+                                z.string().min( 3, 'Must have 3 or more chars!' )
+                                , { isField: true }
+                            )
+                        }
                     />
                     <label
                         htmlFor='name.first'

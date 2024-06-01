@@ -53,7 +53,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",
-    "formularity-zod-adapter": "^0.0.10-alpha",
+    "formularity-zod-adapter": "^0.0.14-alpha",
     "johnsonav-eslint-config": "^0.0.4",
     "npm": "^10.4.0",
     "react": "^18.3.0",
@@ -62,10 +62,10 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+    "zod": "^3.22.4"
   },
   "dependencies": {
-    "tslib": "^2.6.2",
-    "zod": "^3.22.4"
+    "tslib": "^2.6.2"
   }
 }
