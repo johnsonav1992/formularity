@@ -80,10 +80,19 @@ export type FieldProps<
          */
         showErrors?: TShowErrors;
         /**
-         * Styles to apply to the error message.
+         * Props to pass to the error message.
          * *Note: This prop is only available if `showErrors` is set to true.
          */
-        errorStyles?: NoInfer<TShowErrors> extends true ? CSSProperties : never;
+        errorProps?: NoInfer<TShowErrors> extends true ? {
+            /**
+             * Inline styles to apply to the error message.
+             */
+            errorStyles?: CSSProperties;
+            /**
+             * Classes to apply to the error message.
+             */
+            errorClasses?: string;
+        } : never;
         /**
          * A custom validator to run on the field. Can be a manually defined
          * validation handler (see ex. below) or a third-party schema wrapped in an adapter.
@@ -142,7 +151,7 @@ export const Field = <
         , checked
         , component
         , showErrors
-        , errorStyles
+        , errorProps
         , validator
         , ...props
     }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
@@ -203,7 +212,10 @@ export const Field = <
                         error
                         && isTouched
                         && (
-                            <div style={ errorStyles }>
+                            <div
+                                style={ errorProps?.errorStyles }
+                                className={ errorProps?.errorClasses }
+                            >
                                 { error }
                             </div>
                         )

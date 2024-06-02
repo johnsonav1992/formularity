@@ -24,8 +24,6 @@ const validationSchema = z.object( {
     , acknowledgement: z.boolean().refine( val => val === true, 'Must acknowledge!' )
 } );
 
-const schema = zodAdapter( validationSchema );
-
 const formStore = createFormStore<BasicTestFormValues>( {
     initialValues: {
         name: {
@@ -35,7 +33,7 @@ const formStore = createFormStore<BasicTestFormValues>( {
         , email: ''
         , acknowledgement: false
     }
-    , validationSchema: schema
+    , validationSchema: zodAdapter( validationSchema )
 } );
 
 const inputStyles: CSSProperties = {
@@ -80,7 +78,9 @@ const BasicTest = () => {
                         name='name.first'
                         style={ inputStyles }
                         showErrors
-                        errorStyles={ errorStyles }
+                        errorProps={ {
+                            errorStyles
+                        } }
                         validator={
                             zodAdapter(
                                 //@ts-ignore -> weird package thing
@@ -99,7 +99,9 @@ const BasicTest = () => {
                         name='name.last'
                         style={ inputStyles }
                         showErrors
-                        errorStyles={ errorStyles }
+                        errorProps={ {
+                            errorStyles
+                        } }
                     />
                     <label
                         htmlFor='name.first'
@@ -111,7 +113,9 @@ const BasicTest = () => {
                         name='email'
                         style={ inputStyles }
                         showErrors
-                        errorStyles={ errorStyles }
+                        errorProps={ {
+                            errorStyles
+                        } }
                     />
                     <label htmlFor='name.first'>
                         Do you acknowledge the terms?
@@ -124,7 +128,9 @@ const BasicTest = () => {
                             , width: '20px'
                         } }
                         showErrors
-                        errorStyles={ errorStyles }
+                        errorProps={ {
+                            errorStyles
+                        } }
                     />
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
