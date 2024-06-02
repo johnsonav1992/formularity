@@ -4,7 +4,7 @@ import {
     , createFormStore
 } from '../src';
 import { z } from 'zod';
-import { zodAdapter } from '../src/zodAdapter';
+import { zodAdapter } from 'formularity-zod-adapter';
 
 type BasicTestFormValues = {
     name: {
@@ -83,6 +83,7 @@ const BasicTest = () => {
                         errorStyles={ errorStyles }
                         validator={
                             zodAdapter(
+                                //@ts-ignore -> weird package thing
                                 z.string().min( 3, 'Must have 3 or more chars!' )
                                 , { isField: true }
                             )
