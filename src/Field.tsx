@@ -234,7 +234,8 @@ export const Field = <
     return (
         <>
             {
-                label && (
+                label
+                && (
                     <label
                         htmlFor={ name || id }
                         style={ labelProps?.labelStyles }

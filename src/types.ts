@@ -232,9 +232,17 @@ export type FieldComponent<TFormValues extends FormValues>
         TFieldName extends DeepKeys<TFormValues>
         , TComponentProps = keyof IntrinsicFormElements
         , TShowErrors extends boolean = false
+        , TLabel extends string | undefined = undefined
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >(
-        props: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue>
+        props: FieldProps<
+                TFormValues
+                , TFieldName
+                , TComponentProps
+                , TShowErrors
+                , TLabel
+                , TFieldValue
+            >
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;
