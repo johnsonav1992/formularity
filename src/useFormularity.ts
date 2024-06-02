@@ -416,8 +416,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         resetForm();
     } );
 
-    const isDirty = !isEqual( values, initialValues.current );
-    const dirtyFields = getKeysWithDiffs( values, initialValues.current );
+    const initialValuesToCompare = !isEmpty( valuesInitializer )
+        ? valuesInitializer
+        : initialValues.current;
+
+    const isDirty = !isEqual( values, initialValuesToCompare );
+    const isPristine = !isDirty;
+    const dirtyFields = getKeysWithDiffs( values, initialValuesToCompare );
 
     const isValid = deepObjectKeys( errors ).length === 0;
 
@@ -445,6 +450,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , resetForm
         , handleReset
         , isDirty
+        , isPristine
         , isValid
         , isEditing
         , dirtyFields

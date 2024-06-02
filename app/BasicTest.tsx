@@ -67,6 +67,7 @@ const BasicTest = () => {
                 Field
                 , SubmitButton
                 , ResetButton
+                , isPristine
             } ) => (
                 <div
                     style={ {
@@ -142,6 +143,7 @@ const BasicTest = () => {
                     <ResetButton>
                         Reset
                     </ResetButton>
+                    { JSON.stringify( { isPristine } ) }
                 </div>
             ) }
         </Formularity>

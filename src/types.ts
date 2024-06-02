@@ -197,13 +197,19 @@ export type FormHandlers<TFormValues extends FormValues> = {
 ////// COMPUTED PROPS //////
 export type FormComputedProps<TFormValues extends FormValues> = {
     /**
-     * Returns true if any field in the form is dirty
+     * Returns true if any field in the form is dirty (the field value
+     * is not exactly the same as it was in the initialValues)
      */
     isDirty: boolean;
     /**
      * An array of the names of all fields that are dirty
      */
     dirtyFields: DirtyFields<TFormValues>;
+    /**
+     * Returns true if all fields in the form are pristine (every value in the form
+     * matches the initialValues)
+     */
+    isPristine: boolean;
     /**
      * This returns true if the form is currently in a valid state;
      * There are no errors present.
