@@ -75,7 +75,7 @@ export type FieldProps<
          * This uses a standard html `<label />` and can be customized
          * with the `labelProps` prop.
          */
-        label?: string;
+        label?: TLabel;
         /**
          * Props to pass to the label. `label` must be set for these props to be accessible
          */
