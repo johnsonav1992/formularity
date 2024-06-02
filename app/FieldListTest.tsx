@@ -47,7 +47,10 @@ const FieldListTest = () => {
                                     {
                                         hobbies.map( ( _, idx ) => (
                                             <>
-                                                <Field name={ `hobbies[${ idx }]` } />
+                                                <Field
+                                                    name={ `hobbies[${ idx }]` }
+                                                    key={ idx }
+                                                />
                                             </>
                                         ) )
                                     }
