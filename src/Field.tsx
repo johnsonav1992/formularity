@@ -37,6 +37,7 @@ export type FieldProps<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TComponentProps = keyof IntrinsicFormElements
     , TShowErrors extends boolean = false
+    , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
@@ -72,6 +73,25 @@ export type FieldProps<
          * and typed accordingly
          */
         component?: FC<TComponentProps> | keyof IntrinsicFormElements;
+        /**
+         * The label to display for the field.
+         * This uses a standard html `<label />` and can be customized
+         * with the `labelProps` prop.
+         */
+        label?: string;
+        /**
+         * Props to pass to the label. `label` must be set for these props to be accessible
+         */
+        labelProps?: NoInfer<TLabel> extends string ? {
+            /**
+             * Inline styles to apply to the label.
+             */
+            labelStyles?: CSSProperties;
+            /**
+             * Classes to apply to the label.
+             */
+            labelClasses?: string;
+        } : never;
         /**
          * Quick utility prop to show errors for the field
          * should there be validation set up for it. Defaults to false.
@@ -143,6 +163,7 @@ export const Field = <
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TComponentProps = keyof IntrinsicFormElements
     , TShowErrors extends boolean = false
+    , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     >( {
         name
@@ -150,11 +171,20 @@ export const Field = <
         , type
         , checked
         , component
+        , label
+        , labelProps
         , showErrors
         , errorProps
         , validator
         , ...props
-    }: FieldProps<TFormValues, TFieldName, TComponentProps, TShowErrors, TFieldValue> ) => {
+    }: FieldProps<
+        TFormValues
+        , TFieldName
+        , TComponentProps
+        , TShowErrors
+        , TLabel
+        , TFieldValue
+    > ) => {
 
     const {
         values
@@ -166,12 +196,14 @@ export const Field = <
         , unregisterField
     } = useFormularityContext();
 
+    const id = 'id' in props ? props.id as string : undefined;
+
     useEffect( () => {
         registerField( {
             name
             , type
             , validationHandler: validator || null
-            , fieldId: 'id' in props ? props.id : null
+            , fieldId: id
         } as never );
 
         return () => {
@@ -223,6 +255,17 @@ export const Field = <
                 </>
             ) }
         >
+            {
+                label && (
+                    <label
+                        htmlFor={ name || id }
+                        style={ labelProps?.labelStyles }
+                        className={ labelProps?.labelClasses }
+                    >
+                        { label }
+                    </label>
+                )
+            }
             {
                 React.createElement<typeof fieldProps>(
                     renderedComponent

@@ -58,7 +58,6 @@ const BasicTest = () => {
             { ( {
                 Field
                 , SubmitButton
-                , errors
             } ) => (
                 <div
                     style={ {
@@ -68,14 +67,12 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    <label
-                        htmlFor='name.first'
-                        style={ labelStyles }
-                    >
-                        First Name
-                    </label>
                     <Field
                         name='name.first'
+                        label='First Name'
+                        labelProps={ {
+                            labelStyles
+                        } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ {
@@ -89,39 +86,37 @@ const BasicTest = () => {
                             )
                         }
                     />
-                    <label
-                        htmlFor='name.first'
-                        style={ labelStyles }
-                    >
-                        Last Name
-                    </label>
                     <Field
                         name='name.last'
+                        label='Last Name'
+                        labelProps={ {
+                            labelStyles
+                        } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ {
                             errorStyles
                         } }
                     />
-                    <label
-                        htmlFor='name.first'
-                        style={ labelStyles }
-                    >
-                        Email
-                    </label>
                     <Field
                         name='email'
+                        label='Email'
+                        labelProps={ {
+                            labelStyles
+                        } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ {
                             errorStyles
                         } }
                     />
-                    <label htmlFor='name.first'>
-                        Do you acknowledge the terms?
-                    </label>
                     <Field
                         name='acknowledgement'
+                        label='Do you acknowledge the terms?'
+                        //@ts-ignore -> not sure why this is erroring
+                        labelProps={ {
+                            labelStyles
+                        } }
                         type='checkbox'
                         style={ {
                             alignSelf: 'flex-start'
@@ -135,7 +130,6 @@ const BasicTest = () => {
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
                     </SubmitButton>
-                    { JSON.stringify( errors ) }
                 </div>
             ) }
         </Formularity>
