@@ -39,35 +39,36 @@ export type CreateFormStoreParams<TFormValues extends FormValues> = {
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
-export const createFormStore = <TFormValues extends FormValues>( formStoreParams: CreateFormStoreParams<TFormValues> ): FormStore<TFormValues> => {
-    let storeState = {
-        ...getDefaultFormStoreState( formStoreParams.initialValues )
-        , manualValidationHandler: formStoreParams.manualValidationHandler
-        , validationSchema: formStoreParams.validationSchema
-        , onSubmit: formStoreParams.onSubmit
+export const createFormStore
+    = <TFormValues extends FormValues>( formStoreParams: CreateFormStoreParams<TFormValues> ): FormStore<TFormValues> => {
+        let storeState = {
+            ...getDefaultFormStoreState( formStoreParams.initialValues )
+            , manualValidationHandler: formStoreParams.manualValidationHandler
+            , validationSchema: formStoreParams.validationSchema
+            , onSubmit: formStoreParams.onSubmit
+        };
+
+        const subscribers = new Set<Subscriber>();
+
+        return {
+            get: () => storeState
+            , set: ( newStoreState: Partial<FormStoreState<TFormValues>> ) => {
+                storeState = {
+                    ...storeState
+                    , ...newStoreState
+                };
+
+                subscribers.forEach( callback => callback() );
+            }
+            , subscribe: callback => {
+                subscribers.add( callback );
+
+                return () => {
+                    subscribers.delete( callback );
+                };
+            }
+        };
     };
-
-    const subscribers = new Set<Subscriber>();
-
-    return {
-        get: () => storeState
-        , set: ( newStoreState: Partial<FormStoreState<TFormValues>> ) => {
-            storeState = {
-                ...storeState
-                , ...newStoreState
-            };
-
-            subscribers.forEach( callback => callback() );
-        }
-        , subscribe: callback => {
-            subscribers.add( callback );
-
-            return () => {
-                subscribers.delete( callback );
-            };
-        }
-    };
-};
 
 export const getDefaultFormStoreState = <TFormValues extends FormValues>( initialValues: TFormValues ) => {
     const defaultStoreState: FormStoreState<TFormValues> = {

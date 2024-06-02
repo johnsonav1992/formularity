@@ -132,6 +132,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             && isMounted.current
             && !isEqual( prevValuesInitializer.current, valuesInitializer )
         ) {
+            // TODO: need to fix initialization for checkboxes - not getting set
             formStore.set( { values: valuesInitializer } );
 
             prevValuesInitializer.current = cloneDeep( valuesInitializer );

@@ -54,10 +54,19 @@ const BasicTest = () => {
         <Formularity
             formStore={ formStore }
             onSubmit={ values => console.log( values ) }
+            // valuesInitializer={ {
+            //     name: {
+            //         first: 'John'
+            //         , last: 'Doe'
+            //     }
+            //     , email: 'XXXXXXXXXXXX'
+            //     , acknowledgement: true
+            // } }
         >
             { ( {
                 Field
                 , SubmitButton
+                , ResetButton
             } ) => (
                 <div
                     style={ {
@@ -130,6 +139,9 @@ const BasicTest = () => {
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
                     </SubmitButton>
+                    <ResetButton>
+                        Reset
+                    </ResetButton>
                 </div>
             ) }
         </Formularity>

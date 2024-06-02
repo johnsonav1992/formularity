@@ -253,7 +253,8 @@ export const Field = <
                 )
             }
             {
-                error
+                showErrors
+                && error
                 && isTouched
                 && (
                     <div
