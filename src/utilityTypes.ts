@@ -12,6 +12,7 @@ export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
 
 export type Nullish = null | undefined;
+export type IsArray<T> = T extends ( infer U )[] ? T : never;
 
 export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
     'input'

@@ -22,6 +22,7 @@ import {
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
+import { FieldListProps } from './FieldList';
 
 ////// FORM GENERAL //////
 export type FormValues = Record<PropertyKey, unknown> | null;
@@ -249,6 +250,18 @@ export type FieldComponent<TFormValues extends FormValues>
                 , TLabel
                 , TFieldValue
             >
+    ) => ReactNode;
+
+export type FieldListComponent<TFormValues extends FormValues>
+    = <
+        TFieldName extends DeepKeys<TFormValues>
+        , TFieldData extends DeepValue<TFormValues, TFieldName>
+    >(
+        props: FieldListProps<
+            TFormValues
+            , TFieldName
+            , TFieldData
+        >
     ) => ReactNode;
 
 export type SubmitButtonComponent = typeof SubmitButton;

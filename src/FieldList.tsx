@@ -2,16 +2,17 @@ import { ReactNode } from 'react';
 import {
     DeepKeys
     , DeepValue
+    , IsArray
 } from './utilityTypes';
 import { FormValues } from './types';
 import { useFormularityContext } from './FormularityContext';
 import { getViaPath } from './utils';
 
-type FieldListHelpers<TFieldData> = {
+type FieldListHelpers<TFieldData extends unknown[]> = {
     /**
      * Adds a new field to the end of the list
      */
-    addField: ( fieldData: TFieldData ) => void;
+    addField: ( fieldData: TFieldData[number] ) => void;
     /**
      * Removes the field at the specified index
      */
@@ -23,11 +24,11 @@ type FieldListHelpers<TFieldData> = {
     /**
      * Replace the value of a field at the specified index with a new value
      */
-    replaceField: ( fieldIndexToReplace: number, fieldData: TFieldData ) => void;
+    replaceField: ( fieldIndexToReplace: number, fieldData: TFieldData[number] ) => void;
     /**
      * Inserts a new field at the specified index
      */
-    insertField: ( fieldIndexToInsert: number, fieldData: TFieldData ) => void;
+    insertField: ( fieldIndexToInsert: number, fieldData: TFieldData[number] ) => void;
     /**
      * Swaps the values of two fields in the list
      */
@@ -39,19 +40,19 @@ type FieldListHelpers<TFieldData> = {
     /**
      * Adds a new field to the beginning of the list
      */
-    addFieldToBeginning: ( fieldData: TFieldData ) => void;
+    addFieldToBeginning: ( fieldData: TFieldData[number] ) => void;
 };
 
-type FieldListProps<
+export type FieldListProps<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TFieldData extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
 > = {
     name: TFieldName;
-    render: ( listValue: unknown[], fieldListHelpers: FieldListHelpers<TFieldData> ) => ReactNode;
+    render: ( listValue: TFieldData, fieldListHelpers: FieldListHelpers<IsArray<TFieldData>> ) => ReactNode;
 };
 
-const FieldList = <
+export const FieldList = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TFieldData extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
@@ -59,9 +60,12 @@ const FieldList = <
         name
         , render
     }: FieldListProps ) => {
+
+    type ListArray = IsArray<TFieldData>;
+
     const formularity = useFormularityContext();
 
-    const list = getViaPath( formularity.values, name ) as DeepValue<TFormValues, TFieldName>;
+    const list = getViaPath( formularity.values, name ) as TFieldData;
 
     if ( !Array.isArray( list ) ) {
         throw new Error(
@@ -71,11 +75,11 @@ const FieldList = <
         );
     }
 
-    const addField: FieldListHelpers<TFieldData>['addField'] = fieldData => {
+    const addField: FieldListHelpers<ListArray>['addField'] = fieldData => {
         formularity.setFieldValue( name, [ ...list, fieldData ] as never );
     };
 
-    const removeField: FieldListHelpers<TFieldData>['removeField'] = fieldIndex => {
+    const removeField: FieldListHelpers<ListArray>['removeField'] = fieldIndex => {
         formularity.setFieldValue(
             name
             , [
@@ -85,7 +89,7 @@ const FieldList = <
         );
     };
 
-    const moveField: FieldListHelpers<TFieldData>['moveField'] = ( currentFieldIndex, newFieldIndex ) => {
+    const moveField: FieldListHelpers<ListArray>['moveField'] = ( currentFieldIndex, newFieldIndex ) => {
         const newList = [ ...list ];
         const fieldToMove = newList[ currentFieldIndex ];
 
@@ -95,21 +99,21 @@ const FieldList = <
         formularity.setFieldValue( name, newList as never );
     };
 
-    const replaceField: FieldListHelpers<TFieldData>['replaceField'] = ( fieldIndexToReplace, fieldData ) => {
+    const replaceField: FieldListHelpers<ListArray>['replaceField'] = ( fieldIndexToReplace, fieldData ) => {
         const newList = [ ...list ];
         newList[ fieldIndexToReplace ] = fieldData;
 
         formularity.setFieldValue( name, newList as never );
     };
 
-    const insertField: FieldListHelpers<TFieldData>['insertField'] = ( fieldIndexToInsert, fieldData ) => {
+    const insertField: FieldListHelpers<ListArray>['insertField'] = ( fieldIndexToInsert, fieldData ) => {
         const newList = [ ...list ];
         newList.splice( fieldIndexToInsert, 0, fieldData );
 
         formularity.setFieldValue( name, newList as never );
     };
 
-    const swapFields: FieldListHelpers<TFieldData>['swapFields'] = ( fieldIndexA, fieldIndexB ) => {
+    const swapFields: FieldListHelpers<ListArray>['swapFields'] = ( fieldIndexA, fieldIndexB ) => {
         const newList = [ ...list ];
         const fieldA = newList[ fieldIndexA ];
         const fieldB = newList[ fieldIndexB ];
@@ -120,19 +124,19 @@ const FieldList = <
         formularity.setFieldValue( name, newList as never );
     };
 
-    const removeLastField: FieldListHelpers<TFieldData>['removeLastField'] = () => {
+    const removeLastField: FieldListHelpers<ListArray>['removeLastField'] = () => {
         formularity.setFieldValue(
             name
             , [ ...list.slice( 0, -1 ) ] as never
         );
     };
 
-    const addFieldToBeginning: FieldListHelpers<TFieldData>['addFieldToBeginning'] = fieldData => {
+    const addFieldToBeginning: FieldListHelpers<ListArray>['addFieldToBeginning'] = fieldData => {
         formularity.setFieldValue( name, [ fieldData, ...list ] as never );
     };
 
     return render(
-        list
+        list as never
         , {
             addField
             , removeField
@@ -145,5 +149,3 @@ const FieldList = <
         }
     );
 };
-
-export default FieldList;
