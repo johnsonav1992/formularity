@@ -12,7 +12,12 @@ export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
 
 export type Nullish = null | undefined;
-export type CheckArray<T> = T extends unknown[] ? T : never;
+export type CheckArray<T, Output = undefined> =
+    T extends unknown[]
+        ? Output extends {}
+            ? Output
+            : T
+        : never;
 
 export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
     'input'

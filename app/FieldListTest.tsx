@@ -40,7 +40,7 @@ const FieldListTest = () => {
                         label='Name'
                     />
                     <FieldList
-                        name='hobbies'
+                        name='name'
                         render={ ( hobbies, {
                             addField
                         } ) => {

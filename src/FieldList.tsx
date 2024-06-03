@@ -52,19 +52,22 @@ type FieldListHelpers<TListData extends unknown[]> = {
 export type FieldListProps<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TListData extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+    , TListData = CheckArray<DeepValue<TFormValues, TFieldName>>
 > = {
     name: TFieldName;
     render: (
         listValue: TListData
-        , fieldListHelpers: FieldListHelpers<CheckArray<TListData>>
+        , fieldListHelpers: CheckArray<
+            TListData
+            , FieldListHelpers<CheckArray<TListData>>
+        >
     ) => ReactNode;
 };
 
 export const FieldList = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TListData extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+    , TListData = CheckArray<DeepValue<TFormValues, TFieldName>>
     >( {
         name
         , render
@@ -75,7 +78,7 @@ export const FieldList = <
         , setFieldValue
     } = useFormularityContext();
 
-    const listData = getViaPath( values, name ) as TListData;
+    const listData = getViaPath( values, name ) as unknown as TListData;
 
     if ( !Array.isArray( listData ) ) {
         throw new Error(
@@ -142,6 +145,6 @@ export const FieldList = <
 
     return render(
         listData as never
-        , helpers
+        , helpers as never
     );
 };
