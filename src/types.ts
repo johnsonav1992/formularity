@@ -1,6 +1,5 @@
 import {
-    CSSProperties
-    , ChangeEvent
+    ChangeEvent
     , FocusEvent
     , FormEvent
     , ReactNode

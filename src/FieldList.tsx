@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import {
     DeepKeys
     , DeepValue
-    , IsArray
+    , CheckArray
 } from './utilityTypes';
 import { FormValues } from './types';
 
@@ -57,7 +57,7 @@ export type FieldListProps<
     name: TFieldName;
     render: (
         listValue: TListData
-        , fieldListHelpers: FieldListHelpers<IsArray<TListData>>
+        , fieldListHelpers: FieldListHelpers<CheckArray<TListData>>
     ) => ReactNode;
 };
 
@@ -65,7 +65,6 @@ export const FieldList = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TListData extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TListItemArray extends unknown[] = IsArray<TListData>
     >( {
         name
         , render
@@ -76,9 +75,9 @@ export const FieldList = <
         , setFieldValue
     } = useFormularityContext();
 
-    const list = getViaPath( values, name ) as TListData;
+    const listData = getViaPath( values, name ) as TListData;
 
-    if ( !Array.isArray( list ) ) {
+    if ( !Array.isArray( listData ) ) {
         throw new Error(
             `Value "${ name }" is not an array. 
             The <FieldList /> component can only be used with 
@@ -86,21 +85,21 @@ export const FieldList = <
         );
     }
 
-    const helpers: FieldListHelpers<TListItemArray> = {
-        addField: fieldData => {
-            setFieldValue( name, [ ...list, fieldData ] as never );
+    const helpers: FieldListHelpers<CheckArray<TListData>> = {
+        addField: newFieldData => {
+            setFieldValue( name, [ ...listData, newFieldData ] as never );
         }
         , removeField: fieldIndex => {
             setFieldValue(
                 name
                 , [
-                    ...list.slice( 0, fieldIndex )
-                    , ...list.slice( fieldIndex + 1 )
+                    ...listData.slice( 0, fieldIndex )
+                    , ...listData.slice( fieldIndex + 1 )
                 ] as never
             );
         }
         , moveField: ( currentFieldIndex, newFieldIndex ) => {
-            const newList = [ ...list ];
+            const newList = [ ...listData ];
             const fieldToMove = newList[ currentFieldIndex ];
 
             newList.splice( currentFieldIndex, 1 );
@@ -109,19 +108,19 @@ export const FieldList = <
             setFieldValue( name, newList as never );
         }
         , replaceField: ( fieldIndexToReplace, fieldData ) => {
-            const newList = [ ...list ];
+            const newList = [ ...listData ];
             newList[ fieldIndexToReplace ] = fieldData;
 
             setFieldValue( name, newList as never );
         }
         , insertField: ( fieldIndexToInsert, fieldData ) => {
-            const newList = [ ...list ];
+            const newList = [ ...listData ];
             newList.splice( fieldIndexToInsert, 0, fieldData );
 
             setFieldValue( name, newList as never );
         }
         , swapFields: ( fieldIndexA, fieldIndexB ) => {
-            const newList = [ ...list ];
+            const newList = [ ...listData ];
             const fieldA = newList[ fieldIndexA ];
             const fieldB = newList[ fieldIndexB ];
 
@@ -133,16 +132,16 @@ export const FieldList = <
         , removeLastField: () => {
             setFieldValue(
                 name
-                , [ ...list.slice( 0, -1 ) ] as never
+                , [ ...listData.slice( 0, -1 ) ] as never
             );
         }
         , addFieldToBeginning: fieldData => {
-            setFieldValue( name, [ fieldData, ...list ] as never );
+            setFieldValue( name, [ fieldData, ...listData ] as never );
         }
     };
 
     return render(
-        list as never
+        listData as never
         , helpers
     );
 };

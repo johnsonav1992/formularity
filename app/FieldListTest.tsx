@@ -41,12 +41,20 @@ const FieldListTest = () => {
                     />
                     <FieldList
                         name='hobbies'
-                        render={ ( _, {
+                        render={ ( hobbies, {
                             addField
                         } ) => {
                             return (
                                 <>
                                     <label>Hobbies</label>
+                                    {
+                                        hobbies.map( ( _, idx ) => (
+                                            <Field
+                                                key={ idx }
+                                                name={ `hobbies[${ idx }]` }
+                                            />
+                                        ) )
+                                    }
                                     <button
                                         onClick={ () => addField( '' ) }
                                         type='button'
