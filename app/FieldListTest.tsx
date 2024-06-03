@@ -42,13 +42,11 @@ const FieldListTest = () => {
                     <FieldList
                         name='hobbies'
                         render={ ( _, {
-                            List
-                            , addField
+                            addField
                         } ) => {
                             return (
                                 <>
                                     <label>Hobbies</label>
-                                    <List />
                                     <button
                                         onClick={ () => addField( '' ) }
                                         type='button'

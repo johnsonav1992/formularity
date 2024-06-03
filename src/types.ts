@@ -268,32 +268,5 @@ export type FieldListComponent<TFormValues extends FormValues>
         >
     ) => ReactNode;
 
-export type ListRenderComponent<TShowErrors extends boolean = boolean> = (
-    props: {
-        style?: CSSProperties;
-        className?: string;
-        /**
-         * Quick utility prop to show errors for the field
-         * should there be validation set up for it. Defaults to false.
-         *
-         * This prop is optional and may not be used so error display can be handled elsewhere.
-         */
-        showErrors?: TShowErrors;
-        /**
-         * Props to pass to the error message.
-         * *Note: This prop is only available if `showErrors` is set to true.
-         */
-        errorProps?: NoInfer<TShowErrors> extends true ? {
-            /**
-             * Inline styles to apply to the error message.
-             */
-            errorStyles?: CSSProperties;
-            /**
-             * Classes to apply to the error message.
-             */
-            errorClasses?: string;
-        } : never;
-    } ) => ReactNode[];
-
 export type SubmitButtonComponent = typeof SubmitButton;
 export type ResetButtonComponent = typeof ResetButton;
