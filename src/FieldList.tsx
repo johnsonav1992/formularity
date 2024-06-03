@@ -6,33 +6,28 @@ import {
     , DeepValue
     , IsArray
 } from './utilityTypes';
-import { FormValues } from './types';
+import {
+    FormValues
+    , ListRenderComponent
+} from './types';
 
 // Context
 import { useFormularityContext } from './FormularityContext';
 
 // Utils
 import { getViaPath } from './utils';
-import {
-    Field
-    , FieldProps
-} from './Field';
+import { Field } from './Field';
 
 type FieldListHelpers<
     TListData extends unknown[]
-    , TFormValues extends FormValues = FormValues
-    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
     /**
-     * A quick method for rendering fields in the list
-     * with some access to basic styling for each field.
-     * Use this in place of custom rendering if you have a
-     * simpler use case for `<FieldList />`
+     * A quick utility component for rendering fields in the list
+     * with some props to access basic styling for each field and
+     * their errors. Use this in place of custom rendering if you
+     * have a simpler use case for rendering out your `<FieldList />`
      */
-    renderList: ( renderListProps?: Pick<
-        FieldProps<TFormValues, TFieldName>
-        , 'showErrors' | 'errorProps' | 'style'| 'className'
-        > ) => ReactNode[];
+    List: ListRenderComponent;
     /**
      * Adds a new field to the end of the list
      */
@@ -105,12 +100,19 @@ export const FieldList = <
     }
 
     const helpers: FieldListHelpers<TListItemArray> = {
-        renderList: () => list.map( ( _, idx ) => (
-            <Field
-                name={ `${ name }[${ idx }]` as never }
-                key={ idx }
-            />
-        ) )
+        List: ( {
+            showErrors = false
+            , ...listRenderComponentProps
+        } ) => {
+            return list.map( ( _, idx ) => (
+                <Field
+                    name={ `${ name }[${ idx }]` as never }
+                    key={ idx }
+                    showErrors={ showErrors }
+                    { ...listRenderComponentProps }
+                />
+            ) );
+        }
         , addField: fieldData => {
             setFieldValue( name, [ ...list, fieldData ] as never );
         }
