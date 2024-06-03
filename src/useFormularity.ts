@@ -20,6 +20,7 @@ import {
     , FormularityProps
     , SingleFieldValidator
     , ValidationHandler
+    , FormHandlers
 } from './types';
 import {
     CheckboxValue
@@ -248,13 +249,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return errors;
     } );
 
-    const setFieldValue = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newValue: TFormValues[keyof TFormValues] ) => {
-        const newValues = setViaPath( values, fieldName, newValue );
+    const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
+        = useEventCallback( ( fieldName, newValue ) => {
+            const newValues = setViaPath( values, fieldName, newValue );
 
-        formStore.set( { values: newValues } );
+            formStore.set( { values: newValues } );
 
-        validateOnChange && validateForm( newValues );
-    } );
+            validateOnChange && validateForm( newValues );
+        } );
 
     const setValues = useCallback( ( newValues: TFormValues ) => {
         formStore.set( { values: newValues } );
@@ -339,7 +341,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         setFieldValue(
             fieldName
-            , finalValue as TFormValues[keyof TFormValues]
+            , finalValue as never
         );
     } );
 
