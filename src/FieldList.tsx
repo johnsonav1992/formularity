@@ -95,7 +95,7 @@ export const FieldList = <
         ( name: FN, newList: FV ) => {
         setFieldValue<TFieldName, DeepValue<TFormValues, TFieldName>>(
                 name as unknown as TFieldName
-                , [ ...listData, newList ] as DeepValue<TFormValues, TFieldName>
+                , newList as DeepValue<TFormValues, TFieldName>
         );
     };
 
