@@ -123,7 +123,6 @@ const BasicTest = () => {
                     <Field
                         name='acknowledgement'
                         label='Do you acknowledge the terms?'
-                        //@ts-ignore -> not sure why this is erroring
                         labelProps={ {
                             labelStyles
                         } }
