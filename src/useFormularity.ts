@@ -47,6 +47,10 @@ import {
     , getKeysWithDiffs
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
+import { Field } from './Field';
+import { FieldList } from './FieldList';
+import { SubmitButton } from './SubmitButton';
+import { ResetButton } from './ResetButton';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -431,6 +435,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isFormTouched = deepObjectKeys( touched ).length > 0;
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
+    const formularityComponents = {
+        Field
+        , FieldList
+        , SubmitButton
+        , ResetButton
+    };
+
     return {
         ...currentStore
         , values
@@ -458,5 +469,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , dirtyFields
         , isFormTouched
         , areAllFieldsTouched
+        , ...formularityComponents
     };
 };

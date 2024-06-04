@@ -229,12 +229,20 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     areAllFieldsTouched: boolean;
 };
 
+export type FormularityComponents<TFormValues extends FormValues> = {
+    Field: FieldComponent<TFormValues>;
+    FieldList: FieldListComponent<TFormValues>;
+    SubmitButton: SubmitButtonComponent;
+    ResetButton: ResetButtonComponent;
+};
+
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
     FormStoreState<TFormValues>
     & FieldRegistration<TFormValues>
     & FormHandlers<TFormValues>
-    & FormComputedProps<TFormValues>;
+    & FormComputedProps<TFormValues>
+    & FormularityComponents<TFormValues>;
 
 ////// COMPONENTS //////
 export type FieldComponent<TFormValues extends FormValues>

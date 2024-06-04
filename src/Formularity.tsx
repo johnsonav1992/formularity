@@ -2,19 +2,11 @@ import { ReactNode } from 'react';
 
 // Components
 import { Form } from './Form';
-import { Field } from './Field';
-import { FieldList } from './FieldList';
-import { SubmitButton } from './SubmitButton';
-import { ResetButton } from './ResetButton';
 
 // Types
 import {
-    FieldComponent
-    , FieldListComponent
-    , FormValues
+    FormValues
     , FormularityProps
-    , ResetButtonComponent
-    , SubmitButtonComponent
 } from './types';
 import {
     UseFormularityParams
@@ -28,15 +20,7 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
     & {
         useFormComponent?: boolean;
-        children: (
-            formularity: FormularityProps<TFormValues>
-            & {
-                Field: FieldComponent<TFormValues>;
-                FieldList: FieldListComponent<TFormValues>;
-                SubmitButton: SubmitButtonComponent;
-                ResetButton: ResetButtonComponent;
-            }
-        ) => ReactNode;
+        children: ( formularity: FormularityProps<TFormValues> ) => ReactNode;
     };
 
 export const Formularity = <TFormValues extends FormValues>( {
@@ -46,13 +30,7 @@ export const Formularity = <TFormValues extends FormValues>( {
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
 
-    const renderedChildren = children( {
-        ...formularity
-        , Field
-        , FieldList
-        , SubmitButton
-        , ResetButton
-    } );
+    const renderedChildren = children( formularity );
 
     return (
         <FormularityContext.Provider value={ formularity as FormularityProps }>
