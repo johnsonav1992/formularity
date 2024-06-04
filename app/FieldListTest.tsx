@@ -5,10 +5,12 @@ import {
 } from '../src';
 import { zodAdapter } from 'formularity-zod-adapter';
 
+type Widget = { id: number | ''; name: string };
+
 type FormValues = {
     name: string;
     hobbies: string[];
-    widgets: Array<{ id: number | ''; name: string }>;
+    widgets: Array<Widget>;
 };
 
 const validationSchema = zodAdapter<FormValues>( z.object( {
