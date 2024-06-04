@@ -191,7 +191,7 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
-    } = useFormularityContext();
+    } = useFormularityContext<TFormValues>();
 
     const id = 'id' in props ? props.id as string : undefined;
 
@@ -201,10 +201,10 @@ export const Field = <
             , type
             , validationHandler: validator || null
             , fieldId: id
-        } as never );
+        } );
 
         return () => {
-            unregisterField( name as never );
+            unregisterField( name );
         };
     }, [ name ] );
 
@@ -216,11 +216,11 @@ export const Field = <
 
     const fieldProps = {
         name
-        , value: value || getViaPath( values, name as DeepKeys<FormValues> )
+        , value: value || getViaPath( values, name )
         , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
                 ? checked
-                : !!getViaPath( values, name as DeepKeys<FormValues> )
+                : !!getViaPath( values, name )
             : undefined
         , onChange: handleChange
         , onBlur: handleBlur

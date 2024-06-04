@@ -76,9 +76,9 @@ export const FieldList = <
     const {
         values
         , setFieldValue
-    } = useFormularityContext();
+    } = useFormularityContext<TFormValues>();
 
-    const listData = getViaPath( values, name ) as unknown as TListData;
+    const listData = getViaPath( values, name ) as TListData;
 
     if ( !Array.isArray( listData ) ) {
         throw new Error(

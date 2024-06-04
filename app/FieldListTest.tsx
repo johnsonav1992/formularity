@@ -11,7 +11,7 @@ type FormValues = {
 const formStore = createFormStore<FormValues>( {
     initialValues: {
         name: ''
-        , hobbies: []
+        , hobbies: [ 'soccer' ]
     }
 } );
 

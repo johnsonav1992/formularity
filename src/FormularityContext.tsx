@@ -4,12 +4,15 @@ import {
 } from 'react';
 
 // Types
-import { FormularityProps } from './types';
+import {
+    FormValues
+    , FormularityProps
+} from './types';
 
 export const FormularityContext = createContext<FormularityProps | null>( null );
 
-export const useFormularityContext = () => {
-    const formularity = useContext( FormularityContext );
+export const useFormularityContext = <TFormValues extends FormValues = FormValues>() => {
+    const formularity = useContext<FormularityProps<TFormValues>>( FormularityContext as never );
 
     if ( !formularity ) {
         throw new Error(
