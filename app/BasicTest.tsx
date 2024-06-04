@@ -89,8 +89,7 @@ const BasicTest = () => {
                             errorStyles
                         } }
                         validator={
-                            zodAdapter(
-                                //@ts-ignore -> weird package thing
+                            zodAdapter<BasicTestFormValues, 'name.first'>(
                                 z.string().min( 3, 'Must have 3 or more chars!' )
                                 , { isField: true }
                             )

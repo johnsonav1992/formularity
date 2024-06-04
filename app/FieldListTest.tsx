@@ -6,19 +6,26 @@ import {
 import { zodAdapter } from 'formularity-zod-adapter';
 
 type FormValues = {
-    name: string
-    ; hobbies: string[];
+    name: string;
+    hobbies: string[];
+    widgets: Array<{ id: number | ''; name: string }>;
 };
 
-const validationSchema = zodAdapter( z.object( {
+const validationSchema = zodAdapter<FormValues>( z.object( {
     name: z.string().min( 1, 'Name is required' )
-    , hobbies: z.array( z.string().min( 1, 'Hobby name is required' ) )
+    , hobbies: z.array( z.string().min( 1, 'Hobby is required' ) )
+    , widgets: z.array( z.object( {
+        id: z.number( { invalid_type_error: 'Must be a number' } )
+            .gte( 0, 'Must be 0 or greater' )
+        , name: z.string().min( 1, 'Name is required' )
+    } ) )
 } ) );
 
 const formStore = createFormStore<FormValues>( {
     initialValues: {
         name: ''
         , hobbies: [ 'soccer' ]
+        , widgets: []
     }
     , validationSchema
 } );
@@ -69,6 +76,42 @@ const FieldListTest = () => {
                                         type='button'
                                     >
                                         Add Hobby
+                                    </button>
+                                </>
+                            );
+                        } }
+                    />
+                    <FieldList
+                        name='widgets'
+                        render={ ( widgets, { addField } ) => {
+                            return (
+                                <>
+                                    <label>Widgets</label>
+                                    {
+                                        widgets?.map( ( _, idx ) => (
+                                            <div key={ idx }>
+                                                <label>Id</label>
+                                                <Field
+                                                    type='number'
+                                                    name={ `widgets[${ idx }].id` }
+                                                    showErrors
+                                                />
+                                                <label>Name</label>
+                                                <Field
+                                                    name={ `widgets[${ idx }].name` }
+                                                    showErrors
+                                                />
+                                            </div>
+                                        ) )
+                                    }
+                                    <button
+                                        type='button'
+                                        onClick={ () => addField( {
+                                            id: ''
+                                            , name: ''
+                                        } ) }
+                                    >
+                                        Add Widget
                                     </button>
                                 </>
                             );
