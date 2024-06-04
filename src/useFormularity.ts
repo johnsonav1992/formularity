@@ -402,6 +402,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
+        //TODO: Warn about missing button type identifier
+
         submitForm();
     } );
 

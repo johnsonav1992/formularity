@@ -5,7 +5,10 @@ import {
 } from '../src';
 import { zodAdapter } from 'formularity-zod-adapter';
 
-type Widget = { id: number | ''; name: string };
+type Widget = {
+    id: number | '';
+    name: string;
+};
 
 type FormValues = {
     name: string;
@@ -55,6 +58,7 @@ const FieldListTest = () => {
                     <Field
                         name='name'
                         label='Name'
+                        showErrors
                     />
                     <FieldList
                         name='hobbies'
@@ -85,7 +89,10 @@ const FieldListTest = () => {
                     />
                     <FieldList
                         name='widgets'
-                        render={ ( widgets, { addField } ) => {
+                        render={ ( widgets, {
+                            addField
+                            , removeField
+                        } ) => {
                             return (
                                 <>
                                     <label>Widgets</label>
@@ -103,6 +110,12 @@ const FieldListTest = () => {
                                                     name={ `widgets[${ idx }].name` }
                                                     showErrors
                                                 />
+                                                <button
+                                                    type='button'
+                                                    onClick={ () => removeField( idx ) }
+                                                >
+                                                    -
+                                                </button>
                                             </div>
                                         ) )
                                     }
