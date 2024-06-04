@@ -47,6 +47,8 @@ import {
     , getKeysWithDiffs
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
+
+// Components
 import { Field } from './Field';
 import { FieldList } from './FieldList';
 import { SubmitButton } from './SubmitButton';
