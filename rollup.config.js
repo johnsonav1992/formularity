@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const typescript = require( '@rollup/plugin-typescript' );
 const peerDepsExternal = require( 'rollup-plugin-peer-deps-external' );
 const resolve = require( '@rollup/plugin-node-resolve' ).default;
