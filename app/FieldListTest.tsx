@@ -1,18 +1,26 @@
+import { z } from 'zod';
 import {
     Formularity
     , createFormStore
 } from '../src';
+import { zodAdapter } from 'formularity-zod-adapter';
 
 type FormValues = {
     name: string
     ; hobbies: string[];
 };
 
+const validationSchema = zodAdapter( z.object( {
+    name: z.string().min( 1, 'Name is required' )
+    , hobbies: z.array( z.string().min( 1, 'Hobby name is required' ) )
+} ) );
+
 const formStore = createFormStore<FormValues>( {
     initialValues: {
         name: ''
         , hobbies: [ 'soccer' ]
     }
+    , validationSchema
 } );
 
 const FieldListTest = () => {
@@ -52,6 +60,7 @@ const FieldListTest = () => {
                                             <Field
                                                 key={ idx }
                                                 name={ `hobbies[${ idx }]` }
+                                                showErrors
                                             />
                                         ) )
                                     }
