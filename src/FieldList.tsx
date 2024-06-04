@@ -88,17 +88,28 @@ export const FieldList = <
         );
     }
 
+    const updateList = <
+        FN = TFieldName
+        , FV = DeepValue<TFormValues, TFieldName>
+    >
+        ( name: FN, newList: FV ) => {
+        setFieldValue<TFieldName, DeepValue<TFormValues, TFieldName>>(
+                name as unknown as TFieldName
+                , [ ...listData, newList ] as DeepValue<TFormValues, TFieldName>
+        );
+    };
+
     const helpers: FieldListHelpers<CheckArray<TListData>> = {
         addField: newFieldData => {
-            setFieldValue( name, [ ...listData, newFieldData ] as never );
+            updateList( name, [ ...listData, newFieldData ] );
         }
         , removeField: fieldIndex => {
-            setFieldValue(
+            updateList(
                 name
                 , [
                     ...listData.slice( 0, fieldIndex )
                     , ...listData.slice( fieldIndex + 1 )
-                ] as never
+                ]
             );
         }
         , moveField: ( currentFieldIndex, newFieldIndex ) => {
@@ -108,19 +119,19 @@ export const FieldList = <
             newList.splice( currentFieldIndex, 1 );
             newList.splice( newFieldIndex, 0, fieldToMove );
 
-            setFieldValue( name, newList as never );
+            updateList( name, newList );
         }
         , replaceField: ( fieldIndexToReplace, fieldData ) => {
             const newList = [ ...listData ];
             newList[ fieldIndexToReplace ] = fieldData;
 
-            setFieldValue( name, newList as never );
+            updateList( name, newList );
         }
         , insertField: ( fieldIndexToInsert, fieldData ) => {
             const newList = [ ...listData ];
             newList.splice( fieldIndexToInsert, 0, fieldData );
 
-            setFieldValue( name, newList as never );
+            updateList( name, newList );
         }
         , swapFields: ( fieldIndexA, fieldIndexB ) => {
             const newList = [ ...listData ];
@@ -130,16 +141,16 @@ export const FieldList = <
             newList[ fieldIndexA ] = fieldB;
             newList[ fieldIndexB ] = fieldA;
 
-            setFieldValue( name, newList as never );
+            updateList( name, newList );
         }
         , removeLastField: () => {
-            setFieldValue(
+            updateList(
                 name
                 , [ ...listData.slice( 0, -1 ) ] as never
             );
         }
         , addFieldToBeginning: fieldData => {
-            setFieldValue( name, [ fieldData, ...listData ] as never );
+            updateList( name, [ fieldData, ...listData ] );
         }
     };
 
