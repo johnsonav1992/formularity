@@ -68,10 +68,9 @@ export type FieldListProps<
  * `<FieldList />` is a component that helps you
  * render out multiple fields in an array-like (list) fashion
  * to help manage values in the form that are grouped together.
- *
  * @example
  *
- * ```
+ * ```jsx
  * <FieldList
         name='hobbies'
         render={ ( hobbies, {
@@ -99,8 +98,8 @@ export type FieldListProps<
             );
         } }
     />
- * ```
- */
+* ```
+*/
 export const FieldList = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>

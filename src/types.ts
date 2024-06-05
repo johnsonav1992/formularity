@@ -258,8 +258,41 @@ FormStoreState<TFormValues>
 export type FormularityComponents<TFormValues extends FormValues> = {
     Field: FieldComponent<TFormValues>;
     /**
- * Hi
- */
+     * `<FieldList />` is a component that helps you
+     * render out multiple fields in an array-like (list) fashion
+     * to help manage values in the form that are grouped together.
+     * @example
+     *
+     * ```jsx
+     * <FieldList
+            name='hobbies'
+            render={ ( hobbies, {
+                addField
+            } ) => {
+                return (
+                    <>
+                        <label>Hobbies</label>
+                        {
+                            hobbies.map( ( _, idx ) => (
+                                <Field
+                                    key={ idx }
+                                    name={ `hobbies[${ idx }]` }
+                                    showErrors
+                                />
+                            ) )
+                        }
+                        <button
+                            onClick={ () => addField( '' ) }
+                            type='button'
+                        >
+                            Add Hobby
+                        </button>
+                    </>
+                );
+            } }
+        />
+    * ```
+    */
     FieldList: FieldListComponent<TFormValues>;
     SubmitButton: SubmitButtonComponent;
     ResetButton: ResetButtonComponent;
