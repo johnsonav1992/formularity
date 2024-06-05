@@ -68,6 +68,7 @@ const BasicTest = () => {
                 , SubmitButton
                 , ResetButton
                 , isPristine
+                , values
             } ) => (
                 <div
                     style={ {
@@ -126,6 +127,7 @@ const BasicTest = () => {
                             labelStyles
                         } }
                         type='checkbox'
+                        value={ values.acknowledgement }
                         style={ {
                             alignSelf: 'flex-start'
                             , width: '20px'

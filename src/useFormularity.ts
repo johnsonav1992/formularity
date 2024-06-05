@@ -85,6 +85,10 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      */
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
     /**
+     * Reset handler for the form. This is called when the form is reset.
+     */
+    onReset?: ( formValues: TFormValues ) => void | Promise<void>;
+    /**
      * If set to true, the form will validate on blur.
      * @default true
      */
@@ -108,6 +112,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , isEditing = false
     , valuesInitializer
     , onSubmit
+    , onReset
     , validateOnBlur = true
     , validateOnChange = true
     , validateOnSubmit = true
@@ -144,6 +149,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             && !isEqual( prevValuesInitializer.current, valuesInitializer )
         ) {
             // TODO: need to fix initialization for checkboxes - not getting set
+            // Possibly register the dom elements in fieldRegistry and manually set
+            // it if need be
             resetForm( valuesInitializer );
 
             prevValuesInitializer.current = cloneDeep( valuesInitializer );
@@ -420,11 +427,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
     } );
 
-    const handleReset = useEventCallback( ( e: FormEvent<HTMLFormElement> ) => {
+    const handleReset = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         e.stopPropagation();
 
-        resetForm();
+        if ( onReset ) {
+            await onReset( values );
+        } else {
+            resetForm();
+        }
+
     } );
 
     const initialValuesToCompare = !isEmpty( valuesInitializer )
