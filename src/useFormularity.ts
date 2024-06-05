@@ -21,6 +21,8 @@ import {
     , SingleFieldValidator
     , ValidationHandler
     , FormHandlers
+    , SubmissionOrResetHelpers
+    , OnSubmitOrReset
 } from './types';
 import {
     CheckboxValue
@@ -83,11 +85,11 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
      * Submit handler for the form. This is called when the form is submitted.
      */
-    onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
+    onSubmit?: OnSubmitOrReset<TFormValues>;
     /**
      * Reset handler for the form. This is called when the form is reset.
      */
-    onReset?: ( formValues: TFormValues ) => void | Promise<void>;
+    onReset?: OnSubmitOrReset<TFormValues>;
     /**
      * If set to true, the form will validate on blur.
      * @default true
@@ -368,6 +370,25 @@ export const useFormularity = <TFormValues extends FormValues>( {
         setFieldTouched( fieldName, true );
     } );
 
+    const resetForm = useEventCallback( ( newFormValues?: DeepPartial<TFormValues> ) => {
+        formStore.set( {
+            ...getDefaultFormStoreState( initialValues.current )
+            , ...( newFormValues && {
+                values: deepMerge( values, newFormValues )
+            } )
+        } );
+    } );
+
+    const submitOrResetHelpers: SubmissionOrResetHelpers<TFormValues> = {
+        setFieldValue
+        , setValues
+        , setFieldError
+        , setErrors
+        , setFieldTouched
+        , setTouched
+        , resetForm
+    };
+
     const submitForm = async () => {
         formStore.set( {
             isSubmitting: true
@@ -401,7 +422,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             formStore.set( { isValidating: false } );
         }
 
-        await submitHandler?.( currentStore.values );
+        await submitHandler?.( values, submitOrResetHelpers );
 
         formStore.set( {
             submitCount: currentStore.submitCount + 1
@@ -418,25 +439,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
         submitForm();
     } );
 
-    const resetForm = useEventCallback( ( newFormValues?: DeepPartial<TFormValues> ) => {
-        formStore.set( {
-            ...getDefaultFormStoreState( initialValues.current )
-            , ...( newFormValues && {
-                values: deepMerge( values, newFormValues )
-            } )
-        } );
-    } );
-
     const handleReset = useEventCallback( async ( e: FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         e.stopPropagation();
 
         if ( onReset ) {
-            await onReset( values );
-        } else {
-            resetForm();
+            await onReset( values, submitOrResetHelpers );
         }
 
+        resetForm();
     } );
 
     const initialValuesToCompare = !isEmpty( valuesInitializer )

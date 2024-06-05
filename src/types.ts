@@ -199,6 +199,22 @@ export type FormHandlers<TFormValues extends FormValues> = {
     handleReset: ( e: FormEvent<HTMLFormElement> ) => void;
 };
 
+export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
+    Omit<
+        FormHandlers<TFormValues>
+        , 'handleReset'
+        | 'handleSubmit'
+        | 'submitForm'
+        | 'handleBlur'
+        | 'handleChange'
+    >;
+
+export type OnSubmitOrReset<TFormValues extends FormValues> =
+    (
+        formValues: TFormValues
+        , submitOrResetHelpers: SubmissionOrResetHelpers<TFormValues>
+    ) => void | Promise<void>;
+
 ////// COMPUTED PROPS //////
 export type FormComputedProps<TFormValues extends FormValues> = {
     /**
