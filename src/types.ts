@@ -13,6 +13,7 @@ import { ResetButton } from './ResetButton';
 // Types
 import {
     DeepKeys
+    , DeepPartial
     , DeepValue
     , EmptyObject
     , IntrinsicFormElements
@@ -191,7 +192,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * Reset the form imperatively and optional set all or some of the
      * form values to new values(s)
      */
-    resetForm: ( newFormValues?: Partial<TFormValues> ) => void;
+    resetForm: ( newFormValues?: DeepPartial<TFormValues> ) => void;
     /**
      * Helper method for handling form reset
      */
@@ -229,22 +230,25 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     areAllFieldsTouched: boolean;
 };
 
+////// FORMULARITY PROPS //////
+export type FormularityProps<TFormValues extends FormValues = FormValues> =
+FormStoreState<TFormValues>
+& FieldRegistration<TFormValues>
+& FormHandlers<TFormValues>
+& FormComputedProps<TFormValues>
+& FormularityComponents<TFormValues>;
+
+////// COMPONENTS //////
 export type FormularityComponents<TFormValues extends FormValues> = {
     Field: FieldComponent<TFormValues>;
+    /**
+ * Hi
+ */
     FieldList: FieldListComponent<TFormValues>;
     SubmitButton: SubmitButtonComponent;
     ResetButton: ResetButtonComponent;
 };
 
-////// FORMULARITY PROPS //////
-export type FormularityProps<TFormValues extends FormValues = FormValues> =
-    FormStoreState<TFormValues>
-    & FieldRegistration<TFormValues>
-    & FormHandlers<TFormValues>
-    & FormComputedProps<TFormValues>
-    & FormularityComponents<TFormValues>;
-
-////// COMPONENTS //////
 export type FieldComponent<TFormValues extends FormValues>
     = <
         TFieldName extends DeepKeys<TFormValues>

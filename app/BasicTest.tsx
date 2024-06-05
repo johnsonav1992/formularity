@@ -54,14 +54,14 @@ const BasicTest = () => {
         <Formularity
             formStore={ formStore }
             onSubmit={ values => console.log( values ) }
-            // valuesInitializer={ {
-            //     name: {
-            //         first: 'John'
-            //         , last: 'Doe'
-            //     }
-            //     , email: 'XXXXXXXXXXXX'
-            //     , acknowledgement: true
-            // } }
+            valuesInitializer={ {
+                name: {
+                    first: 'John'
+                    , last: 'Doe'
+                }
+                , email: 'XXXXXXXXXXXX'
+                , acknowledgement: true
+            } }
         >
             { ( {
                 Field

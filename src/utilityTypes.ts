@@ -6,7 +6,7 @@ export type Prettify<T> = {
 
 export type NoInfer<T> = [T][T extends unknown ? 0 : never];
 
-export type Primitive = string | number | boolean;
+export type Primitive = string | number | boolean | Nullish;
 export type EmptyObject = Record<string, never>;
 export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
@@ -55,6 +55,14 @@ export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
                 ? IndexedFieldValueOrUndefined<T[FieldKey], IndexKey>
                 : undefined
             : IndexedFieldValueOrUndefined<T, P>;
+
+export type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends Array<infer U>
+        ? Array<DeepPartial<U>>
+        : T[P] extends ReadonlyArray<infer U>
+            ? ReadonlyArray<DeepPartial<U>>
+            : DeepPartial<T[P]>
+    };
 
 ////// HELPERS //////
 type RemoveArrayMethods<T> = T extends number

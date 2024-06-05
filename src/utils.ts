@@ -1,6 +1,7 @@
 // Types
 import {
     DeepKeys
+    , DeepPartial
     , DeepValue
 } from './utilityTypes';
 
@@ -8,6 +9,12 @@ export const objectKeys = <TObj extends object>( obj: TObj ) => Object.keys( obj
 
 type ValueOf<T> = T[keyof T];
 type Entries<T> = [keyof T, ValueOf<T>][];
+
+export const isObject = ( item: unknown ): item is object => {
+    return !!item
+        && typeof item === 'object'
+        && !Array.isArray( item );
+};
 
 export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
     return Object.entries( obj ) as Entries<T>;
@@ -211,6 +218,25 @@ export const cloneDeep = <TObj>( obj: TObj, clonedObjects = new WeakMap() ): TOb
     }
 
     return clone as TObj;
+};
+
+export const deepMerge = <TObj>( target: TObj, source: DeepPartial<TObj> ): TObj => {
+    if ( !isObject( target ) || !isObject( source ) ) {
+        return source as TObj;
+    }
+
+    const output = cloneDeep( target ) as TObj;
+    for ( const key in source ) {
+        if ( Object.prototype.hasOwnProperty.call( source, key ) ) {
+            if ( isObject( source[ key ] ) && key in target ) {
+                output[ key ] = deepMerge( target[ key ], source[ key as never ] );
+            } else {
+                ( output[ key ] as unknown ) = source[ key ];
+            }
+        }
+    }
+
+    return output;
 };
 
 export const getCheckboxValue = (

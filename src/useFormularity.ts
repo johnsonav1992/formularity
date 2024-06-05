@@ -25,6 +25,7 @@ import {
 import {
     CheckboxValue
     , DeepKeys
+    , DeepPartial
     , NoInfer
 } from './utilityTypes';
 
@@ -45,6 +46,7 @@ import {
     , deepObjectKeys
     , hasSameNestedKeys
     , getKeysWithDiffs
+    , deepMerge
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -71,8 +73,10 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      * This is a great option to use when you want to pre-populate a form
      * with data from a database or API.
      *
-     * Note: Be cautious as to how you pass this new values object as it can
-     * override desired values if your logic is not set up properly.
+     * This prop essentially resets the form to the new values passed in
+     * from `valuesInitializer`, so be cautious as to how you pass this new
+     * values object as it can override desired values if your logic is not
+     * set up properly.
      *
      */
     valuesInitializer?: NoInfer<TFormValues>;
@@ -140,7 +144,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             && !isEqual( prevValuesInitializer.current, valuesInitializer )
         ) {
             // TODO: need to fix initialization for checkboxes - not getting set
-            formStore.set( { values: valuesInitializer } );
+            resetForm( valuesInitializer );
 
             prevValuesInitializer.current = cloneDeep( valuesInitializer );
         }
@@ -407,16 +411,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         submitForm();
     } );
 
-    const resetForm = useEventCallback( ( newFormValues?: Partial<TFormValues> ) => {
+    const resetForm = useEventCallback( ( newFormValues?: DeepPartial<TFormValues> ) => {
         formStore.set( {
             ...getDefaultFormStoreState( initialValues.current )
             , ...( newFormValues && {
-                values: {
-                    ...values
-                    , ...newFormValues
-                }
+                values: deepMerge( values, newFormValues )
             } )
-        } as FormStoreState<TFormValues> );
+        } );
     } );
 
     const handleReset = useEventCallback( ( e: FormEvent<HTMLFormElement> ) => {
@@ -427,7 +428,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const initialValuesToCompare = !isEmpty( valuesInitializer )
-        ? valuesInitializer
+        ? prevValuesInitializer.current
         : initialValues.current;
 
     const isDirty = !isEqual( values, initialValuesToCompare );

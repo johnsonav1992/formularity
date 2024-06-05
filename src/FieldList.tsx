@@ -64,6 +64,43 @@ export type FieldListProps<
     ) => ReactNode;
 };
 
+/**
+ * `<FieldList />` is a component that helps you
+ * render out multiple fields in an array-like (list) fashion
+ * to help manage values in the form that are grouped together.
+ *
+ * @example
+ *
+ * ```
+ * <FieldList
+        name='hobbies'
+        render={ ( hobbies, {
+            addField
+        } ) => {
+            return (
+                <>
+                    <label>Hobbies</label>
+                    {
+                        hobbies.map( ( _, idx ) => (
+                            <Field
+                                key={ idx }
+                                name={ `hobbies[${ idx }]` }
+                                showErrors
+                            />
+                        ) )
+                    }
+                    <button
+                        onClick={ () => addField( '' ) }
+                        type='button'
+                    >
+                        Add Hobby
+                    </button>
+                </>
+            );
+        } }
+    />
+ * ```
+ */
 export const FieldList = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
