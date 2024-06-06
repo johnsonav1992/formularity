@@ -210,6 +210,7 @@ export const Field = <
 
     const renderedComponent = component as FC || 'input';
 
+    // TODO: need to get this working again
     const isSilentExternalCheckbox = type == undefined
         && !!component
         && checked != undefined;

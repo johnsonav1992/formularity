@@ -5,6 +5,7 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
+import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
     name: {
@@ -122,16 +123,17 @@ const BasicTest = () => {
                     />
                     <Field
                         name='acknowledgement'
-                        label='Do you acknowledge the terms?'
-                        labelProps={ {
-                            labelStyles
-                        } }
-                        type='checkbox'
-                        value={ values.acknowledgement }
-                        style={ {
-                            alignSelf: 'flex-start'
-                            , width: '20px'
-                        } }
+                        component={ Checkbox }
+                        // label='Do you acknowledge the terms?'
+                        // labelProps={ {
+                        //     labelStyles
+                        // } }
+                        // type='checkbox'
+                        // value={ values.acknowledgement }
+                        // style={ {
+                        //     alignSelf: 'flex-start'
+                        //     , width: '20px'
+                        // } }
                         showErrors
                         errorProps={ {
                             errorStyles
