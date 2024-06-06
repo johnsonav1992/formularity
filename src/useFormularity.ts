@@ -28,6 +28,7 @@ import {
     CheckboxValue
     , DeepKeys
     , DeepPartial
+    , DeepValue
     , NoInfer
 } from './utilityTypes';
 
@@ -167,7 +168,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
             if ( fieldRegistry.current[ name ] ) return;
 
-            fieldRegistry.current[ name ] = { ...fieldRegistryProps } as never;
+            fieldRegistry.current[ name ]
+                = { ...fieldRegistryProps } as FieldRegistry<TFormValues>[TFieldName];
         }
         , []
     );
@@ -195,7 +197,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
             if ( singleValidatorKeys.length ) {
                 for ( const error in newErrors ) {
-                    if ( singleValidatorKeys.includes( error as never ) ) {
+                    if ( singleValidatorKeys.includes( error as DeepKeys<TFormValues> ) ) {
                         delete newErrors[ error as keyof Partial<FormErrors<TFormValues>> ];
                     }
                 }
@@ -216,7 +218,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             default: {
                 newErrors = await runAllSingleFieldValidators( newErrors );
-                setErrors( newErrors as FormErrors<TFormValues> );
+                setErrors( newErrors );
             }
         }
 
@@ -357,7 +359,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         setFieldValue(
             fieldName
-            , finalValue as never
+            , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
         );
     } );
 
@@ -399,16 +401,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( hasErrors ) {
                 const newTouched = deepObjectKeys( validationErrors )
                     .reduce<FormTouched<TFormValues>>( ( touchedObj, key ) => {
-                        setViaPath( touchedObj, key as never, true );
+                        const newTouchedObj = setViaPath( touchedObj, key as never, true );
 
-                        return touchedObj;
+                        return newTouchedObj;
                     }, {} as FormTouched<TFormValues> );
 
                 return formStore.set( {
                     submitCount: currentStore.submitCount + 1
                     , isSubmitting: false
                     , isValidating: false
-                    , touched: newTouched as FormTouched<TFormValues>
+                    , touched: newTouched
                     , errors: {
                         ...errors
                         , ...validationErrors
