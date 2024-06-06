@@ -62,9 +62,13 @@ import { ResetButton } from './ResetButton';
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
      * Formularity form store used to power the form.
-     * ** All Formularity forms must use a form store in order to work;
-     * either passed in-line to the `formStore` prop or defined
-     * in an external variable and then passed to the prop by reference.
+     * ** All Formularity forms must use a form store (using `createFormStore`)
+     * in order to work; either passed in-line to the `formStore` prop or defined
+     * in an external variable and then passed to the prop by reference. The second
+     * of these two approaches is more common and the recommended way to use a
+     * form store, as it gives global access to the store, whereby the form state
+     * can be accessed and altered outside of the form itself (i.e. by a submit button
+     * that lives somewhere outside of the form in the DOM tree).
      */
     formStore: FormStore<TFormValues>;
     /**
