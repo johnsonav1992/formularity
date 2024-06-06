@@ -23,6 +23,10 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
         children: ( formularity: FormularityProps<TFormValues> ) => ReactNode;
     };
 
+/**
+ * `<Formularity />` is the main building block of all Formularity forms. Use it, along with a `formStore`,
+ * to create easy-to-build flexible forms that can adapt to many different use cases.
+ */
 export const Formularity = <TFormValues extends FormValues>( {
     children
     , useFormComponent = true

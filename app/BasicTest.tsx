@@ -51,18 +51,30 @@ const errorStyles: CSSProperties = {
 };
 
 const BasicTest = () => {
+    console.log( 'RENDER' );
+
     return (
         <Formularity
-            formStore={ formStore }
-            onSubmit={ values => console.log( values ) }
-            valuesInitializer={ {
-                name: {
-                    first: 'John'
-                    , last: 'Doe'
+            formStore={ createFormStore<BasicTestFormValues>( {
+                initialValues: {
+                    name: {
+                        first: ''
+                        , last: ''
+                    }
+                    , email: ''
+                    , acknowledgement: false
                 }
-                , email: 'XXXXXXXXXXXX'
-                , acknowledgement: true
-            } }
+                , validationSchema: zodAdapter( validationSchema )
+            } ) }
+            onSubmit={ values => console.log( values ) }
+            // valuesInitializer={ {
+            //     name: {
+            //         first: 'John'
+            //         , last: 'Doe'
+            //     }
+            //     , email: 'XXXXXXXXXXXX'
+            //     , acknowledgement: true
+            // } }
         >
             { ( {
                 Field
