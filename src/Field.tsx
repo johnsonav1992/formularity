@@ -214,13 +214,15 @@ export const Field = <
         && !!component
         && checked != undefined;
 
+    console.log( getViaPath( values, name ), value );
+
     const fieldProps = {
         name
         , value: value || getViaPath( values, name )
         , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
-                ? checked
-                : !!getViaPath( values, name )
+                ? getViaPath( values, name )
+                : value
             : undefined
         , onChange: handleChange
         , onBlur: handleBlur
