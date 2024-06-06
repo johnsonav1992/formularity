@@ -221,7 +221,7 @@ export const Field = <
         , value: value || fieldValueState
         , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
-                ? fieldValueState 
+                ? fieldValueState
                 : value
             : undefined
         , onChange: handleChange
