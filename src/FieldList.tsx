@@ -182,7 +182,7 @@ export const FieldList = <
         , removeLastField: () => {
             updateList(
                 name
-                , [ ...listData.slice( 0, -1 ) ] as never
+                , [ ...listData.slice( 0, -1 ) ]
             );
         }
         , addFieldToBeginning: fieldData => {
