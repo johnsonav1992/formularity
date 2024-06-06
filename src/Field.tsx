@@ -209,6 +209,7 @@ export const Field = <
     }, [ name ] );
 
     const renderedComponent = component as FC || 'input';
+    const fieldValueState = getViaPath( values, name );
 
     // TODO: need to get this working again
     const isSilentExternalCheckbox = type == undefined
@@ -217,10 +218,10 @@ export const Field = <
 
     const fieldProps = {
         name
-        , value: value || getViaPath( values, name )
+        , value: value || fieldValueState
         , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
-                ? getViaPath( values, name )
+                ? fieldValueState 
                 : value
             : undefined
         , onChange: handleChange
