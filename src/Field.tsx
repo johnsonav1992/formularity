@@ -214,8 +214,6 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-    console.log( getViaPath( values, name ), value );
-
     const fieldProps = {
         name
         , value: value || getViaPath( values, name )
