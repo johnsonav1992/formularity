@@ -13,6 +13,11 @@ export type ResetButtonProps<TComponentProps extends Record<string, unknown> = E
     & { component?: ReactNode }
     & TComponentProps;
 
+/**
+ * This component is an abstraction of the `<button type='reset' />` pattern in forms.
+ * Use this component to reduce reset button boilerplate code and ensure proper
+ * resetting of the form.
+ */
 export const ResetButton = memo( <TComponentProps extends Record<string, unknown> = EmptyObject>( {
     component
     , children

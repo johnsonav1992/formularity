@@ -256,6 +256,13 @@ FormStoreState<TFormValues>
 
 ////// COMPONENTS //////
 export type FormularityComponents<TFormValues extends FormValues> = {
+    /**
+     * The `<Field />` component is the main building-block of forms in
+     * Formularity. It drastically reduces the amount of boilerplate code
+     * needed to manage the state of a form field by taking care of many basic
+     * actions such as handling change, blur, and showing errors. **Must be used
+     * underneath a `<Formularity />` component.**
+     */
     Field: FieldComponent<TFormValues>;
     /**
      * `<FieldList />` is a component that helps you
@@ -294,7 +301,18 @@ export type FormularityComponents<TFormValues extends FormValues> = {
     * ```
     */
     FieldList: FieldListComponent<TFormValues>;
+    /**
+     * This component is an abstraction of the `<button type='submit' />` pattern in forms,
+     * as well as a simple way to set common submit disabling logic on the form.
+     * Use this component to reduce submit button boilerplate code and ensure proper
+     * submitting of the form.
+     */
     SubmitButton: SubmitButtonComponent;
+    /**
+     * This component is an abstraction of the `<button type='reset' />` pattern in forms.
+     * Use this component to reduce reset button boilerplate code and ensure proper
+     * resetting of the form.
+     */
     ResetButton: ResetButtonComponent;
 };
 

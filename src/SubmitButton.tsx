@@ -67,6 +67,12 @@ export type SubmitButtonProps<
             : Omit<NoInfer<TComponentProps>, 'type' | 'children'>
     );
 
+/**
+ * This component is an abstraction of the `<button type='submit' />` pattern in forms,
+ * as well as a simple way to set common submit disabling logic on the form.
+ * Use this component to reduce submit button boilerplate code and ensure proper
+ * submitting of the form.
+ */
 export const SubmitButton = <
         TDisableInvalid extends boolean
         , TComponentProps = undefined

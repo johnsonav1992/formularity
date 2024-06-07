@@ -117,6 +117,14 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
     validateOnSubmit?: boolean;
 };
 
+/**
+ * `useFormularity` is the heart and brains of Formularity. Under the hood, it powers
+ * the `<Formularity />` component and its child components. This form may be used to manually
+ * implement a custom version of Formularity, but it is recommended to only go this route if
+ * absolutely necessary. This hook may also be used to access form state from outside of the `<Formularity />`
+ * component bounds. This should also be used on a conditional basis, when absolutely needed, to
+ * avoid potential, undesired side-effects.
+ */
 export const useFormularity = <TFormValues extends FormValues>( {
     formStore
     , isEditing = false

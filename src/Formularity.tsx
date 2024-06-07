@@ -19,7 +19,15 @@ import { FormularityContext } from './FormularityContext';
 export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
     & {
+        /**
+         * By default, `<Formularity />` uses the `<Form />` component to wrap its children.
+         * If you want to use a custom form component or none at all, set this to `false`.
+         */
         useFormComponent?: boolean;
+        /**
+         * The function that will be called to render the children of the `<Formularity />` component.
+         * The Formularity props and components are passed to this function for an easy form-building experience.
+         */
         children: ( formularity: FormularityProps<TFormValues> ) => ReactNode;
     };
 

@@ -39,6 +39,11 @@ export type CreateFormStoreParams<TFormValues extends FormValues> = {
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
+/**
+ * This function creates a `FormStore` that can be used to manage the state of a form.
+ * **Must be used in conjunction with the `Formularity` component or `useFormularity`
+ * in order for Formularity-based forms to work.**
+ */
 export const createFormStore
     = <TFormValues extends FormValues>( formStoreParams: CreateFormStoreParams<TFormValues> ): FormStore<TFormValues> => {
         let storeState = {

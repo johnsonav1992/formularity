@@ -155,6 +155,13 @@ export type FieldProps<
         children?: ReactNode;
     };
 
+/**
+ * The `<Field />` component is the main building-block of forms in
+ * Formularity. It drastically reduces the amount of boilerplate code
+ * needed to manage the state of a form field by taking care of many basic
+ * actions such as handling change, blur, and showing errors. **Must be used
+ * underneath a `<Formularity />` component.**
+ */
 export const Field = <
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
