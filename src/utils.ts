@@ -3,12 +3,10 @@ import {
     DeepKeys
     , DeepPartial
     , DeepValue
+    , Entries
 } from './utilityTypes';
 
 export const objectKeys = <TObj extends object>( obj: TObj ) => Object.keys( obj ) as Array<keyof TObj>;
-
-type ValueOf<T> = T[keyof T];
-type Entries<T> = [keyof T, ValueOf<T>][];
 
 export const isObject = ( item: unknown ): item is object => {
     return !!item
@@ -16,7 +14,7 @@ export const isObject = ( item: unknown ): item is object => {
         && !Array.isArray( item );
 };
 
-export const objectEntries = <T extends object> ( obj: T ): Entries<T> => {
+export const objectEntries = <T extends object>( obj: T ): Entries<T> => {
     return Object.entries( obj ) as Entries<T>;
 };
 
@@ -33,12 +31,13 @@ export const deepObjectKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
                 keys.push( fullPath as DeepKeys<TObj> );
 
                 if ( Array.isArray( currentObj[ key ] ) ) {
-                    ( currentObj[ key ] as unknown[] ).forEach( ( item: unknown, index: number ) => {
-                        const arrayPath = `${ fullPath }[${ index }]`;
+                    ( currentObj[ key ] as unknown[] )
+                        .forEach( ( item: unknown, index: number ) => {
+                            const arrayPath = `${ fullPath }[${ index }]`;
 
-                        keys.push( arrayPath as DeepKeys<TObj> );
-                        getDeepKeys( item as TObj, arrayPath );
-                    } );
+                            keys.push( arrayPath as DeepKeys<TObj> );
+                            getDeepKeys( item as TObj, arrayPath );
+                        } );
                 } else if ( typeof currentObj[ key ] === 'object' ) {
                     getDeepKeys( currentObj[ key ] as TObj, fullPath );
                 }
@@ -67,6 +66,7 @@ export const getKeysWithDiffs = <TObj, TCompareObj>( obj: TObj, obj2: TCompareOb
 export const hasSameNestedKeys = <T, U>( obj1: T, obj2: U ) => {
     const countNestedKeys = <TObj>( obj: TObj ): number => {
         let count = 0;
+
         for ( const key in obj ) {
             if ( Array.isArray( obj[ key ] ) ) {
                 for ( const item of obj[ key ] as unknown[] ) {
@@ -120,9 +120,9 @@ export const getViaPath = <
 };
 
 export const setViaPath = <
-    TObj
-    , TPath extends DeepKeys<TObj>
-    , TNewValue
+        TObj
+        , TPath extends DeepKeys<TObj>
+        , TNewValue
     >(
         obj: TObj
         , path: TPath
@@ -134,24 +134,24 @@ export const setViaPath = <
 
     const lastKey = keys.pop();
 
-    let current = obj;
+    let newObj = cloneDeep( obj );
 
     for ( const key of keys ) {
-        if ( typeof current[ key ] !== 'object' ) {
-            current[ key ] = typeof keys[ 0 ] === 'number'
+        if ( typeof newObj[ key ] !== 'object' ) {
+            newObj[ key ] = typeof keys[ 0 ] === 'number'
                 ? [] as never
                 : {} as never;
         }
-        current = current[ key ] as TObj;
+        newObj = newObj[ key ] as TObj;
     }
 
-    if ( Array.isArray( current ) && lastKey === '' ) {
-        current.push( newValue );
+    if ( Array.isArray( newObj ) && lastKey === '' ) {
+        newObj.push( newValue );
     } else {
-        current[ lastKey as keyof TObj ] = newValue as never;
+        newObj[ lastKey as keyof TObj ] = newValue as never;
     }
 
-    return obj as TObj;
+    return newObj as TObj;
 };
 
 export const isEqual = <TVal1, TVal2>( value: TVal1, other: TVal2 ) => {
@@ -253,7 +253,11 @@ export const getCheckboxValue = (
     let index = -1;
 
     if ( !Array.isArray( currentValue ) ) {
-        if ( !valueProp || valueProp == 'true' || valueProp == 'false' ) return Boolean( checked );
+        if (
+            !valueProp
+            || valueProp == 'true'
+            || valueProp == 'false'
+        ) return Boolean( checked );
     } else {
         currentArrayOfValues = currentValue;
         index = currentValue.indexOf( valueProp );

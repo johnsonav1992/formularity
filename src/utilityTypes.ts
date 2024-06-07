@@ -4,6 +4,9 @@ export type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
 
+export type ValueOf<T> = T[keyof T];
+export type Entries<T> = [keyof T, ValueOf<T>][];
+
 export type NoInfer<T> = [T][T extends unknown ? 0 : never];
 
 export type Primitive = string | number | boolean | Nullish;
