@@ -2,14 +2,20 @@ import {
     it
     , expect
     , describe
+    , afterEach
 } from 'vitest';
 import React from 'react';
 import {
     render
     , screen
+    , cleanup
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { ResetButton } from '../../src/ResetButton';
+
+afterEach( () => {
+    cleanup();
+} );
 
 describe( 'ResetButton', () => {
     it( 'should render a ResetButton', () => {
@@ -19,9 +25,9 @@ describe( 'ResetButton', () => {
     it( 'should have a type of "reset" ', () => {
         render( <ResetButton /> );
 
-        const buttons = screen.getAllByRole( 'button' );
+        const button = screen.getByRole( 'button' );
 
-        expect( buttons[ 1 ] ).toHaveAttribute( 'type', 'reset' );
+        expect( button ).toHaveAttribute( 'type', 'reset' );
     } );
 
     it( 'should render a ResetButton with some text inside', () => {
@@ -33,8 +39,8 @@ describe( 'ResetButton', () => {
             </ResetButton>
         );
 
-        const buttons = screen.getAllByRole( 'button' );
+        const button = screen.getByRole( 'button' );
 
-        expect( buttons[ 2 ] ).toHaveTextContent( text );
+        expect( button ).toHaveTextContent( text );
     } );
 } );
