@@ -17,7 +17,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "app", "**/*.tsx"],
+  "include": ["src", "app", "**/*.test.tsx"],
   "exclude": ["node_modules", "dist"],
   "types": ["vite/client"]
 }
