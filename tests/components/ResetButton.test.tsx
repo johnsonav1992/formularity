@@ -24,6 +24,8 @@ const initialValues = {
     , email: ''
 };
 
+const user = userEvent.setup();
+
 beforeAll( () => {
     const formStore = createFormStore( { initialValues } );
 
@@ -68,7 +70,6 @@ describe( 'ResetButton', () => {
     } );
 
     it( 'should reset the form if it has been altered', async () => {
-        const user = userEvent.setup();
         const fields = screen.getAllByRole( 'textbox' );
         const firstNameField = fields[ 0 ];
         const resetButton = screen.getByRole( 'button' );
