@@ -13,7 +13,8 @@ import {
 import '@testing-library/jest-dom/vitest';
 import userEvent from '@testing-library/user-event';
 import {
-    Formularity
+    FormErrors
+    , Formularity
     , SubmitButtonProps
     , createFormStore
 } from '../../src';
@@ -36,7 +37,18 @@ const mocks = {
 };
 
 const renderComponents = ( options?: { disable: boolean; disabledMode?: SubmitButtonProps<boolean>['disabledMode'] } ) => {
-    const formStore = createFormStore( { initialValues } );
+    const formStore = createFormStore( {
+        initialValues
+        , manualValidationHandler: values => {
+            const errors: FormErrors<typeof initialValues> = {};
+
+            if ( !values.firstName ) {
+                errors.firstName = 'First name is required';
+            }
+
+            return errors;
+        }
+    } );
 
     render(
         <>
@@ -97,14 +109,50 @@ describe( 'SubmitButton Basic', () => {
         await user.type( fields[ 2 ], 'john@doe.com' );
 
         await user.click( submitButton );
-        screen.debug();
 
         expect( submitMock ).toHaveBeenCalledTimes( 1 );
     } );
 
-    it( 'should disable the button if there are errors in the form', () => {
-        const {} = renderComponents( {
+    it( 'should disable the button if there are errors in the form', async () => {
+        const {
+            submitButton
+            , fields
+            , user
+        } = renderComponents( {
             disable: true
         } );
+
+        // Don't fill out the first field
+        await user.type( fields[ 1 ], 'Doe' );
+        await user.type( fields[ 2 ], 'john@doe.com' );
+
+        await user.click( submitButton );
+
+        expect( submitButton ).toBeDisabled();
+    } );
+
+    it( 'should reenable the button if there were errors in the form but they were cleared', async () => {
+        const submitMock = vi.spyOn( mocks, 'onSubmit' );
+        const {
+            submitButton
+            , fields
+            , user
+        } = renderComponents( {
+            disable: true
+        } );
+
+        // Don't fill out the first field
+        await user.type( fields[ 1 ], 'Doe' );
+        await user.type( fields[ 2 ], 'john@doe.com' );
+
+        await user.click( submitButton );
+
+        expect( submitButton ).toBeDisabled();
+
+        await user.type( fields[ 0 ], 'John' );
+
+        await user.click( submitButton );
+
+        expect( submitMock ).toHaveBeenCalledTimes( 1 );
     } );
 } );
