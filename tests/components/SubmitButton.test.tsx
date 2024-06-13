@@ -107,7 +107,6 @@ describe( 'SubmitButton Basic', () => {
         await user.type( fields[ 0 ], 'John' );
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
-
         await user.click( submitButton );
 
         expect( submitMock ).toHaveBeenCalledTimes( 1 );
@@ -125,7 +124,6 @@ describe( 'SubmitButton Basic', () => {
         // Don't fill out the first field
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
-
         await user.click( submitButton );
 
         expect( submitButton ).toBeDisabled();
@@ -144,13 +142,11 @@ describe( 'SubmitButton Basic', () => {
         // Don't fill out the first field
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
-
         await user.click( submitButton );
 
         expect( submitButton ).toBeDisabled();
 
         await user.type( fields[ 0 ], 'John' );
-
         await user.click( submitButton );
 
         expect( submitMock ).toHaveBeenCalledTimes( 1 );
