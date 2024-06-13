@@ -2,7 +2,6 @@ import {
     it
     , expect
     , describe
-    , afterEach
     , beforeAll
 } from 'vitest';
 import {
@@ -48,10 +47,6 @@ beforeAll( () => {
             </Formularity>
         </>
     );
-} );
-
-afterEach( () => {
-    // cleanup();
 } );
 
 describe( 'ResetButton', () => {
