@@ -10,7 +10,6 @@ import {
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import userEvent from '@testing-library/user-event';
-import { ResetButton } from '../../src/ResetButton';
 import {
     Formularity
     , createFormStore
@@ -31,12 +30,12 @@ beforeAll( () => {
     render(
         <>
             <Formularity formStore={ formStore }>
-                { ( { Field } ) => (
+                { ( {
+                    Field
+                    , ResetButton
+                } ) => (
                     <>
-                        <Field
-                            name='firstName'
-                            label='First Name'
-                        />
+                        <Field name='firstName' />
                         <Field name='lastName' />
                         <Field name='email' />
                         <ResetButton>
