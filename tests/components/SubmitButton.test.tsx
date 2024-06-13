@@ -146,6 +146,7 @@ describe( 'SubmitButton Basic', () => {
 
         expect( submitButton ).toBeDisabled();
 
+        // Fill it out! Second time's the charm.
         await user.type( fields[ 0 ], 'John' );
         await user.click( submitButton );
 
