@@ -10,11 +10,12 @@ import {
 import '@testing-library/jest-dom/vitest';
 import {
     FormErrors
+    , FormValues
     , createFormStore
     , useFormularity
 } from '../src';
 
-const renderUseFormularity = () => {
+const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
     const initialValues = {
         firstName: ''
         , lastName: ''
@@ -22,7 +23,7 @@ const renderUseFormularity = () => {
     };
 
     const formStore = createFormStore( {
-        initialValues
+        initialValues: options?.initialValues ?? initialValues
         , manualValidationHandler: values => {
             const errors: FormErrors<typeof initialValues> = {};
 
