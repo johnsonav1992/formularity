@@ -67,7 +67,7 @@ describe( 'useFormularity', () => {
     } );
 
     it( 'should set some field values appropriately', () => {
-        const newValues: Partial<typeof initialValues> = {
+        const newValues = {
             firstName: 'John'
             , email: 'john@example.com'
         };
