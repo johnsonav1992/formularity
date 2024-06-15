@@ -34,6 +34,7 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
             return errors;
         }
     } );
+
     const { result } = renderHook( () => useFormularity( { formStore } ) );
 
     return {
