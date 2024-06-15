@@ -74,8 +74,6 @@ describe( 'useFormularity', () => {
 
         act( () => result.current.setValues( newValues ) );
 
-        console.log( result.current.values );
-
         expect( result.current.values ).toStrictEqual( {
             ...newValues
             , lastName: initialValues.lastName
