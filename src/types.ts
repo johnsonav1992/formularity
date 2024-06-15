@@ -151,7 +151,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the values of any number of fields simultaneously
      */
-    setValues: ( newValues: TFormValues ) => void;
+    setValues: ( newValues: DeepPartial<TFormValues> ) => void;
     /**
      * Set the error message of a single field
      */

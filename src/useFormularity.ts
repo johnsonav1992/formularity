@@ -291,10 +291,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
             validateOnChange && validateForm( newValues );
         } );
 
-    const setValues = useCallback( ( newValues: TFormValues ) => {
-        formStore.set( { values: newValues } );
+    const setValues = useCallback( ( newValues: DeepPartial<TFormValues> ) => {
+        const mergedValues = deepMerge( values, newValues );
+        formStore.set( { values: mergedValues } );
 
-        validateOnChange && validateForm( newValues );
+        validateOnChange && validateForm( mergedValues );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
