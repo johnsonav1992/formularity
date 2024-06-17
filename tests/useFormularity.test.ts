@@ -115,4 +115,17 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.touched.firstName ).toBeTruthy();
     } );
 
+    it( 'should set some fields as touched appropriately', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setTouched( {
+            firstName: true
+            , lastName: true
+        } ) );
+
+        expect( formularity.current.touched.firstName ).toBeTruthy();
+        expect( formularity.current.touched.lastName ).toBeTruthy();
+        expect( formularity.current.touched.email ).toBeFalsy();
+    } );
+
 } );
