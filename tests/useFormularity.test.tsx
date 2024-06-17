@@ -2,10 +2,14 @@ import {
     it
     , expect
     , describe
+    , vi
 } from 'vitest';
 import {
     renderHook
     , act
+    , fireEvent
+    , render
+    , screen
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import {
@@ -128,4 +132,51 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.touched.email ).toBeFalsy();
     } );
 
+    it( 'should manually set a field error', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setFieldError( 'firstName', 'First name is required' ) );
+
+        expect( formularity.current.errors.firstName ).toBe( 'First name is required' );
+    } );
+
+    it( 'should manually set some field errors', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setErrors( {
+            firstName: 'First name is required'
+            , lastName: 'Last name is required'
+        } ) );
+
+        expect( formularity.current.errors.firstName ).toBe( 'First name is required' );
+        expect( formularity.current.errors.lastName ).toBe( 'Last name is required' );
+    } );
+
+    it( 'should handle an input change event', () => {
+        const {
+            formularity
+        } = renderUseFormularity();
+
+        const handleChange = vi.fn( formularity.current.handleChange );
+
+        render(
+            <input
+                onChange={ handleChange }
+                name='firstName'
+            />
+        );
+
+        fireEvent.change(
+            screen.getByRole( 'textbox' )
+            , {
+                target: {
+                    name: 'firstName'
+                    , value: 'Jim'
+                }
+            }
+        );
+
+        expect( handleChange ).toHaveBeenCalledTimes( 1 );
+        expect( formularity.current.values.firstName ).toBe( 'Jim' );
+    } );
 } );
