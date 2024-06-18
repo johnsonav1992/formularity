@@ -20,7 +20,6 @@ import {
     , createFormStore
     , useFormularity
 } from '../src';
-import userEvent from '@testing-library/user-event';
 
 const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
     const initialValues = {
@@ -52,8 +51,6 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
 };
 
 afterEach( () => cleanup() );
-
-const user = userEvent.setup();
 
 describe( 'useFormularity basic', () => {
     it( 'should use a store with the proper store type and methods', () => {
