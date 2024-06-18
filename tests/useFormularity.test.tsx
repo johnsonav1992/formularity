@@ -58,6 +58,7 @@ describe( 'useFormularity basic', () => {
             formStore
         } = renderUseFormularity();
 
+        expect( formStore ).toBeTypeOf( 'object' );
         expect( formStore ).toHaveProperty( 'get' );
         expect( formStore ).toHaveProperty( 'set' );
         expect( formStore ).toHaveProperty( 'subscribe' );
