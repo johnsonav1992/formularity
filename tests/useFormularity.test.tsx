@@ -240,4 +240,15 @@ describe( 'useFormularity basic', () => {
 
         expect( formularity.current.isValid ).toBeFalsy();
     } );
+
+    it( 'should list an array of dirty fields if they have been altered from their initial values', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setValues( {
+            email: 'j@j.com'
+            , firstName: 'J Man'
+        } ) );
+
+        expect( formularity.current.dirtyFields ).toStrictEqual( [ 'firstName', 'email' ] );
+    } );
 } );
