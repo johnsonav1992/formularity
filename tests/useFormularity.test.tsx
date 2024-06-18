@@ -219,7 +219,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.isDirty ).toBeTruthy();
     } );
 
-    it( 'should indicate the form is prsitine if initialValues deeply equals values', async () => {
+    it( 'should indicate the form is pristine if initialValues deeply equals values', async () => {
         const { formularity } = renderUseFormularity();
 
         expect( formularity.current.isPristine ).toBeTruthy();
