@@ -62,6 +62,15 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.initialValues ).toStrictEqual( initialValues );
     } );
 
+    it( 'should return the values', () => {
+        const {
+            formularity
+            , initialValues
+        } = renderUseFormularity();
+
+        expect( formularity.current.values ).toStrictEqual( initialValues );
+    } );
+
     it( 'should initialize with an empty errors object', () => {
         const { formularity } = renderUseFormularity();
 
