@@ -251,4 +251,14 @@ describe( 'useFormularity basic', () => {
 
         expect( formularity.current.dirtyFields ).toStrictEqual( [ 'firstName', 'email' ] );
     } );
+
+    it( 'should indicate that the form has been touched if any field in the form has a touched status', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => {
+            formularity.current.setFieldTouched( 'email', true );
+        } );
+
+        expect( formularity.current.isFormTouched ).toBeTruthy();
+    } );
 } );
