@@ -227,7 +227,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.values ).toStrictEqual( formularity.current.initialValues );
     } );
 
-    it( 'should be valid of now errors exist in the form', () => {
+    it( 'should be valid if no errors exist in the form', () => {
         const { formularity } = renderUseFormularity();
 
         expect( formularity.current.isValid ).toBeTruthy();
