@@ -268,4 +268,18 @@ describe( 'useFormularity basic', () => {
 
         expect( formularity.current.isFormTouched ).toBeTruthy();
     } );
+
+    it( 'should indicate if all fields in the form have been touched', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => {
+            formularity.current.setTouched( {
+                email: true
+                , firstName: true
+                , lastName: true
+            } );
+        } );
+
+        expect( formularity.current.areAllFieldsTouched ).toBeTruthy();
+    } );
 } );
