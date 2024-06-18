@@ -280,6 +280,11 @@ describe( 'useFormularity basic', () => {
             } );
         } );
 
+        expect( formularity.current.touched ).toStrictEqual( {
+            email: true
+            , firstName: true
+            , lastName: true
+        } );
         expect( formularity.current.areAllFieldsTouched ).toBeTruthy();
     } );
 } );
