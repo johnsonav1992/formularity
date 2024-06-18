@@ -217,6 +217,7 @@ describe( 'useFormularity basic', () => {
         act( () => formularity.current.setFieldValue( 'firstName', 'Bob' ) );
 
         expect( formularity.current.isDirty ).toBeTruthy();
+        expect( formularity.current.values ).not.toStrictEqual( formularity.current.initialValues );
     } );
 
     it( 'should indicate the form is pristine if initialValues deeply equals values', async () => {
@@ -224,5 +225,19 @@ describe( 'useFormularity basic', () => {
 
         expect( formularity.current.isPristine ).toBeTruthy();
         expect( formularity.current.values ).toStrictEqual( formularity.current.initialValues );
+    } );
+
+    it( 'should be valid of now errors exist in the form', () => {
+        const { formularity } = renderUseFormularity();
+
+        expect( formularity.current.isValid ).toBeTruthy();
+    } );
+
+    it( 'should not be valid if errors exist in the form', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setFieldError( 'lastName', 'Last name is required' ) );
+
+        expect( formularity.current.isValid ).toBeFalsy();
     } );
 } );
