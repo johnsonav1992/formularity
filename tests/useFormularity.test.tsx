@@ -20,6 +20,7 @@ import {
     , createFormStore
     , useFormularity
 } from '../src';
+import userEvent from '@testing-library/user-event';
 
 const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
     const initialValues = {
@@ -51,6 +52,8 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
 };
 
 afterEach( () => cleanup() );
+
+const user = userEvent.setup();
 
 describe( 'useFormularity basic', () => {
     it( 'should return the initialValues', () => {
@@ -206,5 +209,20 @@ describe( 'useFormularity basic', () => {
 
         expect( handleBlur ).toHaveBeenCalledTimes( 1 );
         expect( formularity.current.touched.firstName ).toBe( true );
+    } );
+
+    it( 'should indicate the form is dirty if initialValues does not deeply equal to values', async () => {
+        const { formularity } = renderUseFormularity();
+
+        act( () => formularity.current.setFieldValue( 'firstName', 'Bob' ) );
+
+        expect( formularity.current.isDirty ).toBeTruthy();
+    } );
+
+    it( 'should indicate the form is prsitine if initialValues deeply equals values', async () => {
+        const { formularity } = renderUseFormularity();
+
+        expect( formularity.current.isPristine ).toBeTruthy();
+        expect( formularity.current.values ).toStrictEqual( formularity.current.initialValues );
     } );
 } );
