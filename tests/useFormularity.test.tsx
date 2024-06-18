@@ -56,6 +56,16 @@ afterEach( () => cleanup() );
 const user = userEvent.setup();
 
 describe( 'useFormularity basic', () => {
+    it( 'should use a store with the proper store type and methods', () => {
+        const {
+            formStore
+        } = renderUseFormularity();
+
+        expect( formStore ).toHaveProperty( 'get' );
+        expect( formStore ).toHaveProperty( 'set' );
+        expect( formStore ).toHaveProperty( 'subscribe' );
+    } );
+
     it( 'should return the initialValues', () => {
         const {
             formularity
