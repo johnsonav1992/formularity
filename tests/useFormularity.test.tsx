@@ -230,6 +230,7 @@ describe( 'useFormularity basic', () => {
     it( 'should be valid if no errors exist in the form', () => {
         const { formularity } = renderUseFormularity();
 
+        expect( formularity.current.errors ).toStrictEqual( {} );
         expect( formularity.current.isValid ).toBeTruthy();
     } );
 
@@ -238,17 +239,23 @@ describe( 'useFormularity basic', () => {
 
         act( () => formularity.current.setFieldError( 'lastName', 'Last name is required' ) );
 
+        expect( formularity.current.errors.lastName ).toBe( 'Last name is required' );
         expect( formularity.current.isValid ).toBeFalsy();
     } );
 
     it( 'should list an array of dirty fields if they have been altered from their initial values', () => {
-        const { formularity } = renderUseFormularity();
+        const {
+            formularity
+            , initialValues
+        } = renderUseFormularity();
 
         act( () => formularity.current.setValues( {
             email: 'j@j.com'
             , firstName: 'J Man'
         } ) );
 
+        expect( formularity.current.values.email ).not.toStrictEqual( initialValues.email );
+        expect( formularity.current.values.firstName ).not.toStrictEqual( initialValues.firstName );
         expect( formularity.current.dirtyFields ).toStrictEqual( [ 'firstName', 'email' ] );
     } );
 
