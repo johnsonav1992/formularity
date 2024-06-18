@@ -3,6 +3,7 @@ import {
     , expect
     , describe
     , vi
+    , afterEach
 } from 'vitest';
 import {
     renderHook
@@ -10,6 +11,7 @@ import {
     , fireEvent
     , render
     , screen
+    , cleanup
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import {
@@ -47,6 +49,8 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
         , formStore
     };
 };
+
+afterEach( () => cleanup() );
 
 describe( 'useFormularity basic', () => {
     it( 'should return the initialValues', () => {
@@ -168,15 +172,30 @@ describe( 'useFormularity basic', () => {
 
         fireEvent.change(
             screen.getByRole( 'textbox' )
-            , {
-                target: {
-                    name: 'firstName'
-                    , value: 'Jim'
-                }
-            }
+            , { target: { value: 'Jim' } }
         );
 
         expect( handleChange ).toHaveBeenCalledTimes( 1 );
         expect( formularity.current.values.firstName ).toBe( 'Jim' );
+    } );
+
+    it( 'should handle an input blur event', () => {
+        const {
+            formularity
+        } = renderUseFormularity();
+
+        const handleBlur = vi.fn( formularity.current.handleBlur );
+
+        render(
+            <input
+                onBlur={ handleBlur }
+                name='firstName'
+            />
+        );
+
+        fireEvent.blur( screen.getByRole( 'textbox' ) );
+
+        expect( handleBlur ).toHaveBeenCalledTimes( 1 );
+        expect( formularity.current.touched.firstName ).toBe( true );
     } );
 } );
