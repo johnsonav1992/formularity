@@ -295,4 +295,13 @@ describe( 'useFormularity basic', () => {
         } );
         expect( formularity.current.areAllFieldsTouched ).toBeTruthy();
     } );
+
+    it( 'should make instances of the Formularity components available', () => {
+        const { formularity } = renderUseFormularity();
+
+        expect( formularity.current.Field ).toBeTypeOf( 'function' );
+        expect( formularity.current.SubmitButton ).toBeTypeOf( 'function' );
+        expect( formularity.current.FieldList ).toBeTypeOf( 'function' );
+        expect( formularity.current.ResetButton ).toBeTypeOf( 'object' ); // React.memo
+    } );
 } );
