@@ -196,6 +196,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , []
     );
 
+    // TODO: expose version of this to user
+    // TODO: expose a validateField function as well
     const validateForm = useEventCallback( async ( values: TFormValues ) => {
         let newErrors: Partial<FormErrors<TFormValues>> = {};
 
@@ -282,6 +284,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return errors;
     } );
 
+    // TODO: add options object with validation options
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
         = useEventCallback( ( fieldName, newValue ) => {
             const newValues = setViaPath( values, fieldName, newValue );
@@ -291,6 +294,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             validateOnChange && validateForm( newValues );
         } );
 
+    // TODO: add options object with validation options
     const setValues = useCallback( ( newValues: DeepPartial<TFormValues> ) => {
         const mergedValues = deepMerge( values, newValues );
         formStore.set( { values: mergedValues } );
