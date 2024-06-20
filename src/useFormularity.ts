@@ -198,8 +198,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     // TODO: expose version of this to user
     // TODO: expose a validateField function as well
-    const validateForm = useEventCallback( async ( values: TFormValues ) => {
-        let newErrors: Partial<FormErrors<TFormValues>> = {};
+    const _validateForm = useEventCallback( async ( values: TFormValues, options?: { updateStore?: boolean } ) => {
+        const updateStore = options?.updateStore ?? true;
+
+        let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
         const singleValidatorKeys = objectEntries( fieldRegistry.current )
             .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
@@ -225,7 +227,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             // If the errors haven't changed, skip render cycle and just return the errors
             if ( isEqual( newErrors, errors ) ) return;
 
-            setErrors( newErrors );
+            updateStore && setErrors( newErrors );
         };
 
         switch ( true ) {
@@ -235,20 +237,21 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             default: {
                 newErrors = await runAllSingleFieldValidators( newErrors );
-                setErrors( newErrors );
+                updateStore && setErrors( newErrors );
             }
         }
 
         return newErrors;
     } );
 
+    // TODO: need to rework this in light of the above validationRunner fn
     const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {
         const validationErrors = await manualValidationHandler?.( values );
 
         if ( isEmpty( validationErrors ) ) {
             return setErrors( {} );
         } else {
-            setErrors( validationErrors as FormErrors<TFormValues> );
+            setErrors( deepMerge( errors, validationErrors! ) as DeepPartial<FormErrors<TFormValues>> );
         }
 
         return validationErrors;
@@ -266,7 +269,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return null;
     } );
 
-    const runAllSingleFieldValidators = useEventCallback( async ( errors: Partial<FormErrors<TFormValues>> ) => {
+    const runAllSingleFieldValidators = useEventCallback( async ( errors: DeepPartial<FormErrors<TFormValues>> ) => {
         for ( const [ fieldName, registration ] of objectEntries( fieldRegistry.current ) ) {
             const fieldErrorOrNull = registration?.validationHandler
                 ? await runSingleFieldValidation( registration?.validationHandler, fieldName )
@@ -275,7 +278,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( fieldErrorOrNull ) {
                 errors = setViaPath(
                     errors,
-                    fieldName as DeepKeys<Partial<FormErrors<TFormValues>>>
+                    fieldName as DeepKeys<DeepPartial<FormErrors<TFormValues>>>
                     , fieldErrorOrNull
                 );
             }
@@ -284,6 +287,21 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return errors;
     } );
 
+    const validateForm: FormHandlers<TFormValues>['validateForm'] = async options => {
+        const shouldTouchAllFields = options?.shouldTouchAllFields ?? true;
+
+        const validationErrors = await _validateForm( values, { updateStore: false } );
+
+        console.log( validationErrors );
+
+        formStore.set( {
+            touched: shouldTouchAllFields ? touchAllFields() : touched
+            , errors: validationErrors as FormErrors<TFormValues>
+        } );
+
+        return validationErrors as FormErrors<TFormValues>;
+    };
+
     // TODO: add options object with validation options
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
         = useEventCallback( ( fieldName, newValue ) => {
@@ -291,7 +309,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
             formStore.set( { values: newValues } );
 
-            validateOnChange && validateForm( newValues );
+            validateOnChange && _validateForm( newValues );
         } );
 
     // TODO: add options object with validation options
@@ -299,7 +317,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const mergedValues = deepMerge( values, newValues );
         formStore.set( { values: mergedValues } );
 
-        validateOnChange && validateForm( mergedValues );
+        validateOnChange && _validateForm( mergedValues );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
@@ -312,8 +330,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         formStore.set( { errors: newFieldErrors } );
     }, [] );
 
-    const setErrors = useCallback( ( newErrors: FormErrors<TFormValues> ) => {
-        formStore.set( { errors: newErrors } );
+    const setErrors = useCallback( ( newErrors: DeepPartial<FormErrors<TFormValues>> ) => {
+        formStore.set( { errors: deepMerge( errors, newErrors ) } );
     }, [] );
 
     const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
@@ -327,7 +345,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         // (Try to get touched and validations to update in one render)
 
         formStore.set( { touched: newFieldTouched } );
-        validateOnBlur && validateForm( values );
+        validateOnBlur && _validateForm( values );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
@@ -335,6 +353,19 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
+
+    const touchAllFields = ( validationErrors?: DeepPartial<FormErrors<TFormValues>> ) => {
+        const targetObj = validationErrors || values;
+
+        console.log( targetObj );
+
+        return deepObjectKeys( targetObj )
+            .reduce<FormTouched<TFormValues>>( ( touchedObj, key ) => {
+                const newTouchedObj = setViaPath( touchedObj, key as never, true );
+
+                return newTouchedObj;
+            }, {} as FormTouched<TFormValues> );
+    };
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
         let finalValue;
@@ -415,16 +446,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         if ( validateOnSubmit ) {
-            const validationErrors = await validateForm( values );
+            const validationErrors = await _validateForm( values );
             const hasErrors = objectKeys( validationErrors ).length > 0;
 
             if ( hasErrors ) {
-                const newTouched = deepObjectKeys( validationErrors )
-                    .reduce<FormTouched<TFormValues>>( ( touchedObj, key ) => {
-                        const newTouchedObj = setViaPath( touchedObj, key as never, true );
-
-                        return newTouchedObj;
-                    }, {} as FormTouched<TFormValues> );
+                const newTouched = touchAllFields( validationErrors );
 
                 return formStore.set( {
                     submitCount: currentStore.submitCount + 1
@@ -509,6 +535,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleSubmit
         , resetForm
         , handleReset
+        , validateForm
         , isDirty
         , isPristine
         , isValid

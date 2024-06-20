@@ -70,7 +70,7 @@ export type FieldRegistration<TFormValues extends FormValues = FormValues> = {
 
 ////// VALIDATION //////
 export type ValidationHandler<TFormValues extends FormValues> =
-    ( values: TFormValues ) => Promise<Partial<FormErrors<TFormValues>> | null> | Partial<FormErrors<TFormValues>>;
+    ( values: TFormValues ) => Promise<DeepPartial<FormErrors<TFormValues>> | null> | DeepPartial<FormErrors<TFormValues>>;
 
 export type SingleFieldValidator<
     TFormValues extends FormValues
@@ -159,7 +159,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the error messages of any number of fields simultaneously
      */
-    setErrors: ( newErrors: FormErrors<TFormValues> ) => void;
+    setErrors: ( newErrors: DeepPartial<FormErrors<TFormValues>> ) => void;
     /**
      * Set the touched status of a single field
      */
@@ -197,6 +197,25 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * Helper method for handling form reset
      */
     handleReset: ( e: FormEvent<HTMLFormElement> ) => void;
+    /**
+     * Helper method or explicitly calling validation on the entire form.
+     * For validating certain fields, use `validateField` instead.
+     * ** Please note that if your validation is asynchronous, you must `await` this
+     * calls to `validateForm` in order for the the form to properly update. **
+     */
+    validateForm: (
+        options?: {
+            /**
+             * An option to use for extending the manual validation by also touching all fields.
+             * This ensures that calling `validateForm` also shows all of the field errors on
+             * the screen as the fields have also been touched. This is the equivalent to what
+             * is done when validating during `onSubmit`.
+             *
+             * @default true
+             */
+            shouldTouchAllFields?: boolean;
+        }
+    ) => Promise<FormErrors<TFormValues>> | FormErrors<TFormValues>;
 };
 
 export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
@@ -207,6 +226,7 @@ export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
         | 'submitForm'
         | 'handleBlur'
         | 'handleChange'
+        | 'validateForm'
     >;
 
 export type OnSubmitOrReset<TFormValues extends FormValues> =

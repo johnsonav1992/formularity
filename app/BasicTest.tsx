@@ -81,7 +81,8 @@ const BasicTest = () => {
                 , SubmitButton
                 , ResetButton
                 , isPristine
-                , values
+                , validateForm
+                , touched
             } ) => (
                 <div
                     style={ {
@@ -91,6 +92,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
+                    { console.log( touched ) }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -151,6 +153,9 @@ const BasicTest = () => {
                             errorStyles
                         } }
                     />
+                    <button onClick={ async () => await validateForm() }>
+                        Validate
+                    </button>
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
                     </SubmitButton>
