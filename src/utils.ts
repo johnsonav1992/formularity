@@ -274,3 +274,14 @@ export const getMultiSelectValues = ( options: HTMLOptionsCollection ) => {
         .filter( option => option.selected )
         .map( option => option.value );
 };
+
+export const getActiveElement = ( doc?: Document ) => {
+    doc = doc || ( typeof document !== 'undefined' ? document : undefined );
+    if ( typeof doc === 'undefined' ) return null;
+
+    try {
+        return doc.activeElement || doc.body;
+    } catch ( e ) {
+        return doc.body;
+    }
+};

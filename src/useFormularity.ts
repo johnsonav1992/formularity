@@ -50,6 +50,7 @@ import {
     , hasSameNestedKeys
     , getKeysWithDiffs
     , deepMerge
+    , getActiveElement
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -475,7 +476,28 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
-        //TODO: Warn about missing button type identifier
+        /*
+            Warn if form submission is triggered by a <button> without a
+            specified 'type' attribute during development. Any button placed
+            inside of a <form> without a type will default to type 'submit', thus
+            submitting the form "accidentally" whenever clicked. A type of 'button'
+            must be added to avoid this.
+        */
+        if ( typeof document !== 'undefined' ) {
+            const activeElement = getActiveElement();
+
+            if (
+                activeElement !== null
+                && activeElement instanceof HTMLButtonElement
+            ) {
+                console.warn(
+                    'You submitted a Formularity form using a button without a \'type\' attribute. '
+                    + 'Most browsers default button elements to \'type="submit"\'. '
+                    + 'If this is not a submit button, please add \'type="button".'
+                );
+
+            }
+        }
 
         submitForm();
     } );
