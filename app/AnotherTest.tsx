@@ -11,6 +11,7 @@ import {
     , Stack
     , TextField
 } from '@mui/material';
+import useRenderLogger from '../src/devUtils/useRenderLogger';
 
 type TestValues = {
     name: string;
@@ -43,7 +44,7 @@ const formStore = createFormStore( {
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
 
-    console.log( 'RENDER' );
+    useRenderLogger( 'AnotherTest' );
 
     const test = formularity.touched.email;
     const t3 = formularity.dirtyFields[ 0 ];
