@@ -288,3 +288,9 @@ export const getActiveElement = ( doc?: Document ) => {
         return doc.body;
     }
 };
+
+export const logDevWarning = ( msg: string ) => {
+    if ( process.env.NODE_ENV === 'development' ) {
+        console.warn( msg );
+    }
+};

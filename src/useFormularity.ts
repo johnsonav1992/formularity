@@ -51,6 +51,7 @@ import {
     , getKeysWithDiffs
     , deepMerge
     , getActiveElement
+    , logDevWarning
 } from './utils';
 import { getDefaultFormStoreState } from './createFormStore';
 
@@ -494,7 +495,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 activeElement !== null
                 && activeElement instanceof HTMLButtonElement
             ) {
-                console.warn(
+                logDevWarning(
                     'You submitted a Formularity form using a button without a \'type\' attribute. '
                     + 'Most browsers default button elements to \'type="submit"\'. '
                     + 'If this is not a submit button, please add \'type="button".'
