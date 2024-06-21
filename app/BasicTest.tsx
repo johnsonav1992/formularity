@@ -81,6 +81,7 @@ const BasicTest = () => {
                 Field
                 , SubmitButton
                 , ResetButton
+                , validateForm
                 , ...formularity
             } ) => (
                 <div
@@ -152,6 +153,12 @@ const BasicTest = () => {
                             errorStyles
                         } }
                     />
+                    <button
+                        type='button'
+                        onClick={ async () => await validateForm() }
+                    >
+                        Validate
+                    </button>
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
                     </SubmitButton>
