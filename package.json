@@ -9,7 +9,7 @@
     "!/dist/app"
   ],
   "scripts": {
-    "start": "vite",
+    "start": "vite --port 4000",
     "build": "rollup -c",
     "lint": "eslint './{src,app}/**/*.{ts,tsx}'",
     "prepare": "npm run build",
