@@ -147,7 +147,27 @@ export type FormHandlers<TFormValues extends FormValues> = {
     setFieldValue: <
         TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    >( fieldName: TFieldName, newValue: TFieldValue ) => void;
+        , TShouldValidate extends boolean = boolean
+    >(
+        fieldName: TFieldName
+        , newValue: TFieldValue
+        , options?: {
+            /**
+             * Whether to run validation after field value is updated. **This will overwrite
+             * the top-level `validateOnChange` if set to `true`.**
+             *
+             * @default true
+             */
+            shouldValidate?: TShouldValidate;
+            /**
+             * The level at which the validation should occur after
+             * field value is set
+             *
+             * @default 'form'
+             */
+            validationLevel?: TShouldValidate extends true ? 'field' | 'form' : never;
+        }
+    ) => void;
     /**
      * Set the values of any number of fields simultaneously
      */

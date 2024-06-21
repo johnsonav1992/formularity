@@ -56,17 +56,7 @@ const BasicTest = () => {
 
     return (
         <Formularity
-            formStore={ createFormStore<BasicTestFormValues>( {
-                initialValues: {
-                    name: {
-                        first: ''
-                        , last: ''
-                    }
-                    , email: ''
-                    , acknowledgement: false
-                }
-                , validationSchema: zodAdapter( validationSchema )
-            } ) }
+            formStore={ formStore }
             onSubmit={ values => console.log( values ) }
             // valuesInitializer={ {
             //     name: {
@@ -155,7 +145,7 @@ const BasicTest = () => {
                     />
                     <button
                         type='button'
-                        onClick={ async () => await validateForm() }
+                        onClick={ async () => await validateForm( { shouldTouchAllFields: true } ) }
                     >
                         Validate
                     </button>

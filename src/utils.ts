@@ -135,7 +135,10 @@ export const setViaPath = <
     for ( let i = 0; i < keys.length - 1; i++ ) {
         const key = keys[ i ];
 
-        if ( typeof current[ key ] !== 'object' || current[ key ] === null ) {
+        if (
+            typeof current[ key ] !== 'object'
+            || current[ key ] === null
+        ) {
             current[ key ] = isNaN( Number( keys[ i + 1 ] ) )
                 ? {} as never
                 : [] as never;

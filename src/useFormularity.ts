@@ -303,7 +303,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     // TODO: add options object with validation options
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
-        = useEventCallback( ( fieldName, newValue ) => {
+        = useEventCallback( ( fieldName, newValue, options ) => {
+            const shouldValidate = options?.shouldValidate ?? true;
+            const validationLevel = options?.validationLevel ?? 'form';
+
             const newValues = setViaPath( values, fieldName, newValue );
 
             formStore.set( { values: newValues } );
@@ -476,6 +479,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
+        // TODO: make this fire in development only
         /*
             Warn if form submission is triggered by a <button> without a
             specified 'type' attribute during development. Any button placed
