@@ -120,18 +120,16 @@ export const getViaPath = <
 };
 
 export const setViaPath = <
-    TObj,
-    TPath extends string,
-    TNewValue
->(
+        TObj,
+        TPath extends string,
+        TNewValue
+    >(
         obj: TObj,
         path: TPath,
         newValue: TNewValue
     ): TObj => {
     const keys = path.split( /\.\[|\]|\./ ).filter( Boolean ) as Array<keyof TObj>;
-
     const newObj = cloneDeep( obj );
-
     let current = newObj as TObj;
 
     for ( let i = 0; i < keys.length - 1; i++ ) {
