@@ -198,7 +198,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , []
     );
 
-    // TODO: expose version of this to user
     // TODO: expose a validateField function as well
     const _validateForm = useEventCallback( async ( values: TFormValues, options?: { updateStore?: boolean } ) => {
         const updateStore = options?.updateStore ?? true;
