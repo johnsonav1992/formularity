@@ -245,6 +245,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return newErrors;
     } );
 
+    // TODO: Handle setting error and touching field
     const _validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
         fieldName: TFieldName
         , validator?: SingleFieldValidator<TFormValues, TFieldName>
