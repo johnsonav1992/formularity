@@ -245,6 +245,27 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return newErrors;
     } );
 
+    const _validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
+        fieldName: TFieldName
+        , validator?: SingleFieldValidator<TFormValues, TFieldName>
+    ) => {
+        const validatorToRun
+                = validator
+                || fieldRegistry.current?.[ fieldName as keyof FieldRegistry<TFormValues> ]?.validationHandler as typeof validator;
+
+        if ( !validatorToRun ) {
+            logDevWarning( `Field: ${ fieldName } must have a validator prop set or' + 
+                    'an inline validator must be passed as a second argument in order to use validateField.`
+            );
+
+            return null;
+        }
+
+        const error = await runSingleFieldValidation( validatorToRun, fieldName );
+
+        return error;
+    } );
+
     // TODO: need to rework this in light of the above validationRunner fn
     const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {
         const validationErrors = await manualValidationHandler?.( values );
@@ -258,9 +279,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return validationErrors;
     } );
 
-    const runSingleFieldValidation = useEventCallback( async (
-        fieldValidator: SingleFieldValidator<TFormValues>
-        , fieldName: DeepKeys<TFormValues>
+    const runSingleFieldValidation = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
+        fieldValidator: SingleFieldValidator<TFormValues, TFieldName>
+        , fieldName: TFieldName
     ) => {
         const fieldValue = getViaPath( values, fieldName );
         const fieldErrorOrNull = await fieldValidator( fieldValue as never );
@@ -288,7 +309,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return errors;
     } );
 
-    const validateForm: FormHandlers<TFormValues>['validateForm'] = async options => {
+    const validateForm: FormHandlers<TFormValues>['validateForm'] = useEventCallback( async options => {
         const shouldTouchAllFields = options?.shouldTouchAllFields ?? true;
 
         const validationErrors = await _validateForm( values, { updateStore: false } );
@@ -299,19 +320,34 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         return validationErrors as FormErrors<TFormValues>;
-    };
+    } );
+
+    const validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>> (
+        fieldName: TFieldName
+        , validator?: SingleFieldValidator<TFormValues, TFieldName>
+    ) => await _validateField( fieldName, validator ) );
 
     // TODO: add options object with validation options
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
         = useEventCallback( ( fieldName, newValue, options ) => {
-            const shouldValidate = options?.shouldValidate ?? true;
+            const shouldValidate = options?.shouldValidate !== undefined
+                ? options.shouldValidate
+                : validateOnChange;
+
             const validationLevel = options?.validationLevel ?? 'form';
 
             const newValues = setViaPath( values, fieldName, newValue );
 
             formStore.set( { values: newValues } );
 
-            validateOnChange && _validateForm( newValues );
+            if ( shouldValidate ) {
+                switch ( validationLevel ) {
+                    case 'form': _validateForm( newValues );
+                        break;
+                    case 'field': _validateField( fieldName );
+                        break;
+                }
+            }
         } );
 
     // TODO: add options object with validation options
@@ -558,6 +594,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , resetForm
         , handleReset
         , validateForm
+        , validateField
         , isDirty
         , isPristine
         , isValid

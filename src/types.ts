@@ -222,6 +222,8 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * For validating certain fields, use `validateField` instead.
      * ** Please note that if your validation is asynchronous, you must `await` this
      * calls to `validateForm` in order for the the form to properly update. **
+     *
+     * @param options a set of options to configure the validation call
      */
     validateForm: (
         options?: {
@@ -236,6 +238,18 @@ export type FormHandlers<TFormValues extends FormValues> = {
             shouldTouchAllFields?: boolean;
         }
     ) => Promise<FormErrors<TFormValues>> | FormErrors<TFormValues>;
+    /**
+     * Helper method for validating a single field. **The field to be validated must have
+     * a validator set as via the `validator` prop on the `<Field />` or pass an optional `validator`
+     * as the second argument to `validateField`
+     *
+     * @param fieldName the name of the field to validate
+     * @param validator an optional validator to use for validation in the case a validator is not provided via props
+     */
+    validateField: <TFieldName extends DeepKeys<TFormValues>>(
+        fieldName: TFieldName
+        , validator?: SingleFieldValidator<TFormValues, TFieldName>
+    ) => Promise<string | null> | string | null;
 };
 
 export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
@@ -247,6 +261,7 @@ export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
         | 'handleBlur'
         | 'handleChange'
         | 'validateForm'
+        | 'validateField'
     >;
 
 export type OnSubmitOrReset<TFormValues extends FormValues> =

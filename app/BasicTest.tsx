@@ -5,7 +5,6 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import useRenderLogger from '../src/devUtils/useRenderLogger';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -52,7 +51,6 @@ const errorStyles: CSSProperties = {
 };
 
 const BasicTest = () => {
-    useRenderLogger( 'BasicTest' );
 
     return (
         <Formularity
@@ -82,7 +80,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { console.log( 'render' ) }
+                    { console.log( 'RENDER' ) }
                     <Field
                         name='name.first'
                         label='First Name'
