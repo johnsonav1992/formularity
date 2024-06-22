@@ -255,7 +255,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         if ( !validatorToRun ) {
             logDevWarning(
-                `Field: ${ fieldName } must have a validator prop set or' + 
+                `Field: ${ fieldName } must have a validator prop set or ' + 
                 'an inline validator must be passed as a second argument in order to use validateField.`
             );
 
