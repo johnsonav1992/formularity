@@ -262,9 +262,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
             return null;
         }
 
-        const error = await runSingleFieldValidation( validatorToRun, fieldName );
+        const errorOrNull = await runSingleFieldValidation( validatorToRun, fieldName );
 
-        return error;
+        return errorOrNull;
     } );
 
     // TODO: need to rework this in light of the above validationRunner fn
