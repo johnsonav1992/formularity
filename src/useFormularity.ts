@@ -198,7 +198,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , []
     );
 
-    // TODO: expose a validateField function as well
     const _validateForm = useEventCallback( async ( values: TFormValues, options?: { updateStore?: boolean } ) => {
         const updateStore = options?.updateStore ?? true;
 
@@ -255,8 +254,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 || fieldRegistry.current?.[ fieldName as keyof FieldRegistry<TFormValues> ]?.validationHandler as typeof validator;
 
         if ( !validatorToRun ) {
-            logDevWarning( `Field: ${ fieldName } must have a validator prop set or' + 
-                    'an inline validator must be passed as a second argument in order to use validateField.`
+            logDevWarning(
+                `Field: ${ fieldName } must have a validator prop set or' + 
+                'an inline validator must be passed as a second argument in order to use validateField.`
             );
 
             return null;
