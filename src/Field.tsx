@@ -223,6 +223,7 @@ export const Field = <
         && !!component
         && checked != undefined;
 
+    // TODO: handle new validation levels through a config prop
     const fieldProps = {
         name
         , value: value || fieldValueState
