@@ -220,8 +220,9 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Helper method or explicitly calling validation on the entire form.
      * For validating certain fields, use `validateField` instead.
-     * ** Please note that if your validation is asynchronous, you must `await` this
-     * calls to `validateForm` in order for the the form to properly update. **
+     * **Please note that you must `await` any calls to `validateForm` in
+     * order for the the form to properly update, as this method can handle
+     * asynchronous operations**
      *
      * @param options a set of options to configure the validation call
      */
@@ -241,7 +242,9 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Helper method for validating a single field. **The field to be validated must have
      * a validator set as via the `validator` prop on the `<Field />` or pass an optional `validator`
-     * as the second argument to `validateField`
+     * to the options object (second argument) of `validateField`. **Please note that you must `await`
+     * any calls to `validateField` in order for the the form to properly update, as this method can handle
+     * asynchronous operations**
      *
      * @param fieldName the name of the field to validate
      * @param validator an optional validator to use for validation in the case a validator is not provided via props
