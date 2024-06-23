@@ -535,9 +535,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
         if ( typeof document !== 'undefined' ) {
             const activeElement = getActiveElement();
 
+            console.log( activeElement );
+
             if (
                 activeElement !== null
                 && activeElement instanceof HTMLButtonElement
+                && !activeElement.type
             ) {
                 logDevWarning(
                     'You submitted a Formularity form using a button without a \'type\' attribute. '
