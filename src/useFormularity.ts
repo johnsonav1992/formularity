@@ -362,6 +362,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     }
                         break;
                 }
+            } else {
+                formStore.set( { values: newValues } );
             }
         } );
 
