@@ -37,9 +37,7 @@ import { useEventCallback } from './useEventCallback';
 
 // Utils
 import {
-    getCheckboxValue
-    , getMultiSelectValues
-    , getViaPath
+    getViaPath
     , objectEntries
     , objectKeys
     , isEqual
@@ -53,8 +51,12 @@ import {
     , getActiveElement
     , logDevWarning
 } from './generalUtils';
+import {
+    touchAllFields
+    , getCheckboxValue
+    , getMultiSelectValues
+} from './formUtils';
 import { getDefaultFormStoreState } from './createFormStore';
-import { touchAllFields } from './formUtils';
 
 // Components
 import { Field } from './Field';
