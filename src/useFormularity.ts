@@ -381,18 +381,21 @@ export const useFormularity = <TFormValues extends FormValues>( {
         formStore.set( { errors: deepMerge( errors, newErrors ) } );
     }, [] );
 
-    const setFieldTouched = useEventCallback( ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
+    const setFieldTouched = useEventCallback( async ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
         const newFieldTouched = setViaPath(
             touched
             , fieldName as DeepKeys<FormTouched<TFormValues>>
             , newTouched
         );
 
-        // TODO: Need to find a creative way to cut down on a render here
-        // (Try to get touched and validations to update in one render)
+        const newErrors = validateOnBlur
+            ? await _validateForm( values, { updateStore: false } )
+            : errors;
 
-        formStore.set( { touched: newFieldTouched } );
-        validateOnBlur && _validateForm( values );
+        formStore.set( {
+            touched: newFieldTouched
+            , errors: newErrors as FormErrors<TFormValues>
+        } );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
