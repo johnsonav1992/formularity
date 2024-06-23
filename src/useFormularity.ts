@@ -245,10 +245,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     // TODO: Handle setting error and touching field
-    const _validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
+    const validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
         fieldName: TFieldName
-        , validator?: SingleFieldValidator<TFormValues, TFieldName>
+        , options?: {
+            validator?: SingleFieldValidator<TFormValues, TFieldName>;
+            shouldTouchField?: boolean;
+        }
     ) => {
+        const validator = options?.validator;
+        const shouldTouchField = options?.shouldTouchField ?? true;
+
         const validatorToRun
                 = validator
                 || fieldRegistry.current?.[ fieldName as keyof FieldRegistry<TFormValues> ]?.validationHandler as typeof validator;
@@ -263,6 +269,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         const errorOrNull = await runSingleFieldValidation( validatorToRun, fieldName );
+        const newTouched = shouldTouchField ? setViaPath( touched, fieldName, true ) : touched;
+        const newErrors = errorOrNull ? setViaPath( errors, fieldName, errorOrNull ) : errors;
+
+        formStore.set( {
+            touched: newTouched
+            , errors: newErrors
+        } );
 
         return errorOrNull;
     } );
@@ -323,11 +336,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return validationErrors as FormErrors<TFormValues>;
     } );
 
-    const validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>> (
-        fieldName: TFieldName
-        , validator?: SingleFieldValidator<TFormValues, TFieldName>
-    ) => await _validateField( fieldName, validator ) );
-
     // TODO: add options object with validation options
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
         = useEventCallback( ( fieldName, newValue, options ) => {
@@ -345,7 +353,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 switch ( validationLevel ) {
                     case 'form': _validateForm( newValues );
                         break;
-                    case 'field': _validateField( fieldName );
+                    case 'field': validateField( fieldName );
                         break;
                 }
             }

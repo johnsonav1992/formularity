@@ -245,10 +245,14 @@ export type FormHandlers<TFormValues extends FormValues> = {
      *
      * @param fieldName the name of the field to validate
      * @param validator an optional validator to use for validation in the case a validator is not provided via props
+     * @param shouldTouchField whether to touch the field or not after validation (defaults to `true`)
      */
     validateField: <TFieldName extends DeepKeys<TFormValues>>(
         fieldName: TFieldName
-        , validator?: SingleFieldValidator<TFormValues, TFieldName>
+        , options?: {
+            validator?: SingleFieldValidator<TFormValues, TFieldName>;
+            shouldTouchField?: boolean;
+        }
     ) => Promise<string | null> | string | null;
 };
 
