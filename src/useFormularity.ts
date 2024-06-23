@@ -358,7 +358,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                         break;
                     case 'field': {
                         formStore.set( { values: newValues } );
-                        validateField( fieldName );
+                        validateField( fieldName, { shouldTouchField: false } );
                     }
                         break;
                 }
