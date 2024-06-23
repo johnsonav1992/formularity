@@ -13,7 +13,7 @@ export * from './ResetButton';
 export {
     getViaPath
     , setViaPath
-} from './utils';
+} from './generalUtils';
 
 export { createFormStore } from './createFormStore';
 

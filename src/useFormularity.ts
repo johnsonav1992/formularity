@@ -52,7 +52,7 @@ import {
     , deepMerge
     , getActiveElement
     , logDevWarning
-} from './utils';
+} from './generalUtils';
 import { getDefaultFormStoreState } from './createFormStore';
 
 // Components

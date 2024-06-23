@@ -12,7 +12,7 @@ import {
 } from './utilityTypes';
 
 // Utils
-import { cloneDeep } from './utils';
+import { cloneDeep } from './generalUtils';
 
 export type CreateFormStoreParams<TFormValues extends FormValues> = {
     /**

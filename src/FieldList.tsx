@@ -12,7 +12,7 @@ import { FormValues } from './types';
 import { useFormularityContext } from './FormularityContext';
 
 // Utils
-import { getViaPath } from './utils';
+import { getViaPath } from './generalUtils';
 
 type FieldListHelpers<TListData extends unknown[]> = {
     /**

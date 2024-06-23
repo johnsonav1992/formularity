@@ -22,7 +22,7 @@ import {
 } from './utilityTypes';
 
 // Utils
-import { getViaPath } from './utils';
+import { getViaPath } from './generalUtils';
 
 // Hooks
 import { useFormularityContext } from './FormularityContext';
