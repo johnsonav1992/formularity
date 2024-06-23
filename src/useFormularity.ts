@@ -544,7 +544,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     + 'Most browsers default button elements to \'type="submit"\'. '
                     + 'If this is not a submit button, please add \'type="button".'
                 );
-
             }
         }
 
