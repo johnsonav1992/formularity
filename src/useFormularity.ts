@@ -54,6 +54,7 @@ import {
     , logDevWarning
 } from './generalUtils';
 import { getDefaultFormStoreState } from './createFormStore';
+import { touchAllFields } from './formUtils';
 
 // Components
 import { Field } from './Field';
@@ -328,7 +329,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const validationErrors = await _validateForm( values, { updateStore: false } );
 
         formStore.set( {
-            touched: shouldTouchAllFields ? touchAllFields() : touched
+            touched: shouldTouchAllFields ? touchAllFields( values ) : touched
             , errors: validationErrors as FormErrors<TFormValues>
         } );
 
@@ -411,17 +412,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
-
-    const touchAllFields = ( validationErrors?: DeepPartial<FormErrors<TFormValues>> ) => {
-        const targetObj = validationErrors || values;
-
-        return deepObjectKeys( targetObj )
-            .reduce<FormTouched<TFormValues>>( ( touchedObj, key ) => {
-                const newTouchedObj = setViaPath( touchedObj, key as never, true );
-
-                return newTouchedObj;
-            }, {} as FormTouched<TFormValues> );
-    };
 
     const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
         let finalValue;
