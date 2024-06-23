@@ -244,7 +244,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return newErrors;
     } );
 
-    // TODO: Handle setting error and touching field
     const validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
         fieldName: TFieldName
         , options?: {
@@ -526,7 +525,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.persist();
         e.preventDefault();
 
-        // TODO: make this fire in development only
         /*
             Warn if form submission is triggered by a <button> without a
             specified 'type' attribute during development. Any button placed
