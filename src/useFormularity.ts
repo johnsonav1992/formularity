@@ -535,8 +535,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         if ( typeof document !== 'undefined' ) {
             const activeElement = getActiveElement();
 
-            console.log( activeElement );
-
             if (
                 activeElement !== null
                 && activeElement instanceof HTMLButtonElement
