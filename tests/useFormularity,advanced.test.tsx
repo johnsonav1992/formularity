@@ -48,3 +48,17 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
 };
 
 afterEach( () => cleanup() );
+
+describe( 'useFormularity Advanced', () => {
+    it( 'should validate the entire form and touch all fields when calling validateForm', () => {
+        const { formularity } = renderUseFormularity();
+
+        act( async () => await formularity.current.validateForm() );
+
+        expect( formularity.current.errors ).toStrictEqual( {
+            firstName: 'First name is required'
+            , lastName: 'Last name is required'
+            , email: 'Email is required'
+        } );
+    } );
+} );
