@@ -94,10 +94,10 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.touched ).toStrictEqual( {} );
     } );
 
-    it( 'should set a field value appropriately', () => {
+    it( 'should set a field value appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
-        act( () => formularity.current.setFieldValue( 'firstName', 'John' ) );
+        await act( () => formularity.current.setFieldValue( 'firstName', 'John' ) );
 
         expect( formularity.current.values.firstName ).toBe( 'John' );
     } );

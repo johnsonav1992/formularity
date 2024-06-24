@@ -339,7 +339,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
-        = useEventCallback( async ( fieldName, newValue, options ) => {
+        = useEventCallback( ( fieldName, newValue, options ) => {
             const shouldValidate = options?.shouldValidate != undefined
                 ? options.shouldValidate
                 : validateOnChange;
@@ -351,12 +351,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( shouldValidate ) {
                 switch ( validationLevel ) {
                     case 'form': {
-                        const newErrors = await _validateForm( newValues, { updateStore: false } );
+                        _validateForm( newValues, { updateStore: false } )
+                            .then( newErrors => {
+                                formStore.set( {
+                                    values: newValues
+                                    , errors: newErrors as FormErrors<TFormValues>
+                                } );
+                            } );
 
-                        formStore.set( {
-                            values: newValues
-                            , errors: newErrors as FormErrors<TFormValues>
-                        } );
                     }
                         break;
                     case 'field': {
