@@ -219,7 +219,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.touched.firstName ).toBe( true );
     } );
 
-    it( 'should indicate the form is dirty if initialValues does not deeply equal to values', async () => {
+    it( 'should indicate the form is dirty if initialValues does not deeply equal to values', () => {
         const { formularity } = renderUseFormularity();
 
         act( () => formularity.current.setFieldValue( 'firstName', 'Bob' ) );
@@ -228,7 +228,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.values ).not.toStrictEqual( formularity.current.initialValues );
     } );
 
-    it( 'should indicate the form is pristine if initialValues deeply equals values', async () => {
+    it( 'should indicate the form is pristine if initialValues deeply equals values', () => {
         const { formularity } = renderUseFormularity();
 
         expect( formularity.current.isPristine ).toBeTruthy();

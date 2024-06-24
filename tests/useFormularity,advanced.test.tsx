@@ -50,10 +50,10 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
 afterEach( () => cleanup() );
 
 describe( 'useFormularity Advanced', () => {
-    it( 'should validate the entire form and touch all fields when calling validateForm', () => {
+    it( 'should validate the entire form and touch all fields when calling validateForm', async () => {
         const { formularity } = renderUseFormularity();
 
-        act( async () => await formularity.current.validateForm() );
+        await act( async () => await formularity.current.validateForm() );
 
         expect( formularity.current.errors ).toStrictEqual( {
             firstName: 'First name is required'
