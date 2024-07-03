@@ -102,7 +102,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.values.firstName ).toBe( 'John' );
     } );
 
-    it( 'should set all field values appropriately', () => {
+    it( 'should set all field values appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
         const newValues = {
@@ -111,12 +111,12 @@ describe( 'useFormularity basic', () => {
             , email: 'john@example.com'
         };
 
-        act( () => formularity.current.setValues( newValues ) );
+        await act( () => formularity.current.setValues( newValues ) );
 
         expect( formularity.current.values ).toStrictEqual( newValues );
     } );
 
-    it( 'should set some field values appropriately', () => {
+    it( 'should set some field values appropriately', async () => {
         const {
             formularity
             , initialValues
@@ -127,7 +127,7 @@ describe( 'useFormularity basic', () => {
             , email: 'john@example.com'
         };
 
-        act( () => formularity.current.setValues( newValues ) );
+        await act( () => formularity.current.setValues( newValues ) );
 
         expect( formularity.current.values ).toStrictEqual( {
             ...newValues
@@ -135,10 +135,10 @@ describe( 'useFormularity basic', () => {
         } );
     } );
 
-    it( 'should set a field as touched appropriately', () => {
+    it( 'should set a field as touched appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
-        act( () => formularity.current.setFieldTouched( 'firstName', true ) );
+        await act( () => formularity.current.setFieldTouched( 'firstName', true ) );
 
         expect( formularity.current.touched.firstName ).toBeTruthy();
     } );
