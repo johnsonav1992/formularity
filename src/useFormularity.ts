@@ -351,14 +351,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( shouldValidate ) {
                 switch ( validationLevel ) {
                     case 'form': {
-                        _validateForm( newValues, { updateStore: false } )
-                            .then( newErrors => {
-                                formStore.set( {
-                                    values: newValues
-                                    , errors: newErrors as FormErrors<TFormValues>
-                                } );
-                            } );
-
+                        formStore.set( { values: newValues } );
+                        _validateForm( newValues );
                     }
                         break;
                     case 'field': {
