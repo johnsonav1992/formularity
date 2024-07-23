@@ -236,11 +236,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         switch ( true ) {
             case !!validationSchema: await validationRunner( validationSchema );
                 break;
-            case !!manualValidationHandler: await validationRunner( runUserDefinedValidations as ValidationHandler<TFormValues> );
+            case !!manualValidationHandler: await validationRunner( manualValidationHandler );
                 break;
             default: {
-                newErrors = await runAllSingleFieldValidators( newErrors );
-                updateStore && setErrors( newErrors );
+                if ( objectKeys( newErrors ).length ) {
+                    newErrors = await runAllSingleFieldValidators( newErrors );
+                    updateStore && setErrors( newErrors );
+                }
             }
         }
 
@@ -280,19 +282,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         return errorOrNull;
-    } );
-
-    // TODO: need to rework this in light of the above validationRunner fn
-    const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {
-        const validationErrors = await manualValidationHandler?.( values );
-
-        if ( isEmpty( validationErrors ) ) {
-            return setErrors( {} );
-        } else {
-            setErrors( deepMerge( errors, validationErrors! ) as DeepPartial<FormErrors<TFormValues>> );
-        }
-
-        return validationErrors;
     } );
 
     const runSingleFieldValidation = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
