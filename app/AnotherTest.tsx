@@ -11,7 +11,6 @@ import {
     , Stack
     , TextField
 } from '@mui/material';
-import useRenderLogger from '../src/devUtils/useRenderLogger';
 
 type TestValues = {
     name: string;
@@ -43,11 +42,6 @@ const formStore = createFormStore( {
 
 const AnotherTest = () => {
     const formularity = useFormularity( { formStore } );
-
-    useRenderLogger( 'AnotherTest' );
-
-    const test = formularity.touched.email;
-    const t3 = formularity.dirtyFields[ 0 ];
 
     return (
         <div>
@@ -85,7 +79,7 @@ const AnotherTest = () => {
                             // validator={
                             //     zodAdapter(
                             //         z.string().min( 3 )
-                            //         , { isField: false }
+                            //         , { isField: true }
                             //     )
                             // }
                             helperText={ touched.name && errors.name }
