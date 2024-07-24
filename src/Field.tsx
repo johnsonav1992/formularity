@@ -26,6 +26,7 @@ import { getViaPath } from './generalUtils';
 
 // Hooks
 import { useFormularityContext } from './FormularityContext';
+import { useEventCallback } from './useEventCallback';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
@@ -198,6 +199,7 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
+        , setFieldValue
     } = useFormularityContext<TFormValues>();
 
     const id = 'id' in props ? props.id as string : undefined;
@@ -224,6 +226,9 @@ export const Field = <
         && checked != undefined;
 
     // TODO: handle new validation levels through a config prop
+
+    //We are able to set props here that the handleChange event can use to set options values when it call setFieldValue in the hook? Or swap out the onChange functions here and call setFieldValue directly here?
+
     const fieldProps = {
         name
         , value: value || fieldValueState
