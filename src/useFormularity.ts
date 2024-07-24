@@ -124,9 +124,9 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
 
 /**
  * `useFormularity` is the heart and brains of Formularity. Under the hood, it powers
- * the `<Formularity />` component and its child components. This form may be used to manually
+ * the `<Formularity />` component and its child components. This hook may be used to manually
  * implement a custom version of Formularity, but it is recommended to only go this route if
- * absolutely necessary. This hook may also be used to access form state from outside of the `<Formularity />`
+ * absolutely necessary. It may also be used to access form state from outside of the `<Formularity />`
  * component bounds. This should also be used on a conditional basis, when absolutely needed, to
  * avoid potential, undesired side-effects.
  */
@@ -236,11 +236,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         switch ( true ) {
             case !!validationSchema: await validationRunner( validationSchema );
                 break;
-            case !!manualValidationHandler: await validationRunner( runUserDefinedValidations as ValidationHandler<TFormValues> );
+            case !!manualValidationHandler: await validationRunner( manualValidationHandler );
                 break;
             default: {
-                newErrors = await runAllSingleFieldValidators( newErrors );
-                updateStore && setErrors( newErrors );
+                if ( objectKeys( newErrors ).length ) {
+                    newErrors = await runAllSingleFieldValidators( newErrors );
+                    updateStore && setErrors( newErrors );
+                }
             }
         }
 
@@ -280,19 +282,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         return errorOrNull;
-    } );
-
-    // TODO: need to rework this in light of the above validationRunner fn
-    const runUserDefinedValidations = useEventCallback( async ( values: TFormValues ) => {
-        const validationErrors = await manualValidationHandler?.( values );
-
-        if ( isEmpty( validationErrors ) ) {
-            return setErrors( {} );
-        } else {
-            setErrors( deepMerge( errors, validationErrors! ) as DeepPartial<FormErrors<TFormValues>> );
-        }
-
-        return validationErrors;
     } );
 
     const runSingleFieldValidation = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(

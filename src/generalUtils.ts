@@ -249,7 +249,7 @@ export const getActiveElement = ( doc?: Document ) => {
 };
 
 export const logDevWarning = ( msg: string ) => {
-    if ( process.env.NODE_ENV === 'development' ) {
+    if ( process.env.NODE_ENV !== 'production' ) {
         console.warn( msg );
     }
 };
