@@ -193,7 +193,8 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * taking the event emitted from onChange and setting the
      * field's value accordingly
      */
-    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => void;
+    //TODO: update handle change definitions to take optional options
+    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions:any ) => void;
     /**
      * Helper method to handle the updating of a field's touched status by
      * taking the event emitted from onBlur and setting the

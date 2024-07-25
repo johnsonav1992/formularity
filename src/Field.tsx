@@ -1,6 +1,6 @@
 import React, {
     CSSProperties
-    , ComponentProps
+    , ChangeEvent, ComponentProps
     , FC
     , HTMLInputTypeAttribute
     , ReactNode
@@ -29,6 +29,7 @@ import { useFormularityContext } from './FormularityContext';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
+//TODO: add in field validation options type here
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
@@ -146,6 +147,12 @@ export type FieldProps<
          * ```
          */
         validator?: SingleFieldValidator<TFormValues, TFieldName>;
+         /**
+         *
+         *
+         */
+        //TODO: best way to define this
+        fieldValidationOptions?: any;
         /**
          * Children that may need to be passed to the `<Field />` component.
          *
@@ -153,6 +160,7 @@ export type FieldProps<
          * any custom component that requires children rendering in order to work.
          */
         children?: ReactNode;
+
     };
 
 /**
@@ -180,6 +188,7 @@ export const Field = <
         , showErrors
         , errorProps
         , validator
+        , fieldValidationOptions
         , ...props
     }: FieldProps<
         TFormValues
@@ -223,7 +232,7 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-    // TODO: handle new validation levels through a config prop
+    //TODO: pass in the field validation props here to handle change
     const fieldProps = {
         name
         , value: value || fieldValueState
@@ -232,7 +241,7 @@ export const Field = <
                 ? fieldValueState
                 : value
             : undefined
-        , onChange: handleChange
+        , onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleChange(e, fieldValidationOptions)
         , onBlur: handleBlur
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props

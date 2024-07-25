@@ -98,6 +98,11 @@ const BasicTest = () => {
                                 , { isField: true }
                             )
                         }
+                        fieldValidationOptions={
+                            {shouldValidate:false,
+                                validationLevel: 'field'
+                            }
+                        }
                     />
                     <Field
                         name='name.last'
