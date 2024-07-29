@@ -23,6 +23,7 @@ import {
     , FormHandlers
     , SubmissionOrResetHelpers
     , OnSubmitOrReset
+    , FieldValidationOptions
 } from './types';
 import {
     CheckboxValue
@@ -256,7 +257,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             shouldTouchField?: boolean;
         }
     ) => {
-        debugger
+
         const validator = options?.validator;
         const shouldTouchField = options?.shouldTouchField ?? true;
 
@@ -401,8 +402,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
-    //TODO: optional pass through options here, update type
-    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions:any ) => {
+    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions?:FieldValidationOptions ) => {
         let finalValue;
 
         const fieldName = e.target.name as DeepKeys<TFormValues>;
@@ -442,7 +442,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             default: finalValue = value;
         }
-        //TODO: pass the options in here
+
         setFieldValue(
             fieldName
             , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>

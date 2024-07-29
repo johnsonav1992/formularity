@@ -9,6 +9,7 @@ import React, {
 
 // Types
 import {
+    FieldValidationOptions,
     FormErrors
     , FormTouched
     , FormValues
@@ -29,7 +30,6 @@ import { useFormularityContext } from './FormularityContext';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
-//TODO: add in field validation options type here
 export type FieldProps<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
@@ -37,6 +37,7 @@ export type FieldProps<
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
         : TComponentProps extends keyof IntrinsicFormElements
@@ -149,10 +150,9 @@ export type FieldProps<
         validator?: SingleFieldValidator<TFormValues, TFieldName>;
          /**
          *
-         *
+         * Optional field level validation configuration.
          */
-        //TODO: best way to define this
-        fieldValidationOptions?: any;
+        fieldValidationOptions?: TFieldValidationOptions;
         /**
          * Children that may need to be passed to the `<Field />` component.
          *
@@ -232,7 +232,7 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-    //TODO: pass in the field validation props here to handle change
+
     const fieldProps = {
         name
         , value: value || fieldValueState

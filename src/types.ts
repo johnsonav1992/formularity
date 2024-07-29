@@ -139,6 +139,23 @@ export type FormStoreState<TFormValues extends FormValues> = {
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
+export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = {
+    /**
+     * Whether to run validation after field value is updated. **This will overwrite
+     * the top-level `validateOnChange` if set to `true`.**
+     *
+     * @default true
+     */
+    shouldValidate?: TShouldValidate;
+    /**
+     * The level at which the validation should occur after
+     * field value is set
+     *
+     * @default 'form'
+     */
+    validationLevel?: TShouldValidate extends true ? 'field' | 'form' : never;
+}
+
 ////// HANDLERS //////
 export type FormHandlers<TFormValues extends FormValues> = {
     /**
@@ -147,26 +164,11 @@ export type FormHandlers<TFormValues extends FormValues> = {
     setFieldValue: <
         TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-        , TShouldValidate extends boolean = boolean
+        , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
     >(
         fieldName: TFieldName
         , newValue: TFieldValue
-        , options?: {
-            /**
-             * Whether to run validation after field value is updated. **This will overwrite
-             * the top-level `validateOnChange` if set to `true`.**
-             *
-             * @default true
-             */
-            shouldValidate?: TShouldValidate;
-            /**
-             * The level at which the validation should occur after
-             * field value is set
-             *
-             * @default 'form'
-             */
-            validationLevel?: TShouldValidate extends true ? 'field' | 'form' : never;
-        }
+        , options?: TFieldValidationOptions
     ) => void;
     /**
      * Set the values of any number of fields simultaneously
@@ -193,8 +195,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * taking the event emitted from onChange and setting the
      * field's value accordingly
      */
-    //TODO: update handle change definitions to take optional options
-    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions:any ) => void;
+    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions:FieldValidationOptions ) => void;
     /**
      * Helper method to handle the updating of a field's touched status by
      * taking the event emitted from onBlur and setting the
@@ -386,6 +387,7 @@ export type FieldComponent<TFormValues extends FormValues>
         , TShowErrors extends boolean = false
         , TLabel extends string | undefined = undefined
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+        , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
     >(
         props: FieldProps<
                 TFormValues
@@ -394,6 +396,7 @@ export type FieldComponent<TFormValues extends FormValues>
                 , TShowErrors
                 , TLabel
                 , TFieldValue
+                , TFieldValidationOptions
             >
     ) => ReactNode;
 
