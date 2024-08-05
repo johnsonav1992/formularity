@@ -1,6 +1,6 @@
 import React, {
     CSSProperties
-    , ComponentProps
+    , ChangeEvent, ComponentProps
     , FC
     , HTMLInputTypeAttribute
     , ReactNode
@@ -9,6 +9,7 @@ import React, {
 
 // Types
 import {
+    FieldValidationOptions,
     FormErrors
     , FormTouched
     , FormValues
@@ -36,6 +37,7 @@ export type FieldProps<
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
         : TComponentProps extends keyof IntrinsicFormElements
@@ -146,6 +148,11 @@ export type FieldProps<
          * ```
          */
         validator?: SingleFieldValidator<TFormValues, TFieldName>;
+         /**
+         *
+         * Optional field level validation configuration.
+         */
+        fieldValidationOptions?: TFieldValidationOptions;
         /**
          * Children that may need to be passed to the `<Field />` component.
          *
@@ -153,6 +160,7 @@ export type FieldProps<
          * any custom component that requires children rendering in order to work.
          */
         children?: ReactNode;
+
     };
 
 /**
@@ -180,6 +188,7 @@ export const Field = <
         , showErrors
         , errorProps
         , validator
+        , fieldValidationOptions
         , ...props
     }: FieldProps<
         TFormValues
@@ -223,7 +232,7 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-    // TODO: handle new validation levels through a config prop
+
     const fieldProps = {
         name
         , value: value || fieldValueState
@@ -232,7 +241,7 @@ export const Field = <
                 ? fieldValueState
                 : value
             : undefined
-        , onChange: handleChange
+        , onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleChange(e, fieldValidationOptions)
         , onBlur: handleBlur
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props

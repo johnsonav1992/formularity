@@ -23,6 +23,7 @@ import {
     , FormHandlers
     , SubmissionOrResetHelpers
     , OnSubmitOrReset
+    , FieldValidationOptions
 } from './types';
 import {
     CheckboxValue
@@ -256,6 +257,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             shouldTouchField?: boolean;
         }
     ) => {
+
         const validator = options?.validator;
         const shouldTouchField = options?.shouldTouchField ?? true;
 
@@ -265,7 +267,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         if ( !validatorToRun ) {
             logDevWarning(
-                `Field: ${ fieldName } must have a validator prop set or ' + 
+                `Field: ${ fieldName } must have a validator prop set or ' +
                 'an inline validator must be passed as a second argument in order to use validateField.`
             );
 
@@ -329,6 +331,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
         = useEventCallback( ( fieldName, newValue, options ) => {
+
             const shouldValidate = options?.shouldValidate != undefined
                 ? options.shouldValidate
                 : validateOnChange;
@@ -399,8 +402,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
-
-    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
+    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions?:FieldValidationOptions ) => {
         let finalValue;
 
         const fieldName = e.target.name as DeepKeys<TFormValues>;
@@ -444,6 +446,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         setFieldValue(
             fieldName
             , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
+            , fieldValidationOptions
         );
     } );
 
