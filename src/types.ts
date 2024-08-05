@@ -154,7 +154,7 @@ export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = 
      * @default 'form'
      */
     validationLevel?: TShouldValidate extends true ? 'field' | 'form' : never;
-}
+};
 
 ////// HANDLERS //////
 export type FormHandlers<TFormValues extends FormValues> = {
@@ -195,7 +195,10 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * taking the event emitted from onChange and setting the
      * field's value accordingly
      */
-    handleChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions:FieldValidationOptions ) => void;
+    handleChange: (
+        e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        , fieldValidationOptions?: FieldValidationOptions
+    ) => void;
     /**
      * Helper method to handle the updating of a field's touched status by
      * taking the event emitted from onBlur and setting the

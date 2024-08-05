@@ -1,6 +1,7 @@
 import React, {
     CSSProperties
-    , ChangeEvent, ComponentProps
+    , ChangeEvent
+    , ComponentProps
     , FC
     , HTMLInputTypeAttribute
     , ReactNode
@@ -9,8 +10,8 @@ import React, {
 
 // Types
 import {
-    FieldValidationOptions,
-    FormErrors
+    FieldValidationOptions
+    , FormErrors
     , FormTouched
     , FormValues
     , SingleFieldValidator
@@ -148,7 +149,7 @@ export type FieldProps<
          * ```
          */
         validator?: SingleFieldValidator<TFormValues, TFieldName>;
-         /**
+        /**
          *
          * Optional field level validation configuration.
          */
@@ -160,7 +161,6 @@ export type FieldProps<
          * any custom component that requires children rendering in order to work.
          */
         children?: ReactNode;
-
     };
 
 /**
@@ -177,6 +177,7 @@ export const Field = <
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
     >( {
         name
         , value
@@ -197,6 +198,7 @@ export const Field = <
         , TShowErrors
         , TLabel
         , TFieldValue
+        , TFieldValidationOptions
     > ) => {
 
     const {
@@ -232,7 +234,6 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-
     const fieldProps = {
         name
         , value: value || fieldValueState
@@ -241,7 +242,7 @@ export const Field = <
                 ? fieldValueState
                 : value
             : undefined
-        , onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleChange(e, fieldValidationOptions)
+        , onChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => handleChange( e, fieldValidationOptions )
         , onBlur: handleBlur
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props

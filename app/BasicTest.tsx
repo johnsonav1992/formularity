@@ -99,8 +99,9 @@ const BasicTest = () => {
                             )
                         }
                         fieldValidationOptions={
-                            {shouldValidate:false,
-                                validationLevel: 'field'
+                            {
+                                shouldValidate: false
+                                , validationLevel: 'field'
                             }
                         }
                     />
