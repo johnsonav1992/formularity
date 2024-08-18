@@ -4,6 +4,7 @@ import {
     , FormEvent
     , useCallback
     , useEffect
+    , useMemo
     , useRef
     , useSyncExternalStore
 } from 'react';
@@ -24,6 +25,8 @@ import {
     , SubmissionOrResetHelpers
     , OnSubmitOrReset
     , FieldValidationOptions
+    , FieldComponent
+    , FieldListComponent
 } from './types';
 import {
     CheckboxValue
@@ -572,7 +575,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isFormTouched = deepObjectKeys( touched ).length > 0;
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
-    //@ts-ignore
+    const formularityComponents = useMemo( () => ( {
+        Field: withFormStore( Field, formStore ) as FieldComponent<TFormValues>
+        , FieldList: withFormStore( FieldList, formStore ) as FieldListComponent<TFormValues>
+        , SubmitButton
+        , ResetButton
+    } ), [] );
+
     return {
         ...currentStore
         , values
@@ -602,6 +611,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , dirtyFields
         , isFormTouched
         , areAllFieldsTouched
-        // , ...formularityComponents
+        , ...formularityComponents
     };
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
     CSSProperties
     , ChangeEvent
@@ -26,9 +27,9 @@ import {
 
 // Utils
 import { getViaPath } from './generalUtils';
+import { throwFormStoreError } from './withFormStore';
 
 // Hooks
-import { useFormularityContext } from './FormularityContext';
 import { useFormularity } from './useFormularity';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
@@ -163,6 +164,12 @@ export type FieldProps<
          * any custom component that requires children rendering in order to work.
          */
         children?: ReactNode;
+        /**
+         * FormStore used for internal form state management. **This is
+         * usually passed automatically by the <Formularity /> component
+         * so there is no need to pass it unless using <Field /> outside of
+         * a <Formularity /> component bounds.**
+         */
         formStore?: FormStore<TFormValues>;
     };
 
@@ -204,6 +211,8 @@ export const Field = <
         , TFieldValidationOptions
     > ) => {
 
+    if ( !props.formStore ) return throwFormStoreError( 'Field' );
+
     const {
         values
         , errors
@@ -212,9 +221,7 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
-    } = useFormularity( { formStore: props.formStore! } );
-
-    console.log( values );
+    } = useFormularity( { formStore: props.formStore } );
 
     const id = 'id' in props ? props.id as string : undefined;
 
@@ -240,7 +247,7 @@ export const Field = <
         && checked != undefined;
 
     const {
-        formStore: _unusedFormStore
+        formStore: _unusedFormStore //don't pass the store to the underlying dom node
         , ...restProps
     } = props;
 

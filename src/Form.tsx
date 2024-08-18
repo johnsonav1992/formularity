@@ -4,9 +4,14 @@ import {
 } from 'react';
 
 // Hooks
-import { useFormularityContext } from './FormularityContext';
+import { useFormularity } from './useFormularity';
+import {
+    FormStore
+    , FormValues
+} from './types';
+import { throwFormStoreError } from './withFormStore';
 
-export type FormProps = PropsWithChildren<ComponentProps<'form'>>;
+export type FormProps<TFormValues extends FormValues> = PropsWithChildren<ComponentProps<'form'>> & { formStore?: FormStore<TFormValues> };
 
 /**
  * The <Form /> component is a simple
@@ -17,17 +22,24 @@ export type FormProps = PropsWithChildren<ComponentProps<'form'>>;
  * component by default but can be turned off if a
  * manual implementation of a form is desired.
  */
-export const Form = ( {
+export const Form = <TFormValues extends FormValues>( {
     children
     , ...props
-}: FormProps ) => {
-    const formularity = useFormularityContext();
+}: FormProps<TFormValues> ) => {
+    if ( !props.formStore ) return throwFormStoreError( 'Form' );
+
+    const formularity = useFormularity( { formStore: props.formStore } );
+
+    const {
+        formStore: _unusedFormStore
+        , ...restProps
+    } = props; //don't pass formStore to underlying dom node
 
     return (
         <form
             onSubmit={ formularity?.handleSubmit }
             onReset={ formularity?.handleReset }
-            { ...props }
+            { ...restProps }
         >
             { children }
         </form>

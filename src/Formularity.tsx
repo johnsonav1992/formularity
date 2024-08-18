@@ -1,4 +1,7 @@
-import { ReactNode } from 'react';
+import {
+    ReactNode
+    , useMemo
+} from 'react';
 
 // Components
 import { Form } from './Form';
@@ -13,13 +16,8 @@ import {
     , useFormularity
 } from './useFormularity';
 
-// Context
-import { FormularityContext } from './FormularityContext';
+// Utils
 import { withFormStore } from './withFormStore';
-import { Field } from './Field';
-import { FieldList } from './FieldList';
-import { SubmitButton } from './SubmitButton';
-import { ResetButton } from './ResetButton';
 
 export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
@@ -47,28 +45,18 @@ export const Formularity = <TFormValues extends FormValues>( {
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
 
-    const formularityComponents = {
-        Field: withFormStore( Field as never, formularityProps.formStore )
-        , FieldList
-        , SubmitButton
-        , ResetButton
-    };
+    const RenderedForm = useMemo( () => withFormStore( Form, formularityProps.formStore ), [] );
 
-    const renderedChildren = children( {
-        ...formularity
-        , ...formularityComponents
-    } );
+    const renderedChildren = children( formularity );
 
     return (
         <>
             {
                 useFormComponent
                     ? (
-                        // <Form>
-                        <>
+                        <RenderedForm>
                             { renderedChildren }
-                        </>
-                        // </Form>
+                        </RenderedForm>
                     )
                     : renderedChildren
             }

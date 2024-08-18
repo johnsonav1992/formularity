@@ -3,6 +3,8 @@ import {
     ComponentType
     , memo
 } from 'react';
+
+// Types
 import {
     FormStore
     , FormValues
@@ -24,4 +26,11 @@ export const withFormStore = <
             />
         );
     } );
+};
+
+export const throwFormStoreError = ( comp: string ) => {
+    throw new Error(
+        `Must use <${ comp } /> component from the children render prop of <Formularity /> `
+        + `or pass a formStore prop to <${ comp } /> explicitly`
+    );
 };
