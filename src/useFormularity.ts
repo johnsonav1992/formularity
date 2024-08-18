@@ -64,6 +64,7 @@ import { Field } from './Field';
 import { FieldList } from './FieldList';
 import { SubmitButton } from './SubmitButton';
 import { ResetButton } from './ResetButton';
+import { withFormStore } from './withFormStore';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -402,7 +403,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
-    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions?:FieldValidationOptions ) => {
+    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions?: FieldValidationOptions ) => {
+        console.log( e );
         let finalValue;
 
         const fieldName = e.target.name as DeepKeys<TFormValues>;
@@ -442,6 +444,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             default: finalValue = value;
         }
+
+        console.log( {
+            fieldName
+            , finalValue
+        } );
 
         setFieldValue(
             fieldName
@@ -565,13 +572,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isFormTouched = deepObjectKeys( touched ).length > 0;
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
-    const formularityComponents = {
-        Field
-        , FieldList
-        , SubmitButton
-        , ResetButton
-    };
-
+    //@ts-ignore
     return {
         ...currentStore
         , values
@@ -601,6 +602,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , dirtyFields
         , isFormTouched
         , areAllFieldsTouched
-        , ...formularityComponents
+        // , ...formularityComponents
     };
 };

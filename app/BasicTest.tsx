@@ -67,10 +67,6 @@ const BasicTest = () => {
         >
             { ( {
                 Field
-                , SubmitButton
-                , ResetButton
-                , validateForm
-                , ...formularity
             } ) => (
                 <div
                     style={ {
@@ -147,7 +143,7 @@ const BasicTest = () => {
                             errorStyles
                         } }
                     />
-                    <button
+                    { /* <button
                         type='button'
                         onClick={ async () => await validateForm( { shouldTouchAllFields: true } ) }
                     >
@@ -158,9 +154,9 @@ const BasicTest = () => {
                     </SubmitButton>
                     <ResetButton>
                         Reset
-                    </ResetButton>
+                    </ResetButton> */ }
                     <pre>
-                        { JSON.stringify( formularity, null, '\t' ) }
+                        { /* { JSON.stringify( formularity, null, '\t' ) } */ }
                     </pre>
                 </div>
             ) }

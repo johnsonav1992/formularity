@@ -12,6 +12,7 @@ import React, {
 import {
     FieldValidationOptions
     , FormErrors
+    , FormStore
     , FormTouched
     , FormValues
     , SingleFieldValidator
@@ -28,6 +29,7 @@ import { getViaPath } from './generalUtils';
 
 // Hooks
 import { useFormularityContext } from './FormularityContext';
+import { useFormularity } from './useFormularity';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
@@ -161,6 +163,7 @@ export type FieldProps<
          * any custom component that requires children rendering in order to work.
          */
         children?: ReactNode;
+        formStore?: FormStore<TFormValues>;
     };
 
 /**
@@ -209,7 +212,9 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
-    } = useFormularityContext<TFormValues>();
+    } = useFormularity( { formStore: props.formStore! } );
+
+    console.log( values );
 
     const id = 'id' in props ? props.id as string : undefined;
 
@@ -234,6 +239,11 @@ export const Field = <
         && !!component
         && checked != undefined;
 
+    const {
+        formStore: _unusedFormStore
+        , ...restProps
+    } = props;
+
     const fieldProps = {
         name
         , value: value || fieldValueState
@@ -245,7 +255,7 @@ export const Field = <
         , onChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => handleChange( e, fieldValidationOptions )
         , onBlur: handleBlur
         , type: isSilentExternalCheckbox ? 'checkbox' : type
-        , ... props
+        , ... restProps
     };
 
     const error = getViaPath( errors, name as DeepKeys<FormErrors<FormValues>> );

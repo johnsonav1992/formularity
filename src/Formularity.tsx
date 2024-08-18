@@ -15,6 +15,11 @@ import {
 
 // Context
 import { FormularityContext } from './FormularityContext';
+import { withFormStore } from './withFormStore';
+import { Field } from './Field';
+import { FieldList } from './FieldList';
+import { SubmitButton } from './SubmitButton';
+import { ResetButton } from './ResetButton';
 
 export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
@@ -42,19 +47,31 @@ export const Formularity = <TFormValues extends FormValues>( {
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
 
-    const renderedChildren = children( formularity );
+    const formularityComponents = {
+        Field: withFormStore( Field as never, formularityProps.formStore )
+        , FieldList
+        , SubmitButton
+        , ResetButton
+    };
+
+    const renderedChildren = children( {
+        ...formularity
+        , ...formularityComponents
+    } );
 
     return (
-        <FormularityContext.Provider value={ formularity as FormularityProps }>
+        <>
             {
                 useFormComponent
                     ? (
-                        <Form>
+                        // <Form>
+                        <>
                             { renderedChildren }
-                        </Form>
+                        </>
+                        // </Form>
                     )
                     : renderedChildren
             }
-        </FormularityContext.Provider>
+        </>
     );
 };

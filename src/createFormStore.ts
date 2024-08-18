@@ -58,6 +58,7 @@ export const createFormStore
         return {
             get: () => storeState
             , set: ( newStoreState: Partial<FormStoreState<TFormValues>> ) => {
+                console.log( { newStoreState } );
                 storeState = {
                     ...storeState
                     , ...newStoreState
