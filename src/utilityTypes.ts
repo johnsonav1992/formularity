@@ -1,4 +1,8 @@
-import { JSX } from 'react';
+import {
+    ChangeEvent
+    , FocusEvent
+    , JSX
+} from 'react';
 
 export type Prettify<T> = {
     [K in keyof T]: T[K];
@@ -35,6 +39,9 @@ export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
     | 'option'
     | 'optgroup'
 >;
+
+export type OnChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
+export type OnBlurEvent = FocusEvent<HTMLInputElement | HTMLSelectElement>;
 
 export type CheckboxValue = string | boolean | unknown[];
 

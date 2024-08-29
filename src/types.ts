@@ -77,6 +77,23 @@ export type SingleFieldValidator<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | Nullish> | string | Nullish;
 
+export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = {
+    /**
+     * Whether to run validation after field value is updated. **This will overwrite
+     * the top-level `validateOnChange` if set to `true`.**
+     *
+     * @default true
+     */
+    shouldValidate?: TShouldValidate;
+    /**
+     * The field events for which validation should occur. *Only applies if
+     * `shouldValidate` is set to `true`.*
+     *
+     * @default 'all'
+     */
+    validationEvent?: TShouldValidate extends true ? 'onChange' | 'onBlur' | 'all' : never;
+};
+
 ////// STORE //////
 export type FormStore<TFormValues extends FormValues> = {
     get: () => FormStoreState<TFormValues>;
@@ -139,23 +156,6 @@ export type FormStoreState<TFormValues extends FormValues> = {
     onSubmit?: ( formValues: TFormValues ) => void | Promise<void>;
 };
 
-export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = {
-    /**
-     * Whether to run validation after field value is updated. **This will overwrite
-     * the top-level `validateOnChange` if set to `true`.**
-     *
-     * @default true
-     */
-    shouldValidate?: TShouldValidate;
-    /**
-     * The level at which the validation should occur after
-     * field value is set
-     *
-     * @default 'form'
-     */
-    validationLevel?: TShouldValidate extends true ? 'field' | 'form' : never;
-};
-
 ////// HANDLERS //////
 export type FormHandlers<TFormValues extends FormValues> = {
     /**
@@ -204,7 +204,10 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * taking the event emitted from onBlur and setting the
      * field's touched status accordingly
      */
-    handleBlur: ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => void;
+    handleBlur: (
+        e: FocusEvent<HTMLInputElement | HTMLSelectElement>
+        , fieldValidationOptions?: FieldValidationOptions
+    ) => void;
     /**
      * Helper method for submitting the form imperatively
      */

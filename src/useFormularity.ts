@@ -1,7 +1,5 @@
 import {
-    ChangeEvent
-    , FocusEvent
-    , FormEvent
+    FormEvent
     , useCallback
     , useEffect
     , useRef
@@ -31,6 +29,8 @@ import {
     , DeepPartial
     , DeepValue
     , NoInfer
+    , OnBlurEvent
+    , OnChangeEvent
 } from './utilityTypes';
 
 // Hooks
@@ -336,20 +336,20 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 ? options.shouldValidate
                 : validateOnChange;
 
-            const validationLevel = options?.validationLevel ?? 'form';
+            const validationEvent = options?.validationEvent ?? 'all';
 
             const newValues = setViaPath( values, fieldName, newValue );
 
             if ( shouldValidate ) {
-                switch ( validationLevel ) {
-                    case 'form': {
+                switch ( validationEvent ) {
+                    case 'all':
+                    case 'onChange': {
                         formStore.set( { values: newValues } );
                         _validateForm( newValues );
                     }
                         break;
-                    case 'field': {
+                    case 'onBlur': {
                         formStore.set( { values: newValues } );
-                        validateField( fieldName, { shouldTouchField: false } );
                     }
                         break;
                 }
@@ -380,14 +380,24 @@ export const useFormularity = <TFormValues extends FormValues>( {
         formStore.set( { errors: deepMerge( errors, newErrors ) } );
     }, [] );
 
-    const setFieldTouched = useEventCallback( async ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => {
+    const setFieldTouched = useEventCallback( async (
+        fieldName: DeepKeys<TFormValues>
+        , newTouched: boolean
+        , fieldValidationOptions?: FieldValidationOptions
+    ) => {
         const newFieldTouched = setViaPath(
             touched
             , fieldName as DeepKeys<FormTouched<TFormValues>>
             , newTouched
         );
 
-        const newErrors = validateOnBlur
+        const fieldValidationEvent = fieldValidationOptions?.validationEvent || 'all';
+        const shouldValidateFieldOnBlur
+            = fieldValidationEvent === 'onBlur'
+            || fieldValidationEvent === 'all'
+            || validateOnBlur;
+
+        const newErrors = shouldValidateFieldOnBlur
             ? await _validateForm( values, { updateStore: false } )
             : errors;
 
@@ -402,7 +412,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
-    const handleChange = useEventCallback( ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, fieldValidationOptions?:FieldValidationOptions ) => {
+
+    const handleChange = useEventCallback( ( e: OnChangeEvent, fieldValidationOptions?: FieldValidationOptions ) => {
         let finalValue;
 
         const fieldName = e.target.name as DeepKeys<TFormValues>;
@@ -450,10 +461,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
         );
     } );
 
-    const handleBlur = useEventCallback( ( e: FocusEvent<HTMLInputElement | HTMLSelectElement> ) => {
+    const handleBlur = useEventCallback( (
+        e: OnBlurEvent
+        , fieldValidationOptions?: FieldValidationOptions
+    ) => {
         const fieldName = e.target.name as DeepKeys<TFormValues>;
 
-        setFieldTouched( fieldName, true );
+        setFieldTouched( fieldName, true, fieldValidationOptions );
     } );
 
     const resetForm = useEventCallback( ( newFormValues?: DeepPartial<TFormValues> ) => {

@@ -1,6 +1,5 @@
 import React, {
     CSSProperties
-    , ChangeEvent
     , ComponentProps
     , FC
     , HTMLInputTypeAttribute
@@ -21,6 +20,8 @@ import {
     , DeepValue
     , IntrinsicFormElements
     , NoInfer
+    , OnBlurEvent
+    , OnChangeEvent
 } from './utilityTypes';
 
 // Utils
@@ -38,7 +39,7 @@ export type FieldProps<
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
+    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<true>
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
         : TComponentProps extends keyof IntrinsicFormElements
@@ -242,8 +243,8 @@ export const Field = <
                 ? fieldValueState
                 : value
             : undefined
-        , onChange: ( e: ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => handleChange( e, fieldValidationOptions )
-        , onBlur: handleBlur
+        , onChange: ( e: OnChangeEvent ) => handleChange( e, fieldValidationOptions )
+        , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions )
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props
     };
