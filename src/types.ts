@@ -336,11 +336,11 @@ FormStoreState<TFormValues>
 ////// COMPONENTS //////
 export type FormularityComponents<TFormValues extends FormValues> = {
     /**
-     * The `<Field />` component is the main building-block of forms in
-     * Formularity. It drastically reduces the amount of boilerplate code
-     * needed to manage the state of a form field by taking care of many basic
-     * actions such as handling change, blur, and showing errors. **Must be used
-     * underneath a `<Formularity />` component.**
+     * The `<Field />` component is the main component for hooking up inputs and
+     * sections of forms in Formularity. It drastically reduces the amount of
+     * boilerplate code needed to manage the state of a form field by taking care of
+     * many basic actions such as handling change, blur, and showing errors. **Must
+     * be used underneath a `<Formularity />` component.**
      */
     Field: FieldComponent<TFormValues>;
     /**
