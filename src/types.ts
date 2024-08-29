@@ -96,7 +96,7 @@ export type FieldValidationOptions<TShouldValidate = boolean> = {
      *
      * @default 'all'
      */
-    validationEvent?: NoInfer<TShouldValidate> extends false | undefined ? never : 'onChange' | 'onBlur' | 'all';
+    validationEvent?: NoInfer<TShouldValidate> extends true ? never : 'onChange' | 'onBlur' | 'all';
 };
 
 ////// STORE //////
