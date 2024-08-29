@@ -77,26 +77,30 @@ export type SingleFieldValidator<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | Nullish> | string | Nullish;
 
-export type FieldValidationOptions<TShouldValidate = boolean> = {
-    /**
-     * Whether to run validation after field value is updated or the field is blurred.
-     * Setting this prop to `false` will cancel any validation set for the field.
-     * Granular configuration of the field validation can be set with the `validationEvent`
-     * prop if set to `true` or not set.
-     *
-     * @default true
-     */
-    shouldValidate?: TShouldValidate;
-    /**
-     * The field events for which validation should occur. *Only applies if
-     * `shouldValidate` is set to `true` or not set at all.*
-     *
-     * Not setting this prop or setting this prop to `'all'` will run validation on every field
-     * change or blur event.
-     *
-     * @default 'all'
-     */
-    validationEvent?: NoInfer<TShouldValidate> extends true ? never : 'onChange' | 'onBlur' | 'all';
+/**
+ * @param shouldValidate
+ * Whether to run validation after field value is updated or the field is blurred.
+ * Setting this prop to `false` will cancel any validation set for the field.
+ * Granular configuration of the field validation can be set with the `validationEvent`
+ * prop if set to `true` or not set.
+ *
+ * @default true
+ * -----------------------
+ * @param validationEvent
+ * The field events for which validation should occur. *Only applies if
+ * `shouldValidate` is set to `true` or not set at all.*
+ *
+ * Not setting this prop or setting this prop to `'all'` will run validation on every field
+ * change or blur event.
+ *
+ * @default 'all'
+ */
+export type FieldValidationOptions = {
+    shouldValidate?: true;
+    validationEvent?: 'onChange' | 'onBlur' | 'all';
+} | {
+    shouldValidate: false;
+    validationEvent?: never;
 };
 
 ////// STORE //////
@@ -169,7 +173,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     setFieldValue: <
         TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-        , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
+        , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions
     >(
         fieldName: TFieldName
         , newValue: TFieldValue

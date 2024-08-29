@@ -257,10 +257,10 @@ export const Field = <
         && !!component
         && checked != undefined;
 
-    const fieldValidationOptions: FieldValidationOptions = {
+    const fieldValidationOptions = {
         shouldValidate
         , validationEvent
-    };
+    } as FieldValidationOptions;
 
     const fieldProps = {
         name
