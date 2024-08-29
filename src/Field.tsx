@@ -39,7 +39,8 @@ export type FieldProps<
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<true>
+    , TValidator extends SingleFieldValidator<TFormValues, TFieldName> = SingleFieldValidator<TFormValues, TFieldName>
+    , TShouldValidate extends boolean = true
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
         : TComponentProps extends keyof IntrinsicFormElements
@@ -149,12 +150,23 @@ export type FieldProps<
          * validator={ zodAdapter( z.string().min(5), { isField: true } ) }
          * ```
          */
-        validator?: SingleFieldValidator<TFormValues, TFieldName>;
+        validator?: TShouldValidate extends false ? never : TValidator;
         /**
+         * Whether to run validation after field value is updated. **This will overwrite
+         * the top-level `validateOnChange` if set to `true`.**
          *
-         * Optional field level validation configuration.
+         * @default true
          */
-        fieldValidationOptions?: TFieldValidationOptions;
+        shouldValidate?: TShouldValidate;
+        /**
+         * The field events for which validation should occur. *Only applies if
+         * `shouldValidate` is set to `true`.*
+         *
+         * @default 'all'
+         */
+        validationEvent?: NoInfer<TShouldValidate> extends false
+            ? never
+            : 'onChange' | 'onBlur' | 'all';
         /**
          * Children that may need to be passed to the `<Field />` component.
          *
@@ -178,7 +190,8 @@ export const Field = <
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
+    , TValidator extends SingleFieldValidator<TFormValues, TFieldName> = SingleFieldValidator<TFormValues, TFieldName>
+    , TShouldValidate extends boolean = boolean
     >( {
         name
         , value
@@ -190,7 +203,8 @@ export const Field = <
         , showErrors
         , errorProps
         , validator
-        , fieldValidationOptions
+        , shouldValidate
+        , validationEvent
         , ...props
     }: FieldProps<
         TFormValues
@@ -199,7 +213,8 @@ export const Field = <
         , TShowErrors
         , TLabel
         , TFieldValue
-        , TFieldValidationOptions
+        , TValidator
+        , TShouldValidate
     > ) => {
 
     const {
@@ -218,7 +233,7 @@ export const Field = <
         registerField( {
             name
             , type
-            , validationHandler: validator || null
+            , validationHandler: validator as TValidator || null
             , fieldId: id
         } );
 
@@ -234,6 +249,11 @@ export const Field = <
     const isSilentExternalCheckbox = type == undefined
         && !!component
         && checked != undefined;
+
+    const fieldValidationOptions: FieldValidationOptions = {
+        shouldValidate
+        , validationEvent
+    };
 
     const fieldProps = {
         name

@@ -77,7 +77,7 @@ export type SingleFieldValidator<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | Nullish> | string | Nullish;
 
-export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = {
+export type FieldValidationOptions<TShouldValidate = boolean> = {
     /**
      * Whether to run validation after field value is updated. **This will overwrite
      * the top-level `validateOnChange` if set to `true`.**
@@ -91,7 +91,7 @@ export type FieldValidationOptions<TShouldValidate extends boolean = boolean> = 
      *
      * @default 'all'
      */
-    validationEvent?: TShouldValidate extends true ? 'onChange' | 'onBlur' | 'all' : never;
+    validationEvent?: NoInfer<TShouldValidate> extends false | undefined ? never : 'onChange' | 'onBlur' | 'all';
 };
 
 ////// STORE //////
@@ -393,7 +393,8 @@ export type FieldComponent<TFormValues extends FormValues>
         , TShowErrors extends boolean = false
         , TLabel extends string | undefined = undefined
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-        , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions<boolean>
+        , TShouldValidate extends boolean = boolean
+        , TValidator extends SingleFieldValidator<TFormValues, TFieldName> = SingleFieldValidator<TFormValues, TFieldName>
     >(
         props: FieldProps<
                 TFormValues
@@ -402,7 +403,8 @@ export type FieldComponent<TFormValues extends FormValues>
                 , TShowErrors
                 , TLabel
                 , TFieldValue
-                , TFieldValidationOptions
+                , TValidator
+                , TShouldValidate
             >
     ) => ReactNode;
 
