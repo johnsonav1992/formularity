@@ -240,7 +240,7 @@ export const Field = <
         registerField( {
             name
             , type
-            , validationHandler: validator as TValidator || null
+            , validationHandler: validator || null
             , fieldId: id
         } );
 
