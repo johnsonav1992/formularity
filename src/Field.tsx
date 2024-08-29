@@ -119,7 +119,9 @@ export type FieldProps<
          * A custom validator to run on the field. Can be a manually defined
          * validation handler (see ex. below) or a third-party schema wrapped in an adapter.
          *
-         * *Note: This validator will be run on every change to the field and will
+         * *Note: This validator will be run on every change or blur to the field
+         * (unless the `shouldValidate` prop is set to false (in which case validation will not run) or the `validationEvent`
+         * prop is set to either `onChange` or `onBlur` (in which case only that one type of event will run validation) and will
          * take priority over any validation for that field that was set up in
          * the `validationSchema` passed to `createFormStore`.
          *
@@ -163,6 +165,9 @@ export type FieldProps<
         /**
          * The field events for which validation should occur. *Only applies if
          * `shouldValidate` is set to `true` or not set at all.*
+         *
+         * Not setting this prop or setting this prop to `'all'` will run validation on every field
+         * change or blur event.
          *
          * @default 'all'
          */
