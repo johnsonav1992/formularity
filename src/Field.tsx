@@ -152,15 +152,17 @@ export type FieldProps<
          */
         validator?: TShouldValidate extends false ? never : TValidator;
         /**
-         * Whether to run validation after field value is updated. **This will overwrite
-         * the top-level `validateOnChange` if set to `true`.**
+         * Whether to run validation after field value is updated or the field is blurred.
+         * Setting this prop to `false` will cancel any validation set for the field.
+         * Granular configuration of the field validation can be set with the `validationEvent`
+         * prop if set to `true` or not set.
          *
          * @default true
          */
         shouldValidate?: TShouldValidate;
         /**
          * The field events for which validation should occur. *Only applies if
-         * `shouldValidate` is set to `true`.*
+         * `shouldValidate` is set to `true` or not set at all.*
          *
          * @default 'all'
          */
