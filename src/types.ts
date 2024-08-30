@@ -344,10 +344,6 @@ export type FieldEffectFn<
         , helpers: FieldEffectHelpers<TFormValues>
     ) => void;
 
-export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = {
-    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues>[K]>;
-};
-
 export type FieldEffectHelperFns<TFormValues extends FormValues = FormValues> = Pick<
     FormHandlers<TFormValues>
     , 'validateField'
@@ -355,6 +351,10 @@ export type FieldEffectHelperFns<TFormValues extends FormValues = FormValues> = 
     | 'setFieldError'
     | 'setFieldTouched'
 >;
+
+export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = {
+    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues>[K]>;
+};
 
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
