@@ -174,6 +174,56 @@ export type FieldProps<
         validationEvent?: NoInfer<TShouldValidate> extends false
             ? never
             : 'onChange' | 'onBlur' | 'all';
+        /**
+         * Field effects are a super handy way to link field behavior together
+         * or have some actions occur on one field as a result of another action
+         * happening on another field.
+         *
+         * @param fieldEffectsConfig an object with all of the fields of the form as keys (minus the field
+         * in which the effect config is being applied). Each fieldName object receives an object with two possible
+         * effect functions: one for `onChange` and one for `onBlur`. These functions will be called when the
+         * respective event occurs on the field this config is being applied to and each callback will effect the
+         * field being referred to in the config object. i.e. if an effect config is being applied to `<Field name='firstName' />`,
+         * the `onChange` callback set for `email` will run when `firstName` changes and thus effect the `email` field accordingly.
+         * See example below.
+         *
+         *
+         * Config object structure -
+         * @example
+         *
+         * ```ts
+         * {
+         *     email: {
+         *         onChange: () => {}
+         *         , onBlur: () => {}
+         *     }
+         *     , phoneNumber: {
+         *          onChange: () => {}
+         *         , onBlur: () => {}
+         *     }
+         *     , ...otherFields
+         * }
+         * ```
+         *
+         * In JSX -
+         * @example
+         *
+         * ```jsx
+         * <Field
+                name='firstName'
+                fieldEffects={ {
+                    email: {
+                        // val and helpers here are for the email field
+                        // This callback would be called onChange of firstName
+                        onChange: ( val, { validateField } ) => {
+                            validateField( { shouldTouchField: true } );
+                        }
+                    }
+                } }
+            />
+         * ```
+         *
+         */
         fieldEffects?: FieldEffectsConfig<TFormValues, TFieldName>;
         /**
          * Children that may need to be passed to the `<Field />` component.
