@@ -25,7 +25,7 @@ export type CreateFormStoreParams<TFormValues extends FormValues> = {
      */
     manualValidationHandler?: ValidationHandler<NoInfer<TFormValues>>;
     /**
-     * A custom input for a validation schema from a third-party library
+     * A custom input for a validation schema from a third-party library.
      * Must be wrapped in a provided or a custom-built adapter
      */
     validationSchema?: ValidationHandler<NoInfer<TFormValues>>;

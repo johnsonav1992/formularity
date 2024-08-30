@@ -74,7 +74,7 @@ export type ValidationHandler<TFormValues extends FormValues> =
 
 export type SingleFieldValidator<
     TFormValues extends FormValues
-    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TFieldName extends DeepKeys<TFormValues>
 > = ( value: DeepValue<TFormValues, TFieldName> ) => Promise<string | Nullish> | string | Nullish;
 
 /**
@@ -403,7 +403,6 @@ export type FieldComponent<TFormValues extends FormValues>
         , TLabel extends string | undefined = undefined
         , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
         , TShouldValidate extends boolean = boolean
-        , TValidator extends SingleFieldValidator<TFormValues, TFieldName> = SingleFieldValidator<TFormValues, TFieldName>
     >(
         props: FieldProps<
                 TFormValues
@@ -412,7 +411,6 @@ export type FieldComponent<TFormValues extends FormValues>
                 , TShowErrors
                 , TLabel
                 , TFieldValue
-                , TValidator
                 , TShouldValidate
             >
     ) => ReactNode;
