@@ -332,7 +332,7 @@ export type FieldEffectsConfig<
     TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
     [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
-        [K in 'onChange' | 'onBlur']?: FieldEffectFn<TFormValues, TFieldName>;
+        [K in 'onChange' | 'onBlur']?: FieldEffectFn<TFormValues, Val>;
     }
 };
 

@@ -99,9 +99,13 @@ const BasicTest = () => {
                             )
                         }
                         fieldEffects={ {
-                            'name.last': {
+                            'email': {
                                 onChange: ( val, { validateField } ) => {
                                     validateField( { shouldTouchField: true } );
+                                }
+                            }
+                            , acknowledgement: {
+                                onChange: val => {
                                 }
                             }
                         } }
