@@ -9,7 +9,8 @@ import React, {
 
 // Types
 import {
-    FieldValidationOptions
+    FieldEffectsConfig
+    , FieldValidationOptions
     , FormErrors
     , FormTouched
     , FormValues
@@ -173,6 +174,7 @@ export type FieldProps<
         validationEvent?: NoInfer<TShouldValidate> extends false
             ? never
             : 'onChange' | 'onBlur' | 'all';
+        fieldEffects?: FieldEffectsConfig<TFormValues, TFieldName>;
         /**
          * Children that may need to be passed to the `<Field />` component.
          *

@@ -325,6 +325,32 @@ export type FormComputedProps<TFormValues extends FormValues> = {
     areAllFieldsTouched: boolean;
 };
 
+////// FIELD EFFECTS //////
+export type FieldEffectsConfig<
+    TFormValues extends FormValues = FormValues,
+    TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = {
+    [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
+        [K in 'onChange' | 'onBlur']?: FieldEffectFn<TFormValues, TFieldName>;
+    }
+};
+
+export type FieldEffectFn<
+    TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = (
+        val: DeepValue<TFormValues, TFieldName>
+        , helpers: FieldEffectHelpers<TFormValues>
+    ) => void;
+
+export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = Pick<
+    FormHandlers<TFormValues>
+    , 'validateField'
+    | 'setFieldValue'
+    | 'setFieldError'
+    | 'setFieldTouched'
+>;
+
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
 FormStoreState<TFormValues>

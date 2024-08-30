@@ -98,6 +98,13 @@ const BasicTest = () => {
                                 , { isField: true }
                             )
                         }
+                        fieldEffects={ {
+                            'name.last': {
+                                onChange: ( val, { setFieldValue } ) => {
+                                    setFieldValue( '' );
+                                }
+                            }
+                        } }
                     />
                     <Field
                         name='name.last'
