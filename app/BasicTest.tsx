@@ -100,8 +100,8 @@ const BasicTest = () => {
                         }
                         fieldEffects={ {
                             'name.last': {
-                                onChange: ( val, { setFieldValue } ) => {
-                                    setFieldValue( '' );
+                                onChange: ( val, { validateField } ) => {
+                                    validateField( { shouldTouchField: true } );
                                 }
                             }
                         } }

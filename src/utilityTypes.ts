@@ -121,3 +121,7 @@ export type MapNestedPrimitivesTo<TObj, Output = string> = {
             ? MapNestedPrimitivesTo<TObj[K]>
             : Output;
 };
+
+export type OmitFirstArg<F> = F extends ( arg: unknown, ...rest: infer R ) => infer ReturnType
+    ? ( ...args: R ) => ReturnType
+    : never;

@@ -20,6 +20,7 @@ import {
     , MapNestedPrimitivesTo
     , NoInfer
     , Nullish
+    , OmitFirstArg
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
@@ -343,7 +344,11 @@ export type FieldEffectFn<
         , helpers: FieldEffectHelpers<TFormValues>
     ) => void;
 
-export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = Pick<
+export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = {
+    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues>[K]>;
+};
+
+export type FieldEffectHelperFns<TFormValues extends FormValues = FormValues> = Pick<
     FormHandlers<TFormValues>
     , 'validateField'
     | 'setFieldValue'
