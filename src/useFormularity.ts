@@ -30,7 +30,6 @@ import {
     , DeepPartial
     , DeepValue
     , NoInfer
-    , OmitFirstArg
     , OnBlurEvent
     , OnChangeEvent
 } from './utilityTypes';
@@ -66,8 +65,6 @@ import { Field } from './Field';
 import { FieldList } from './FieldList';
 import { SubmitButton } from './SubmitButton';
 import { ResetButton } from './ResetButton';
-import { effect } from 'zod';
-import { on } from 'events';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -365,7 +362,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         // Run field effects
         if ( onChangeFieldEffects ) {
             objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
-                const fieldEffect = ( effect as unknown as ( val: unknown, helperFns: typeof helpers ) => void );
+                const fieldEffect = ( effect as unknown as ( val: unknown, newValue: unknown, helperFns: typeof helpers ) => void );
                 const fieldVal = getViaPath( newValues, effectFieldName );
 
                 const modSetFieldValue = ( newEffectValue: unknown ) => {
@@ -380,7 +377,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     , validateField: () => validateField( effectFieldName )
                 };
 
-                //@ts-ignore
                 fieldEffect( fieldVal, newValue, helpers );
             } );
         }
