@@ -21,7 +21,6 @@ import {
     , MapNestedPrimitivesTo
     , NoInfer
     , Nullish
-    , OmitFirstArg
     , UnsubScribeFn
 } from './utilityTypes';
 import { CreateFormStoreParams } from './createFormStore';
@@ -342,36 +341,39 @@ export type FieldEffectsConfig<
     [K in FieldEventNames | 'listen']?: K extends 'listen'
         ? {
             [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
-                [K in FieldEventNames]?: FieldEffectFn<TFormValues, Val>;
+                [K in FieldEventNames]?: FieldEffectFn<TFormValues, Val, TFieldName>;
             }
         }
         : {
-            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val>;
+            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val, TFieldName>;
         };
 };
 
 export type FieldEffectFn<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TSrcFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = (
     targetVal: DeepValue<TFormValues, TFieldName>
+    , srcVal: DeepValue<TFormValues, TSrcFieldName>
     , helpers: FieldEffectHelpers<TFormValues, TFieldName>
 ) => void;
-
-export type FieldEffectHelperFns<
-    TFormValues extends FormValues = FormValues
-    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-> = Pick<
-    FormHandlers<TFormValues, TFieldName>,
-    'validateField' | 'setFieldValue' | 'setFieldError' | 'setFieldTouched'
->;
 
 export type FieldEffectHelpers<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
-    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues, TFieldName>[K]>;
+    setValue: ( newVal: DeepValue<TFormValues, TFieldName> ) => void;
+    setTouched: ( touched: boolean ) => void;
+    setError: ( error: string ) => void;
+    validateField: ( touchField?: 'touchField' ) => void;
 };
+
+export type FieldEffectRunner = (
+    val: unknown,
+    srcVal: unknown,
+    helperFns: FieldEffectHelpers
+) => void;
 
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =

@@ -23,6 +23,8 @@ import {
     , OnSubmitOrReset
     , FieldValidationOptions
     , FieldEffectsConfig
+    , FieldEffectRunner
+    , FieldEffectHelpers
 } from './types';
 import {
     CheckboxValue
@@ -362,22 +364,24 @@ export const useFormularity = <TFormValues extends FormValues>( {
         // Run field effects
         if ( onChangeFieldEffects ) {
             objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
-                const fieldEffect = ( effect as unknown as ( val: unknown, newValue: unknown, helperFns: typeof helpers ) => void );
+                const fieldEffect = effect as FieldEffectRunner;
                 const fieldVal = getViaPath( newValues, effectFieldName );
 
-                const modSetFieldValue = ( newEffectValue: unknown ) => {
-                    newValues = setViaPath( newValues, effectFieldName, newEffectValue );
-                    formStore.set( { values: newValues } );
+                const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
+                    setValue: val => {
+                        newValues = setViaPath( newValues, effectFieldName, val );
+                        formStore.set( { values: newValues } );
+                    }
+                    , setError: error => setFieldError( effectFieldName, error )
+                    , setTouched: touched => setFieldTouched( effectFieldName, touched )
+                    , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
                 };
 
-                const helpers = {
-                    setFieldValue: modSetFieldValue
-                    , setFieldError: ( error: string ) => setFieldError( effectFieldName, error )
-                    , setFieldTouched: ( touched: boolean ) => setFieldTouched( effectFieldName, touched )
-                    , validateField: () => validateField( effectFieldName )
-                };
-
-                fieldEffect( fieldVal, newValue, helpers );
+                fieldEffect(
+                    fieldVal
+                    , newValue
+                    , helpers as never
+                );
             } );
         }
     } );

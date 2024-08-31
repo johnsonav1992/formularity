@@ -101,10 +101,11 @@ const BasicTest = () => {
                         }
                         fieldEffects={ {
                             onChange: {
-                                //@ts-ignore
-                                email: ( val, srcVal, helpers ) => { if ( srcVal === '' ) helpers.setFieldValue( '' ); }
-                                //@ts-ignore
-                                , 'name.last': ( val, srcVal, helpers ) => { if ( srcVal === '' ) helpers.setFieldValue( '' ); }
+                                acknowledgement: ( _, firstName, { setValue } ) => {
+                                    if ( firstName === '' ) {
+                                        setValue( false );
+                                    }
+                                }
                             }
                         } }
                     />
