@@ -362,18 +362,17 @@ export const useFormularity = <TFormValues extends FormValues>( {
             formStore.set( { values: newValues } );
         }
 
-        // Apply field effects, if any are provided
+        // Run field effects
         if ( onChangeFieldEffects ) {
             objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
+                const fieldEffect = ( effect as unknown as ( val: unknown, helperFns: typeof helpers ) => void );
                 const fieldVal = getViaPath( newValues, effectFieldName );
 
-                // Wrap setFieldValue to always update the effectFieldName
                 const modSetFieldValue = ( newEffectValue: unknown ) => {
                     newValues = setViaPath( newValues, effectFieldName, newEffectValue );
                     formStore.set( { values: newValues } );
                 };
 
-                // Construct helpers object for use in the effect
                 const helpers = {
                     setFieldValue: modSetFieldValue
                     , setFieldError: ( error: string ) => setFieldError( effectFieldName, error )
@@ -381,8 +380,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     , validateField: () => validateField( effectFieldName )
                 };
 
-                // Call the effect function with the current field value and the helpers
-                effect( fieldVal, helpers );
+                //@ts-ignore
+                fieldEffect( fieldVal, newValue, helpers );
             } );
         }
     } );

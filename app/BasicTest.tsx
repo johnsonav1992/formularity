@@ -81,7 +81,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { console.log( 'RENDER' ) }
+                    { /* { console.log( 'RENDER' ) } */ }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -101,7 +101,8 @@ const BasicTest = () => {
                         }
                         fieldEffects={ {
                             onChange: {
-                                email: ( val, helpers ) => { console.log( val ); helpers.setFieldValue( Math.random().toString() ); }
+                                //@ts-ignore
+                                email: ( val, srcVal, helpers ) => { if ( srcVal === 'f' ) helpers.setFieldValue( srcVal ); }
                             }
                         } }
                     />
