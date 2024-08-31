@@ -70,6 +70,7 @@ const BasicTest = () => {
                 , SubmitButton
                 , ResetButton
                 , validateForm
+                , setFieldValue
                 , ...formularity
             } ) => (
                 <div
@@ -100,7 +101,7 @@ const BasicTest = () => {
                         }
                         fieldEffects={ {
                             onChange: {
-                                acknowledgement: ( val, { validateField } ) => { val; }
+                                email: ( val, helpers ) => { console.log( val ); helpers.setFieldValue( Math.random().toString() ); }
                             }
                         } }
                     />

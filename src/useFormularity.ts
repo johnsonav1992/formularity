@@ -22,6 +22,7 @@ import {
     , SubmissionOrResetHelpers
     , OnSubmitOrReset
     , FieldValidationOptions
+    , FieldEffectsConfig
 } from './types';
 import {
     CheckboxValue
@@ -29,6 +30,7 @@ import {
     , DeepPartial
     , DeepValue
     , NoInfer
+    , OmitFirstArg
     , OnBlurEvent
     , OnChangeEvent
 } from './utilityTypes';
@@ -64,6 +66,8 @@ import { Field } from './Field';
 import { FieldList } from './FieldList';
 import { SubmitButton } from './SubmitButton';
 import { ResetButton } from './ResetButton';
+import { effect } from 'zod';
+import { on } from 'events';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -330,33 +334,58 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
-        = useEventCallback( ( fieldName, newValue, options ) => {
+    = useEventCallback( ( fieldName, newValue, options, onChangeFieldEffects ) => {
 
-            const shouldValidate = options?.shouldValidate != undefined
-                ? options.shouldValidate
-                : validateOnChange;
+        const shouldValidate = options?.shouldValidate !== undefined
+            ? options.shouldValidate
+            : validateOnChange;
 
-            const validationEvent = options?.validationEvent ?? 'all';
+        const validationEvent = options?.validationEvent ?? 'all';
 
-            const newValues = setViaPath( values, fieldName, newValue );
+        // Update the original field's value
+        let newValues = setViaPath( values, fieldName, newValue );
 
-            if ( shouldValidate ) {
-                switch ( validationEvent ) {
-                    case 'all':
-                    case 'onChange': {
-                        formStore.set( { values: newValues } );
-                        _validateForm( newValues );
-                    }
-                        break;
-                    case 'onBlur': {
-                        formStore.set( { values: newValues } );
-                    }
-                        break;
+        if ( shouldValidate ) {
+            switch ( validationEvent ) {
+                case 'all':
+                case 'onChange': {
+                    formStore.set( { values: newValues } );
+                    _validateForm( newValues );
+                    break;
                 }
-            } else {
-                formStore.set( { values: newValues } );
+                case 'onBlur': {
+                    formStore.set( { values: newValues } );
+                    break;
+                }
             }
-        } );
+        } else {
+            formStore.set( { values: newValues } );
+        }
+
+        // Apply field effects, if any are provided
+        if ( onChangeFieldEffects ) {
+            objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
+                const fieldVal = getViaPath( newValues, effectFieldName );
+
+                // Wrap setFieldValue to always update the effectFieldName
+                const modSetFieldValue = ( newEffectValue: unknown ) => {
+                    newValues = setViaPath( newValues, effectFieldName, newEffectValue );
+                    formStore.set( { values: newValues } );
+                };
+
+                // Construct helpers object for use in the effect
+                const helpers = {
+                    setFieldValue: modSetFieldValue
+                    , setFieldError: ( error: string ) => setFieldError( effectFieldName, error )
+                    , setFieldTouched: ( touched: boolean ) => setFieldTouched( effectFieldName, touched )
+                    , validateField: () => validateField( effectFieldName )
+                };
+
+                // Call the effect function with the current field value and the helpers
+                effect( fieldVal, helpers );
+            } );
+        }
+    } );
 
     // TODO: add options object with validation options
     const setValues = useCallback( ( newValues: DeepPartial<TFormValues> ) => {
@@ -413,7 +442,11 @@ export const useFormularity = <TFormValues extends FormValues>( {
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
 
-    const handleChange = useEventCallback( ( e: OnChangeEvent, fieldValidationOptions?: FieldValidationOptions ) => {
+    const handleChange = useEventCallback( (
+        e: OnChangeEvent
+        , fieldValidationOptions?: FieldValidationOptions
+        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
+    ) => {
         let finalValue;
 
         const fieldName = e.target.name as DeepKeys<TFormValues>;
@@ -455,9 +488,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
 
         setFieldValue(
-            fieldName
+            fieldName as never
             , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
             , fieldValidationOptions
+            , onChangeFieldEffects
         );
     } );
 

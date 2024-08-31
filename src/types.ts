@@ -16,6 +16,7 @@ import {
     , DeepPartial
     , DeepValue
     , EmptyObject
+    , FieldEventNames
     , IntrinsicFormElements
     , MapNestedPrimitivesTo
     , NoInfer
@@ -98,7 +99,7 @@ export type SingleFieldValidator<
  */
 export type FieldValidationOptions = {
     shouldValidate?: true;
-    validationEvent?: 'onChange' | 'onBlur' | 'all';
+    validationEvent?: FieldEventNames | 'all';
 } | {
     shouldValidate: false;
     validationEvent?: never;
@@ -184,6 +185,7 @@ export type FormHandlers<
         fieldName: TOptionFieldName extends never ? TFieldName : TOptionFieldName
         , newValue: TFieldValue
         , options?: TFieldValidationOptions
+        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
     ) => void;
     /**
      * Set the values of any number of fields simultaneously
@@ -213,6 +215,7 @@ export type FormHandlers<
     handleChange: (
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
         , fieldValidationOptions?: FieldValidationOptions
+        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
     ) => void;
     /**
      * Helper method to handle the updating of a field's touched status by
@@ -333,20 +336,26 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 
 ////// FIELD EFFECTS //////
 export type FieldEffectsConfig<
-    TFormValues extends FormValues = FormValues,
-    TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
-    [K in 'onChange' | 'onBlur']?: {
-        [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val>;
-    };
+    [K in FieldEventNames | 'listen']?: K extends 'listen'
+        ? {
+            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
+                [K in FieldEventNames]?: FieldEffectFn<TFormValues, Val>;
+            }
+        }
+        : {
+            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val>;
+        };
 };
 
 export type FieldEffectFn<
-    TFormValues extends FormValues = FormValues,
-    TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = (
-    val: DeepValue<TFormValues, TFieldName>,
-    helpers: FieldEffectHelpers<TFormValues, TFieldName>
+    targetVal: DeepValue<TFormValues, TFieldName>
+    , helpers: FieldEffectHelpers<TFormValues, TFieldName>
 ) => void;
 
 export type FieldEffectHelperFns<

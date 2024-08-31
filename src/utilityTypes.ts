@@ -42,6 +42,7 @@ export type IntrinsicFormElements = Pick<JSX.IntrinsicElements,
 
 export type OnChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type OnBlurEvent = FocusEvent<HTMLInputElement | HTMLSelectElement>;
+export type FieldEventNames = 'onChange' | 'onBlur';
 
 export type CheckboxValue = string | boolean | unknown[];
 
