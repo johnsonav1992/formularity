@@ -167,16 +167,21 @@ export type FormStoreState<TFormValues extends FormValues> = {
 };
 
 ////// HANDLERS //////
-export type FormHandlers<TFormValues extends FormValues> = {
+export type FormHandlers<
+    TFormValues extends FormValues
+    , TOptionFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = {
     /**
      * Set the value of a single field
      */
     setFieldValue: <
         TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-        , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
+        , TFieldValue
+            extends DeepValue<TFormValues, TOptionFieldName extends never ? TFieldName : TOptionFieldName>
+            = DeepValue<TFormValues, TOptionFieldName extends never ? TFieldName : TOptionFieldName>
         , TFieldValidationOptions extends FieldValidationOptions = FieldValidationOptions
     >(
-        fieldName: TFieldName
+        fieldName: TOptionFieldName extends never ? TFieldName : TOptionFieldName
         , newValue: TFieldValue
         , options?: TFieldValidationOptions
     ) => void;
@@ -187,7 +192,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the error message of a single field
      */
-    setFieldError: ( fieldName: DeepKeys<TFormValues>, newError: string ) => void;
+    setFieldError: ( fieldName: TOptionFieldName, newError: string ) => void;
     /**
      * Set the error messages of any number of fields simultaneously
      */
@@ -195,7 +200,7 @@ export type FormHandlers<TFormValues extends FormValues> = {
     /**
      * Set the touched status of a single field
      */
-    setFieldTouched: ( fieldName: DeepKeys<TFormValues>, newTouched: boolean ) => void;
+    setFieldTouched: ( fieldName: TOptionFieldName, newTouched: boolean ) => void;
     /**
      * Set the touched statuses of any number of fields simultaneously
      */
@@ -269,9 +274,9 @@ export type FormHandlers<TFormValues extends FormValues> = {
      * @param shouldTouchField whether to touch the field or not after validation (defaults to `true`)
      */
     validateField: <TFieldName extends DeepKeys<TFormValues>>(
-        fieldName: TFieldName
+        fieldName: TOptionFieldName extends never ? TFieldName : TOptionFieldName
         , options?: {
-            validator?: SingleFieldValidator<TFormValues, TFieldName>;
+            validator?: SingleFieldValidator<TFormValues, TOptionFieldName extends never ? TFieldName : TOptionFieldName>;
             shouldTouchField?: boolean;
         }
     ) => Promise<string | null> | string | null;
@@ -331,29 +336,32 @@ export type FieldEffectsConfig<
     TFormValues extends FormValues = FormValues,
     TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
-    [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
-        [K in 'onChange' | 'onBlur']?: FieldEffectFn<TFormValues, Val>;
-    }
+    [K in 'onChange' | 'onBlur']?: {
+        [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val>;
+    };
 };
 
 export type FieldEffectFn<
+    TFormValues extends FormValues = FormValues,
+    TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = (
+    val: DeepValue<TFormValues, TFieldName>,
+    helpers: FieldEffectHelpers<TFormValues, TFieldName>
+) => void;
+
+export type FieldEffectHelperFns<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-> = (
-        val: DeepValue<TFormValues, TFieldName>
-        , helpers: FieldEffectHelpers<TFormValues>
-    ) => void;
-
-export type FieldEffectHelperFns<TFormValues extends FormValues = FormValues> = Pick<
-    FormHandlers<TFormValues>
-    , 'validateField'
-    | 'setFieldValue'
-    | 'setFieldError'
-    | 'setFieldTouched'
+> = Pick<
+    FormHandlers<TFormValues, TFieldName>,
+    'validateField' | 'setFieldValue' | 'setFieldError' | 'setFieldTouched'
 >;
 
-export type FieldEffectHelpers<TFormValues extends FormValues = FormValues> = {
-    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues>[K]>;
+export type FieldEffectHelpers<
+    TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+> = {
+    [K in keyof FieldEffectHelperFns<TFormValues>]: OmitFirstArg<FieldEffectHelperFns<TFormValues, TFieldName>[K]>;
 };
 
 ////// FORMULARITY PROPS //////

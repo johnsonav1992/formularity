@@ -99,14 +99,8 @@ const BasicTest = () => {
                             )
                         }
                         fieldEffects={ {
-                            'email': {
-                                onChange: ( val, { validateField } ) => {
-                                    validateField( { shouldTouchField: true } );
-                                }
-                            }
-                            , acknowledgement: {
-                                onChange: val => {
-                                }
+                            onChange: {
+                                acknowledgement: ( val, { validateField } ) => { val; }
                             }
                         } }
                     />
