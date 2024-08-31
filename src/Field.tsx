@@ -263,6 +263,7 @@ export const Field = <
         , validator
         , shouldValidate
         , validationEvent
+        , fieldEffects
         , ...props
     }: FieldProps<
         TFormValues
