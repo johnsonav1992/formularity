@@ -240,7 +240,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             case !!manualValidationHandler: await validationRunner( manualValidationHandler );
                 break;
             default: {
-                if ( objectKeys( newErrors ).length ) {
+                if ( objectKeys( newErrors ).length ) { // TODO: check this if case
                     newErrors = await runAllSingleFieldValidators( newErrors );
                     updateStore && setErrors( newErrors );
                 }

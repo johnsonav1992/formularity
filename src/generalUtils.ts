@@ -121,9 +121,9 @@ export const getViaPath = <
 
 export const setViaPath = <
         TObj,
-        TPath extends string,
+        TPath extends string,// TODO: fix this type
         TNewValue
-    >(
+    >( // TODO: fix brackets here
         obj: TObj,
         path: TPath,
         newValue: TNewValue
