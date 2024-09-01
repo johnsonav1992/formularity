@@ -100,13 +100,9 @@ const BasicTest = () => {
                             )
                         }
                         fieldEffects={ {
-                            onChange: {
-                                acknowledgement: ( _, firstName, { setValue } ) => {
-                                    if ( firstName === '' ) {
-                                        setValue( false );
-                                    }
-                                }
-                                , 'name.last': ( lastName, _, { setValue } ) => {
+                            onBlur: {
+                                'name.last': ( lastName, firstName, { setValue } ) => {
+                                    console.log( { lastName }, { firstName } );
                                     setValue( lastName.toUpperCase() );
                                 }
                             }

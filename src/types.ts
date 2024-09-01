@@ -224,6 +224,7 @@ export type FormHandlers<
     handleBlur: (
         e: FocusEvent<HTMLInputElement | HTMLSelectElement>
         , fieldValidationOptions?: FieldValidationOptions
+        , onChangeFieldEffects?: FieldEffectsConfig['onBlur']
     ) => void;
     /**
      * Helper method for submitting the form imperatively

@@ -322,7 +322,7 @@ export const Field = <
                 : value
             : undefined
         , onChange: ( e: OnChangeEvent ) => handleChange( e, fieldValidationOptions, fieldEffects?.onChange )
-        , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions )
+        , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions, fieldEffects?.onBlur )
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props
     };
