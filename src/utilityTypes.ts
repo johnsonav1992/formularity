@@ -47,7 +47,7 @@ export type FieldEventNames = 'onChange' | 'onBlur';
 export type CheckboxValue = string | boolean | unknown[];
 
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
-    TKey extends string | `${ number }` | undefined
+    TKey extends string | `${ number }`
         ? IsObject<TObj[TKey]> extends true
             ? `${ Keys<TObj, IsRoot, TKey> }${ DeepKeys<TObj[TKey], false> }`
             : Keys<TObj, IsRoot, TKey>
