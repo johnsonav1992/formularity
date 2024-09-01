@@ -369,12 +369,6 @@ export type FieldEffectHelpers<
     validateField: ( touchField?: 'touchField' ) => void;
 };
 
-export type FieldEffectRunner = (
-    val: unknown,
-    srcVal: unknown,
-    helperFns: FieldEffectHelpers
-) => void;
-
 ////// FORMULARITY PROPS //////
 export type FormularityProps<TFormValues extends FormValues = FormValues> =
 FormStoreState<TFormValues>

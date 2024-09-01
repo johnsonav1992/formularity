@@ -23,8 +23,8 @@ import {
     , OnSubmitOrReset
     , FieldValidationOptions
     , FieldEffectsConfig
-    , FieldEffectRunner
     , FieldEffectHelpers
+    , FieldEffectFn
 } from './types';
 import {
     CheckboxValue
@@ -364,8 +364,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         // Run field effects
         if ( onChangeFieldEffects ) {
             objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
-                const fieldEffect = effect as FieldEffectRunner;
-                const fieldVal = getViaPath( newValues, effectFieldName );
+                const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
+                const fieldVal = getViaPath( newValues, effectFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
 
                 const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
                     setValue: val => {
@@ -380,7 +380,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 fieldEffect(
                     fieldVal
                     , newValue
-                    , helpers as never
+                    , helpers
                 );
             } );
         }

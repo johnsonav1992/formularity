@@ -81,7 +81,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { console.log( 'RENDER' ) }
+                    { /* { console.log( 'RENDER' ) } */ }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -105,6 +105,9 @@ const BasicTest = () => {
                                     if ( firstName === '' ) {
                                         setValue( false );
                                     }
+                                }
+                                , 'name.last': ( lastName, _, { setValue } ) => {
+                                    setValue( lastName.toUpperCase() );
                                 }
                             }
                         } }
