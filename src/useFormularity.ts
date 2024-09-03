@@ -204,9 +204,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
         , []
     );
-    // TODO: add a config prop here to only validate a single field if coming from a field effect
-    const _validateForm = useEventCallback( async ( values: TFormValues, options?: { updateStore?: boolean } ) => {
+
+    const _validateForm = useEventCallback( async (
+        values: TFormValues,
+        options?: { updateStore?: boolean; fieldEffect?: { name: DeepKeys<TFormValues>; touchField?: boolean }}
+    ) => {
         const updateStore = options?.updateStore ?? true;
+        const fieldEffectName = options?.fieldEffect?.name as never;
+        console.log( { fieldEffectName } );
 
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
@@ -218,10 +223,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
             const validationErrors = await validationHandlerToRun( values );
 
             if ( validationErrors ) {
-                newErrors = validationErrors;
+                if ( fieldEffectName && ( !validateOnChange || !validateOnBlur ) ) {
+                    newErrors = setViaPath(
+                        errors as DeepPartial<FormErrors<TFormValues>>
+                        , fieldEffectName
+                        , getViaPath( validationErrors, fieldEffectName )
+                    );
+                } else {
+                    newErrors = validationErrors;
+                }
             }
 
-            if ( singleValidatorKeys.length ) {
+            if ( singleValidatorKeys.length && !fieldEffectName ) {
                 for ( const error in newErrors ) {
                     if ( singleValidatorKeys.includes( error as DeepKeys<TFormValues> ) ) {
                         delete newErrors[ error as keyof Partial<FormErrors<TFormValues>> ];
@@ -235,6 +248,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( isEqual( newErrors, errors ) ) return;
 
             updateStore && setErrors( newErrors );
+            options?.fieldEffect?.touchField
+                && setFieldTouched( fieldEffectName, true, { shouldValidate: false } );
         };
 
         switch ( true ) {
@@ -373,8 +388,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     }
                     , setError: error => setFieldError( effectFieldName, error )
                     , setTouched: touched => setFieldTouched( effectFieldName, touched )
-                    // TODO: update this to run either validateForm or validateField based on validators that exist for the field
-                    , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
+                    , validateField: touchField => {
+                        if ( fieldRegistry[ effectFieldName ] ) {
+                            validateField( effectFieldName, { shouldTouchField: !!touchField } );
+                        } else {
+                            _validateForm( values, {
+                                fieldEffect: {
+                                    name: effectFieldName
+                                    , touchField: !!touchField
+                                }
+                            } );
+                        }
+                    }
                 };
 
                 fieldEffect(

@@ -81,7 +81,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { /* { console.log( 'RENDER' ) } */ }
+                    { console.log( 'RENDER' ) }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -100,10 +100,9 @@ const BasicTest = () => {
                             )
                         }
                         fieldEffects={ {
-                            onBlur: {
-                                'name.last': ( lastName, firstName, { setValue } ) => {
-                                    console.log( { lastName }, { firstName } );
-                                    setValue( lastName.toUpperCase() );
+                            onChange: {
+                                'name.last': ( lastName, firstName, { validateField } ) => {
+                                    validateField( 'touchField' );
                                 }
                             }
                         } }

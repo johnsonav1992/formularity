@@ -121,13 +121,15 @@ export const getViaPath = <
 
 export const setViaPath = <
         TObj,
-        TPath extends string,// TODO: fix this type
+        TPath extends DeepKeys<TObj> | string,
         TNewValue
-    >( // TODO: fix brackets here
+    >(
         obj: TObj,
         path: TPath,
         newValue: TNewValue
     ): TObj => {
+    if ( !path ) return obj;
+
     const keys = path.split( /\.\[|\]|\./ ).filter( Boolean ) as Array<keyof TObj>;
     const newObj = cloneDeep( obj );
     let current = newObj as TObj;
@@ -137,7 +139,7 @@ export const setViaPath = <
 
         if (
             typeof current[ key ] !== 'object'
-            || current[ key ] === null
+                || current[ key ] === null
         ) {
             current[ key ] = isNaN( Number( keys[ i + 1 ] ) )
                 ? {} as never
