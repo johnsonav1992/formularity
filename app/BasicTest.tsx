@@ -102,7 +102,7 @@ const BasicTest = () => {
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {
-                                    validateField( 'touchField' );
+                                    validateField( 'touchField', val => { if ( !val ) return 'No Value!!'; return null; } );
                                 }
                             }
                         } }

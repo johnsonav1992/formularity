@@ -211,7 +211,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     ) => {
         const updateStore = options?.updateStore ?? true;
         const fieldEffectName = options?.fieldEffect?.name as never;
-        console.log( { fieldEffectName } );
 
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
@@ -388,9 +387,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     }
                     , setError: error => setFieldError( effectFieldName, error )
                     , setTouched: touched => setFieldTouched( effectFieldName, touched )
-                    , validateField: touchField => {
-                        if ( fieldRegistry[ effectFieldName ] ) {
-                            validateField( effectFieldName, { shouldTouchField: !!touchField } );
+                    , validateField: ( touchField, customValidator ) => {
+                        if ( fieldRegistry[ effectFieldName ] || customValidator ) {
+                            console.log( 'in if' );
+                            validateField( effectFieldName, {
+                                validator: customValidator
+                                , shouldTouchField: !!touchField
+                            } );
                         } else {
                             _validateForm( values, {
                                 fieldEffect: {

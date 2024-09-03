@@ -248,7 +248,6 @@ export const Field = <
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TValidator extends SingleFieldValidator<TFormValues, TFieldName> = SingleFieldValidator<TFormValues, TFieldName>
     , TShouldValidate extends boolean = boolean
     >( {
         name
