@@ -204,7 +204,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         }
         , []
     );
-
+    // TODO: add a config prop here to only validate a single field if coming from a field effect
     const _validateForm = useEventCallback( async ( values: TFormValues, options?: { updateStore?: boolean } ) => {
         const updateStore = options?.updateStore ?? true;
 
