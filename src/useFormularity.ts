@@ -463,6 +463,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
         if ( isEqual( touched, newTouched ) ) return;
 
+        // TODO: Not sure this condition is right. check if this is needed
         validateOnBlur && formStore.set( { touched: newTouched } );
     }, [] );
 
