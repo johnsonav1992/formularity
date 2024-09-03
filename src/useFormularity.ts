@@ -373,6 +373,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     }
                     , setError: error => setFieldError( effectFieldName, error )
                     , setTouched: touched => setFieldTouched( effectFieldName, touched )
+                    // TODO: update this to run either validateForm or validateField based on validators that exist for the field
                     , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
                 };
 
