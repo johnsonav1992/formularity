@@ -207,10 +207,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const _validateForm = useEventCallback( async (
         values: TFormValues,
-        options?: { updateStore?: boolean; fieldEffect?: { name: DeepKeys<TFormValues>; touchField?: boolean }}
+        options?: { updateStore?: boolean }
     ) => {
         const updateStore = options?.updateStore ?? true;
-        const fieldEffectName = options?.fieldEffect?.name as never;
+        console.log( 'validate Form' );
 
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
@@ -222,18 +222,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
             const validationErrors = await validationHandlerToRun( values );
 
             if ( validationErrors ) {
-                if ( fieldEffectName && ( !validateOnChange || !validateOnBlur ) ) {
-                    newErrors = setViaPath(
-                        errors as DeepPartial<FormErrors<TFormValues>>
-                        , fieldEffectName
-                        , getViaPath( validationErrors, fieldEffectName )
-                    );
-                } else {
-                    newErrors = validationErrors;
-                }
+                newErrors = validationErrors;
             }
 
-            if ( singleValidatorKeys.length && !fieldEffectName ) {
+            if ( singleValidatorKeys.length ) {
                 for ( const error in newErrors ) {
                     if ( singleValidatorKeys.includes( error as DeepKeys<TFormValues> ) ) {
                         delete newErrors[ error as keyof Partial<FormErrors<TFormValues>> ];
@@ -247,8 +239,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
             if ( isEqual( newErrors, errors ) ) return;
 
             updateStore && setErrors( newErrors );
-            options?.fieldEffect?.touchField
-                && setFieldTouched( fieldEffectName, true, { shouldValidate: false } );
         };
 
         switch ( true ) {
@@ -274,6 +264,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             shouldTouchField?: boolean;
         }
     ) => {
+        console.log( 'validate field' );
 
         const validator = options?.validator;
         const shouldTouchField = options?.shouldTouchField ?? true;
@@ -294,6 +285,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const errorOrNull = await runSingleFieldValidation( validatorToRun, fieldName );
         const newTouched = shouldTouchField ? setViaPath( touched, fieldName, true ) : touched;
         const newErrors = errorOrNull ? setViaPath( errors, fieldName, errorOrNull ) : errors;
+        console.log( { newErrors } );
+
+        console.log( { errorOrNull } );
 
         formStore.set( {
             touched: newTouched
@@ -388,20 +382,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     , setError: error => setFieldError( effectFieldName, error )
                     , setTouched: touched => setFieldTouched( effectFieldName, touched )
                     , validateField: ( touchField, customValidator ) => {
-                        if ( fieldRegistry[ effectFieldName ] || customValidator ) {
-                            console.log( 'in if' );
-                            validateField( effectFieldName, {
-                                validator: customValidator
-                                , shouldTouchField: !!touchField
-                            } );
-                        } else {
-                            _validateForm( values, {
-                                fieldEffect: {
-                                    name: effectFieldName
-                                    , touchField: !!touchField
-                                }
-                            } );
-                        }
+                        // TODO: need to figure this out
                     }
                 };
 
