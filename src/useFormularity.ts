@@ -264,8 +264,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
             shouldTouchField?: boolean;
         }
     ) => {
-        console.log( 'validate field' );
-
         const validator = options?.validator;
         const shouldTouchField = options?.shouldTouchField ?? true;
 
@@ -285,9 +283,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const errorOrNull = await runSingleFieldValidation( validatorToRun, fieldName );
         const newTouched = shouldTouchField ? setViaPath( touched, fieldName, true ) : touched;
         const newErrors = errorOrNull ? setViaPath( errors, fieldName, errorOrNull ) : errors;
-        console.log( { newErrors } );
-
-        console.log( { errorOrNull } );
 
         formStore.set( {
             touched: newTouched
