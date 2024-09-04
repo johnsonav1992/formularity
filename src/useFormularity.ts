@@ -210,7 +210,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         options?: { updateStore?: boolean }
     ) => {
         const updateStore = options?.updateStore ?? true;
-        console.log( 'validate Form' );
 
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
