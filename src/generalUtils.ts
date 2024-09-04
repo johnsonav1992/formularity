@@ -50,17 +50,27 @@ export const deepObjectKeys = <TObj>( obj: TObj ): DeepKeys<TObj>[] => {
     return keys;
 };
 
-export const getKeysWithDiffs = <TObj, TCompareObj>( obj: TObj, obj2: TCompareObj ): DeepKeys<TObj>[] => {
+export const getKeysWithDiffs = <TObj, TCompareObj extends TObj>( obj: TObj, obj2: TCompareObj ): DeepKeys<TObj>[] => {
     const allKeys = deepObjectKeys( obj );
 
-    const keysWithDiffs = allKeys.filter( key => {
+    const keysWithDiffs: Set<DeepKeys<TObj>> = new Set();
+
+    allKeys.forEach( key => {
         const objValue = getViaPath( obj, key );
         const initialValue = getViaPath( obj2, key as never );
 
-        return !isEqual( objValue, initialValue );
+        if ( isObject( objValue ) && isObject( initialValue ) ) {
+            const nestedKeys = getKeysWithDiffs( objValue, initialValue );
+
+            nestedKeys.forEach( nestedKey => {
+                keysWithDiffs.add( `${ key }.${ nestedKey }` as DeepKeys<TObj> );
+            } );
+        } else if ( !isEqual( objValue, initialValue ) ) {
+            keysWithDiffs.add( key );
+        }
     } );
 
-    return keysWithDiffs;
+    return Array.from( keysWithDiffs );
 };
 
 export const hasSameNestedKeys = <T, U>( obj1: T, obj2: U ) => {
