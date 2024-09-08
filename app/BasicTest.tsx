@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 import {
     Formularity
+    , SingleFieldValidator
     , createFormStore
 } from '../src';
 import { z } from 'zod';

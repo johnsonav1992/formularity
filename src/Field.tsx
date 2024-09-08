@@ -40,7 +40,7 @@ export type FieldProps<
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TShouldValidate extends boolean = true
+    , TShouldValidate extends boolean | undefined = true
 > = ( TComponentProps extends undefined
         ? Omit<ComponentProps<'input'>, DuplicateProps>
         : TComponentProps extends keyof IntrinsicFormElements
@@ -152,7 +152,7 @@ export type FieldProps<
          * validator={ zodAdapter( z.string().min(5), { isField: true } ) }
          * ```
          */
-        validator?: TShouldValidate extends false ? never : SingleFieldValidator<TFormValues, TFieldName>;
+        validator?: SingleFieldValidator<TFormValues, TFieldName>;
         /**
          * Whether to run validation after field value is updated or the field is blurred.
          * Setting this prop to `false` will cancel any validation set for the field.
@@ -248,7 +248,7 @@ export const Field = <
     , TShowErrors extends boolean = false
     , TLabel extends string | undefined = undefined
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
-    , TShouldValidate extends boolean = boolean
+    , TShouldValidate extends boolean | undefined = true
     >( {
         name
         , value

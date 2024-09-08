@@ -19,6 +19,7 @@ export type UnsubScribeFn = () => void;
 export type Subscriber = () => void;
 
 export type Nullish = null | undefined;
+export type Falsey = Nullish | false | 0 | '';
 export type CheckArray<T, Output = undefined> =
     T extends unknown[]
         ? Output extends {}
