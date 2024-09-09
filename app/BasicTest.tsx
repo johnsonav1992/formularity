@@ -6,7 +6,10 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import { required } from '../src/validators';
+import {
+    min
+    , required
+} from '../src/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -95,7 +98,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ required( 'A message' ) }
+                        validator={ min( 3 ) }
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {
