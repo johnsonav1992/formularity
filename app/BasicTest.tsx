@@ -100,7 +100,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ email() }
+                        validator={ min( 4 ) }
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {

@@ -48,7 +48,7 @@ export const min = <
             const isArray = Array.isArray( value );
 
             if ( value.length < min ) {
-                return message || `Must have at least ${ min } ${ isArray ? 'items' : 'characters' } long`;
+                return message || `Must have at least ${ min } ${ isArray ? 'items long' : 'characters' }`;
             }
         }
 
@@ -63,13 +63,13 @@ export const max = <
     return ( ( value: DeepValue<TFormValues, TFieldName> ) => {
         if ( typeof value == 'number' ) {
             if ( value < max ) {
-                return message || `Must be less than ${ min }`;
+                return message || `Must be less than ${ max }`;
             }
         } else if ( Array.isArray( value ) || typeof value == 'string' ) {
             const isArray = Array.isArray( value );
 
             if ( value.length < max ) {
-                return message || `Must be no more than ${ min } ${ isArray ? 'items' : 'characters' } long`;
+                return message || `Must be no more than ${ max } ${ isArray ? 'items long' : 'characters' }`;
             }
         }
 
