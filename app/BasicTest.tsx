@@ -7,7 +7,8 @@ import {
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
 import {
-    min
+    email
+    , min
     , pattern
     , required
 } from '../src/validators';
@@ -99,7 +100,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ required() }
+                        validator={ email() }
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {

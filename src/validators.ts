@@ -7,6 +7,8 @@ import {
     , DeepValue
 } from './utilityTypes';
 
+const EMAIL_REGEX = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
 export const required = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
@@ -20,16 +22,34 @@ export const required = <
     };
 };
 
+export const requiredTrue = <
+    TFormValues extends FormValues = FormValues
+    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+>( message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
+    return ( value: DeepValue<TFormValues, TFieldName> ) => {
+        if ( value !== true ) {
+            return message || 'This field is required';
+        }
+
+        return null;
+    };
+};
+
 export const min = <
     TFormValues extends FormValues,
     TFieldName extends DeepKeys<TFormValues>
-    >(
-        min: DeepValue<TFormValues, TFieldName> extends number ? number : never
-        , message?: string
-    ): SingleFieldValidator<TFormValues, TFieldName> => {
-    return ( ( value: number ) => {
-        if ( value < min ) {
-            return message || `Must be more than ${ min }`;
+>( min: number, message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
+    return ( ( value: DeepValue<TFormValues, TFieldName> ) => {
+        if ( typeof value == 'number' ) {
+            if ( value < min ) {
+                return message || `Must be more than ${ min }`;
+            }
+        } else if ( Array.isArray( value ) || typeof value == 'string' ) {
+            const isArray = Array.isArray( value );
+
+            if ( value.length < min ) {
+                return message || `Must have at least ${ min } ${ isArray ? 'items' : 'characters' } long`;
+            }
         }
 
         return null;
@@ -39,13 +59,18 @@ export const min = <
 export const max = <
     TFormValues extends FormValues,
     TFieldName extends DeepKeys<TFormValues>
-    >(
-        max: DeepValue<TFormValues, TFieldName> extends number ? number : never
-        , message?: string
-    ): SingleFieldValidator<TFormValues, TFieldName> => {
-    return ( ( value: number ) => {
-        if ( value > max ) {
-            return message || `Must be less than ${ max }`;
+>( max: number, message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
+    return ( ( value: DeepValue<TFormValues, TFieldName> ) => {
+        if ( typeof value == 'number' ) {
+            if ( value < max ) {
+                return message || `Must be less than ${ min }`;
+            }
+        } else if ( Array.isArray( value ) || typeof value == 'string' ) {
+            const isArray = Array.isArray( value );
+
+            if ( value.length < max ) {
+                return message || `Must be no more than ${ min } ${ isArray ? 'items' : 'characters' } long`;
+            }
         }
 
         return null;
@@ -72,9 +97,7 @@ export const email = <
         message?: string
     ): SingleFieldValidator<TFormValues, TFieldName> => {
     return ( value: DeepValue<TFormValues, TFieldName> ) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if ( typeof value !== 'string' || !emailRegex.test( value ) ) {
+        if ( typeof value !== 'string' || !EMAIL_REGEX.test( value ) ) {
             return message || 'Invalid email address';
         }
 
