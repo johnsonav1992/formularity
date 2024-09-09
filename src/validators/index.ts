@@ -1,1 +1,1 @@
-export * as validators from './validators';
+export * from './validators';

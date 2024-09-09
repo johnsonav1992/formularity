@@ -10,6 +10,8 @@ export * from './SubmitButton';
 
 export * from './ResetButton';
 
+export * as validators from './validators';
+
 export {
     getViaPath
     , setViaPath
