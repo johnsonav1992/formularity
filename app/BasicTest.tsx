@@ -11,7 +11,7 @@ import {
     , min
     , pattern
     , required
-} from '../src/validators';
+} from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
