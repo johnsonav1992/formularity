@@ -14,7 +14,7 @@ export const required = <
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 >( message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
     return ( value: DeepValue<TFormValues, TFieldName> ) => {
-        if ( !value ) {
+        if ( value == null || value === '' ) {
             return message || 'This field is required';
         }
 
@@ -27,6 +27,10 @@ export const requiredTrue = <
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 >( message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
     return ( value: DeepValue<TFormValues, TFieldName> ) => {
+        if ( typeof value !== 'boolean' ) {
+            throw new Error( 'requiredTrue validator can only be used with boolean fields' );
+        }
+
         if ( value !== true ) {
             return message || 'This field is required';
         }
