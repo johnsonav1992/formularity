@@ -205,7 +205,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , []
     );
 
-    const _validateForm = useEventCallback( async (
+    const _validateFormAndFields = useEventCallback( async (
         values: TFormValues,
         options?: { updateStore?: boolean }
     ) => {
@@ -319,7 +319,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const validateForm: FormHandlers<TFormValues>['validateForm'] = useEventCallback( async options => {
         const shouldTouchAllFields = options?.shouldTouchAllFields ?? true;
 
-        const validationErrors = await _validateForm( values, { updateStore: false } );
+        const validationErrors = await _validateFormAndFields( values, { updateStore: false } );
 
         formStore.set( {
             touched: shouldTouchAllFields ? touchAllFields( values ) : touched
@@ -345,7 +345,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 case 'all':
                 case 'onChange': {
                     formStore.set( { values: newValues } );
-                    _validateForm( newValues );
+                    _validateFormAndFields( newValues );
                     break;
                 }
                 case 'onBlur': {
@@ -389,7 +389,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         const mergedValues = deepMerge( values, newValues );
         formStore.set( { values: mergedValues } );
 
-        validateOnChange && _validateForm( mergedValues );
+        validateOnChange && _validateFormAndFields( mergedValues );
     }, [] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
@@ -425,7 +425,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             || validateOnBlur;
 
         const newErrors = shouldValidateFieldOnBlur
-            ? await _validateForm( values, { updateStore: false } )
+            ? await _validateFormAndFields( values, { updateStore: false } )
             : errors;
 
         formStore.set( {
@@ -554,7 +554,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         if ( validateOnSubmit ) {
-            const validationErrors = await _validateForm( values, { updateStore: false } );
+            const validationErrors = await _validateFormAndFields( values, { updateStore: false } );
             const hasErrors = objectKeys( validationErrors ).length > 0;
 
             if ( hasErrors ) {
