@@ -217,8 +217,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
             .map( ( [ key ] ) => key );
 
-        const validationRunner = async ( validationHandlerToRun: ValidationHandler<TFormValues> ) => {
-            const validationErrors = await validationHandlerToRun( values );
+        const validationRunner = async ( validationHandlerToRun?: ValidationHandler<TFormValues> ) => {
+            const validationErrors = await validationHandlerToRun?.( values );
 
             if ( validationErrors ) {
                 newErrors = validationErrors;
@@ -245,12 +245,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 break;
             case !!manualValidationHandler: await validationRunner( manualValidationHandler );
                 break;
-            default: {
-                if ( objectKeys( newErrors ).length ) { // TODO: check this if case
-                    newErrors = await runAllSingleFieldValidators( newErrors );
-                    updateStore && setErrors( newErrors );
-                }
-            }
+            default: await validationRunner();
         }
 
         return newErrors;
