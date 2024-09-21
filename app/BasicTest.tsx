@@ -5,7 +5,10 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import { requiredTrue } from '../src/validators/validators';
+import {
+    required
+    , requiredTrue
+} from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -94,7 +97,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ requiredTrue() }
+                        validator={ required() }
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {
