@@ -10,6 +10,12 @@ import {
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+const invalidValidatorMsg = (
+    fieldName: unknown,
+    validatorName: string,
+    type: string
+) => `Invalid validator on '${ fieldName || '' }'. ${ validatorName } validator can only be used with ${ type } fields`;
+
 export const required = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
@@ -27,9 +33,9 @@ export const requiredTrue = <
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 >( message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
-    return ( value: DeepValue<TFormValues, TFieldName> ) => {
+    return ( value: DeepValue<TFormValues, TFieldName>, fieldName?: TFieldName ) => {
         if ( typeof value !== 'boolean' ) {
-            throw new Error( 'requiredTrue validator can only be used with boolean fields' );
+            throw new Error( invalidValidatorMsg( fieldName, 'requiredTrue', 'boolean' ) );
         }
 
         if ( value !== true ) {

@@ -1,17 +1,11 @@
 import { CSSProperties } from 'react';
 import {
     Formularity
-    , SingleFieldValidator
     , createFormStore
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import {
-    email
-    , min
-    , pattern
-    , required
-} from '../src/validators/validators';
+import { requiredTrue } from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -89,7 +83,6 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { console.log( 'RENDER' ) }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -101,7 +94,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ min( 4 ) }
+                        validator={ requiredTrue() }
                         fieldEffects={ {
                             onChange: {
                                 'name.last': ( lastName, firstName, { validateField } ) => {

@@ -291,7 +291,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , fieldName: TFieldName
     ) => {
         const fieldValue = getViaPath( values, fieldName );
-        const fieldErrorOrNull = await fieldValidator( fieldValue as never );
+        const fieldErrorOrNull = await fieldValidator( fieldValue as never, fieldName );
 
         if ( fieldErrorOrNull ) return fieldErrorOrNull;
 
