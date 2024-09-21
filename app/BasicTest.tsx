@@ -71,6 +71,7 @@ const BasicTest = () => {
             //     , email: 'XXXXXXXXXXXX'
             //     , acknowledgement: true
             // } }
+            formProps={ { style: { width: '100%' } } }
         >
             { ( {
                 Field
@@ -82,8 +83,8 @@ const BasicTest = () => {
             } ) => (
                 <div
                     style={ {
-                        width: '30%'
-                        , display: 'flex'
+                        display: 'flex'
+                        , width: '100%'
                         , flexDirection: 'column'
                         , gap: '.5rem'
                     } }

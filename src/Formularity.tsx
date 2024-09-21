@@ -1,4 +1,7 @@
-import { ReactNode } from 'react';
+import {
+    ComponentProps
+    , ReactNode
+} from 'react';
 
 // Components
 import { Form } from './Form';
@@ -25,6 +28,10 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
          */
         useFormComponent?: boolean;
         /**
+         * Props to pass to the `<form />` element.
+         */
+        formProps?: ComponentProps<'form'>;
+        /**
          * The function that will be called to render the children of the `<Formularity />` component.
          * The Formularity props and components are passed to this function for an easy form-building experience.
          */
@@ -38,6 +45,7 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
 export const Formularity = <TFormValues extends FormValues>( {
     children
     , useFormComponent = true
+    , formProps
     , ...formularityProps
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
@@ -49,7 +57,7 @@ export const Formularity = <TFormValues extends FormValues>( {
             {
                 useFormComponent
                     ? (
-                        <Form>
+                        <Form { ...formProps }>
                             { renderedChildren }
                         </Form>
                     )
