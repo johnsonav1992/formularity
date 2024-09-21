@@ -129,8 +129,8 @@ export const FieldList = <
         , FV = DeepValue<TFormValues, TFieldName>
     >
         ( name: FN, newList: FV ) => {
-        setFieldValue<TFieldName, DeepValue<TFormValues, TFieldName>>(
-            name
+        setFieldValue(
+            name as never
             , newList as DeepValue<TFormValues, TFieldName>
         );
     };

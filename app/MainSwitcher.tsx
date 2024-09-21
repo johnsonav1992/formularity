@@ -2,16 +2,14 @@ import { useState } from 'react';
 import BasicTest from './BasicTest';
 import FieldListTest from './FieldListTest';
 
-const MainSwitcher = () => {
-    const [ viewedForm, setViewedForm ] = useState( 'Basic' );
+// Add new forms here
+const forms = {
+    basic: <BasicTest />
+    , fieldList: <FieldListTest />
+} as const;
 
-    const renderForm = () => {
-        switch ( viewedForm ) {
-            case 'Basic': return <BasicTest />;
-            case 'FieldList': return <FieldListTest />;
-            default: return null;
-        }
-    };
+const MainSwitcher = () => {
+    const [ viewedForm, setViewedForm ] = useState<keyof typeof forms>( 'basic' );
 
     return (
         <div
@@ -39,10 +37,20 @@ const MainSwitcher = () => {
                 <select
                     name='switcher'
                     style={ { width: '25%' } }
-                    onChange={ e => setViewedForm( e.target.value ) }
+                    onChange={ e => setViewedForm( e.target.value as keyof typeof forms ) }
                 >
-                    <option value='Basic'>Basic</option>
-                    <option value='FieldList'>FieldList</option>
+                    {
+                        Object.keys( forms ).map( formName => {
+                            return (
+                                <option
+                                    value={ formName }
+                                    key={ formName }
+                                >
+                                    { formName }
+                                </option>
+                            );
+                        } )
+                    }
                 </select>
             </div>
             <div
@@ -51,7 +59,7 @@ const MainSwitcher = () => {
                     , width: '50%'
                 } }
             >
-                { renderForm() }
+                { forms[ viewedForm ] }
             </div>
         </div>
     );

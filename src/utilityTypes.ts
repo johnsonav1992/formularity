@@ -48,10 +48,8 @@ export type FieldEventNames = 'onChange' | 'onBlur';
 export type CheckboxValue = string | boolean | unknown[];
 
 export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
-    TKey extends string | `${ number }`
-        ? IsObject<TObj[TKey]> extends true
-            ? `${ Keys<TObj, IsRoot, TKey> }${ DeepKeys<TObj[TKey], false> }`
-            : Keys<TObj, IsRoot, TKey>
+    TKey extends string | number | undefined
+        ? `${ Keys<TObj, IsRoot, TKey> }${ '' | ( TObj[TKey] extends object ? DeepKeys<TObj[TKey], false> : '' ) }`
         : never;
 
 export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
@@ -79,10 +77,6 @@ export type DeepPartial<T> = {
     };
 
 ////// HELPERS //////
-type IsObject<T> = T extends object
-    ? ( T extends unknown[] ? false : true )
-    : false;
-
 type RemoveArrayMethods<T> = T extends number
     ? number
     : T extends keyof unknown[]
