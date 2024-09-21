@@ -331,7 +331,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
     = useEventCallback( ( fieldName, newValue, options, onChangeFieldEffects ) => {
-
         const shouldValidate = options?.shouldValidate !== undefined
             ? options.shouldValidate
             : validateOnChange;

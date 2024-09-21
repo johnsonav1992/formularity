@@ -40,6 +40,7 @@ const FieldListTest = () => {
         <Formularity
             formStore={ formStore }
             onSubmit={ values => console.log( values ) }
+            formProps={ { style: { width: '100%' } } }
         >
             { ( {
                 Field
@@ -49,7 +50,7 @@ const FieldListTest = () => {
             } ) => (
                 <div
                     style={ {
-                        width: '30%'
+                        width: '100%'
                         , display: 'flex'
                         , flexDirection: 'column'
                         , gap: '.5rem'
@@ -72,7 +73,7 @@ const FieldListTest = () => {
                                         hobbies.map( ( _, idx ) => (
                                             <Field
                                                 key={ idx }
-                                                name='hobbies[0]'
+                                                name={ `hobbies[${ idx }]` }
                                                 showErrors
                                             />
                                         ) )

@@ -130,9 +130,9 @@ export const getViaPath = <
 };
 
 export const setViaPath = <
-        TObj,
-        TPath extends DeepKeys<TObj> | string,
-        TNewValue
+    TObj,
+    TPath extends DeepKeys<TObj> | string,
+    TNewValue
     >(
         obj: TObj,
         path: TPath,
@@ -140,28 +140,25 @@ export const setViaPath = <
     ): TObj => {
     if ( !path ) return obj;
 
-    const keys = path.split( /\.\[|\]|\./ ).filter( Boolean ) as Array<keyof TObj>;
+    const keys = path.replace( /\[(\d+)\]/g, '.$1' ).split( '.' );
     const newObj = cloneDeep( obj );
-    let current = newObj as TObj;
+    let current = newObj;
 
-    for ( let i = 0; i < keys.length - 1; i++ ) {
+    for ( let i = 0; i < keys.length; i++ ) {
         const key = keys[ i ];
 
-        if (
-            typeof current[ key ] !== 'object'
-                || current[ key ] === null
-        ) {
-            current[ key ] = isNaN( Number( keys[ i + 1 ] ) )
-                ? {} as never
-                : [] as never;
-        }
+        if ( i === keys.length - 1 ) {
+            ( current[ key as keyof TObj ] as TNewValue ) = newValue;
+        } else {
+            const nextKey = keys[ i + 1 ];
+            const isNextKeyArrayIndex = !isNaN( Number( nextKey ) );
 
-        current = current[ key ] as TObj;
+            current[ key as keyof TObj ] = current[ key as keyof TObj ] as never || ( isNextKeyArrayIndex ? [] : {} );
+            current = current[ key as keyof TObj ] as TObj;
+        }
     }
 
-    current[ keys[ keys.length - 1 ] ] = newValue as never;
-
-    return newObj as TObj;
+    return newObj;
 };
 
 export const isEqual = <TVal1, TVal2>( value: TVal1, other: TVal2 ) => {
