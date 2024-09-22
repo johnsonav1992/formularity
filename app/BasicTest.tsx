@@ -5,7 +5,10 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import { required } from '../src/validators/validators';
+import {
+    matchField
+    , required
+} from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -83,7 +86,6 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
-                    { console.log( 'RENDER' ) }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -95,17 +97,17 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ required() }
-                        fieldEffects={ {
-                            onChange: {
-                                'name.last': ( lastName, firstName, { validateField } ) => {
-                                    //
-                                }
-                            }
-                        } }
-                        valueTransform={ value => {
-                            return value.split( '' ).map( letter => letter.toUpperCase() ).join( '' );
-                        } }
+                        validator={ matchField( 'name.last', 'Must match last name' ) }
+                        // fieldEffects={ {
+                        //     onChange: {
+                        //         'name.last': ( lastName, firstName, { validateField } ) => {
+                        //             //
+                        //         }
+                        //     }
+                        // } }
+                        // valueTransform={ value => {
+                        //     return value.split( '' ).map( letter => letter.toUpperCase() ).join( '' );
+                        // } }
                     />
                     <Field
                         name='name.last'

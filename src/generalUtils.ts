@@ -153,7 +153,9 @@ export const setViaPath = <
             const nextKey = keys[ i + 1 ];
             const isNextKeyArrayIndex = !isNaN( Number( nextKey ) );
 
-            current[ key as keyof TObj ] = current[ key as keyof TObj ] as never || ( isNextKeyArrayIndex ? [] : {} );
+            current[ key as keyof TObj ]
+                = current[ key as keyof TObj ] as never || ( isNextKeyArrayIndex ? [] : {} );
+
             current = current[ key as keyof TObj ] as TObj;
         }
     }

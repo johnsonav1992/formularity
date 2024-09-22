@@ -76,7 +76,10 @@ export type ValidationHandler<TFormValues extends FormValues> =
 export type SingleFieldValidator<
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues>
-> = ( value: DeepValue<TFormValues, TFieldName>, fieldName?: TFieldName ) => Promise<string | Nullish> | string | Nullish;
+> = (
+    value: DeepValue<TFormValues, TFieldName>
+    , opts?: { fieldName?: TFieldName; formValues?: TFormValues }
+) => Promise<string | Nullish> | string | Nullish;
 
 /**
  * @param shouldValidate
