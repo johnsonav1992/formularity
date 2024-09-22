@@ -1,5 +1,8 @@
 // Types
-import { getViaPath } from '../generalUtils';
+import {
+    getViaPath
+    , isEqual
+} from '../generalUtils';
 import {
     FormValues
     , SingleFieldValidator
@@ -161,7 +164,7 @@ export const matchField = <
     return ( value: DeepValue<TFormValues, TFieldName>, opts ) => {
         const otherFieldValue = getViaPath( opts?.formValues, fieldToMatch as never );
 
-        if ( value !== otherFieldValue ) {
+        if ( !isEqual( value, otherFieldValue ) ) {
             return message || `Must match ${ fieldToMatch }`;
         }
 
