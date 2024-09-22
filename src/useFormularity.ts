@@ -304,12 +304,9 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 } );
 
                 if ( newErrorOrNull ) {
-                    if ( !fieldErrorsOrNull ) {
-                        fieldErrorsOrNull = '';
-                    }
-                    console.log( { fieldErrorsOrNull: fieldErrorsOrNull.length } );
-
-                    fieldErrorsOrNull += `${ fieldErrorsOrNull === '' ? '' : ', ' } ${ newErrorOrNull }`;
+                    fieldErrorsOrNull = [ fieldErrorsOrNull, newErrorOrNull ]
+                        .filter( Boolean )
+                        .join( ', ' );
                 }
             }
         } else {
