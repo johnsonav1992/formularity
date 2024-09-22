@@ -5,10 +5,7 @@ import {
 } from '../src';
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
-import {
-    required
-    , requiredTrue
-} from '../src/validators/validators';
+import { required } from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
 
 type BasicTestFormValues = {
@@ -86,6 +83,7 @@ const BasicTest = () => {
                         , gap: '.5rem'
                     } }
                 >
+                    { console.log( 'RENDER' ) }
                     <Field
                         name='name.first'
                         label='First Name'
@@ -104,6 +102,9 @@ const BasicTest = () => {
                                     //
                                 }
                             }
+                        } }
+                        valueTransform={ value => {
+                            return value.split( '' ).map( letter => letter.toUpperCase() ).join( '' );
                         } }
                     />
                     <Field

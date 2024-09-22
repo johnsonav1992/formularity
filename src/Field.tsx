@@ -226,6 +226,20 @@ export type FieldProps<
          */
         fieldEffects?: FieldEffectsConfig<TFormValues, TFieldName>;
         /**
+         * A function to transform the field value at onChange time.
+         *
+         * @example
+         *
+         *```ts
+         * // Will make the value uppercase on change
+         * valueTransform={(value) => {
+         *   return value.split('').map(letter => letter.toUpperCase()).join('');
+         * }}
+         *
+         *```
+         */
+        valueTransform?: ( value: DeepValue<TFormValues, TFieldName> ) => DeepValue<TFormValues, TFieldName> ;
+        /**
          * Children that may need to be passed to the `<Field />` component.
          *
          * *This will generally only be used for components like `<select />` or
@@ -263,6 +277,7 @@ export const Field = <
         , shouldValidate
         , validationEvent
         , fieldEffects
+        , valueTransform
         , ...props
     }: FieldProps<
         TFormValues
@@ -314,7 +329,9 @@ export const Field = <
 
     const fieldProps = {
         name
-        , value: value || fieldValueState
+        , value: valueTransform && fieldValueState
+            ? valueTransform( fieldValueState )
+            : value || fieldValueState
         , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
             ? value == undefined
                 ? fieldValueState
