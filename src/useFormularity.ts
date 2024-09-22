@@ -32,6 +32,7 @@ import {
     , DeepPartial
     , DeepValue
     , NoInfer
+    , Nullish
     , OnBlurEvent
     , OnChangeEvent
 } from './utilityTypes';
@@ -214,7 +215,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
         const singleValidatorKeys = objectEntries( fieldRegistry.current )
-            .filter( ( [ _, registration ] ) => !!registration?.validationHandler )
+            .filter( ( [ _, registration ] ) => !!registration?.validationHandlers )
             .map( ( [ key ] ) => key );
 
         const validationRunner = async ( validationHandlerToRun?: ValidationHandler<TFormValues> ) => {
@@ -254,16 +255,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const validateField = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
         fieldName: TFieldName
         , options?: {
-            validator?: SingleFieldValidator<TFormValues, TFieldName>;
+            validators?: SingleFieldValidator<TFormValues, TFieldName> | Array<SingleFieldValidator<TFormValues, TFieldName>>;
             shouldTouchField?: boolean;
         }
     ) => {
-        const validator = options?.validator;
+        const validator = options?.validators;
         const shouldTouchField = options?.shouldTouchField ?? true;
 
         const validatorToRun
                 = validator
-                || fieldRegistry.current?.[ fieldName as keyof FieldRegistry<TFormValues> ]?.validationHandler as typeof validator;
+                || fieldRegistry.current?.[ fieldName as keyof FieldRegistry<TFormValues> ]?.validationHandlers as typeof validator;
 
         if ( !validatorToRun ) {
             logDevWarning(
@@ -274,7 +275,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             return null;
         }
 
-        const errorOrNull = await runSingleFieldValidation( validatorToRun, fieldName );
+        const errorOrNull = await runSingleFieldValidations( validatorToRun, fieldName );
         const newTouched = shouldTouchField ? setViaPath( touched, fieldName, true ) : touched;
         const newErrors = errorOrNull ? setViaPath( errors, fieldName, errorOrNull ) : errors;
 
@@ -286,25 +287,46 @@ export const useFormularity = <TFormValues extends FormValues>( {
         return errorOrNull;
     } );
 
-    const runSingleFieldValidation = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
-        fieldValidator: SingleFieldValidator<TFormValues, TFieldName>
+    const runSingleFieldValidations = useEventCallback( async <TFieldName extends DeepKeys<TFormValues>>(
+        fieldValidators: SingleFieldValidator<TFormValues, TFieldName> | Array<SingleFieldValidator<TFormValues, TFieldName>>
         , fieldName: TFieldName
     ) => {
         const fieldValue = getViaPath( values, fieldName );
-        const fieldErrorOrNull = await fieldValidator( fieldValue as never, {
-            fieldName
-            , formValues: values
-        } );
+        let fieldErrorsOrNull: string | Nullish = null;
 
-        if ( fieldErrorOrNull ) return fieldErrorOrNull;
+        if ( !fieldValue ) return null;
 
-        return null;
+        if ( Array.isArray( fieldValidators ) ) {
+            for ( const validator of fieldValidators ) {
+                const newErrorOrNull = await validator( fieldValue, {
+                    fieldName
+                    , formValues: values
+                } );
+
+                if ( newErrorOrNull ) {
+                    if ( !fieldErrorsOrNull ) {
+                        fieldErrorsOrNull = '';
+                    }
+                    console.log( { fieldErrorsOrNull: fieldErrorsOrNull.length } );
+
+                    fieldErrorsOrNull += `${ fieldErrorsOrNull === '' ? '' : ', ' } ${ newErrorOrNull }`;
+                }
+            }
+        } else {
+            fieldErrorsOrNull = await fieldValidators( fieldValue, {
+                fieldName
+                , formValues: values
+            } );
+
+        }
+
+        return fieldErrorsOrNull;
     } );
 
     const runAllSingleFieldValidators = useEventCallback( async ( errors: DeepPartial<FormErrors<TFormValues>> ) => {
         for ( const [ fieldName, registration ] of objectEntries( fieldRegistry.current ) ) {
-            const fieldErrorOrNull = registration?.validationHandler
-                ? await runSingleFieldValidation( registration?.validationHandler, fieldName )
+            const fieldErrorOrNull = registration?.validationHandlers
+                ? await runSingleFieldValidations( registration?.validationHandlers, fieldName )
                 : null;
 
             if ( fieldErrorOrNull ) {

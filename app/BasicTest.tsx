@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
 import {
     matchField
+    , min
     , required
 } from '../src/validators/validators';
 // import { Checkbox } from '@mui/material';
@@ -97,7 +98,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
-                        validator={ matchField( 'name.last', 'Must match last name' ) }
+                        validators={ [ required(), min( 3 ), matchField( 'name.last' ) ] }
                         // fieldEffects={ {
                         //     onChange: {
                         //         'name.last': ( lastName, firstName, { validateField } ) => {

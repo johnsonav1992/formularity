@@ -152,7 +152,7 @@ export type FieldProps<
          * validator={ zodAdapter( z.string().min(5), { isField: true } ) }
          * ```
          */
-        validator?: SingleFieldValidator<TFormValues, TFieldName>;
+        validators?: SingleFieldValidator<TFormValues, TFieldName> | Array<SingleFieldValidator<TFormValues, TFieldName> >;
         /**
          * Whether to run validation after field value is updated or the field is blurred.
          * Setting this prop to `false` will cancel any validation set for the field.
@@ -273,7 +273,7 @@ export const Field = <
         , labelProps
         , showErrors
         , errorProps
-        , validator
+        , validators
         , shouldValidate
         , validationEvent
         , fieldEffects
@@ -305,7 +305,7 @@ export const Field = <
         registerField( {
             name
             , type
-            , validationHandler: validator || null
+            , validationHandlers: validators || null
             , fieldId: id
         } );
 

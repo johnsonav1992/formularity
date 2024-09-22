@@ -45,7 +45,7 @@ export type NewFieldRegistration<
     /**
      * single field validator that is passed to the field
      */
-    validationHandler: SingleFieldValidator<TFormValues, NoInfer<TFieldName>> | null;
+    validationHandlers: SingleFieldValidator<TFormValues, NoInfer<TFieldName>> | Array<SingleFieldValidator<TFormValues, NoInfer<TFieldName>>> | null;
     /**
      * Any ID that may be passed to the field
      */
@@ -285,7 +285,7 @@ export type FormHandlers<
             validator?: SingleFieldValidator<TFormValues, TOptionFieldName extends never ? TFieldName : TOptionFieldName>;
             shouldTouchField?: boolean;
         }
-    ) => Promise<string | null> | string | null;
+    ) => Promise<string | Nullish> | string | null;
 };
 
 export type SubmissionOrResetHelpers<TFormValues extends FormValues> =
