@@ -6,7 +6,8 @@ import {
 import { z } from 'zod';
 import { zodAdapter } from 'formularity-zod-adapter';
 import {
-    matchField
+    email
+    , matchField
     , min
     , required
 } from '../src/validators/validators';
@@ -26,7 +27,7 @@ const validationSchema = z.object( {
         first: z.string().min( 1, 'First name is required' )
         // , last: z.string().min( 1, 'Last name is required' )
     } )
-    , email: z.string().email( 'Invalid email' )
+    // , email: z.string().email( 'Invalid email' )
     , acknowledgement: z.boolean().refine( val => val === true, 'Must acknowledge!' )
 } );
 
@@ -134,6 +135,7 @@ const BasicTest = () => {
                         errorProps={ {
                             errorStyles
                         } }
+                        validators={ [ email(), min( 5 ) ] }
                     />
                     <Field
                         name='acknowledgement'
