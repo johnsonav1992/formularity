@@ -61,8 +61,6 @@ const BasicTest = () => {
                 Field
                 , SubmitButton
                 , ResetButton
-                , validateForm
-                , setFieldValue
                 , ...formularity
             } ) => (
                 <div

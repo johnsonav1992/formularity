@@ -1,7 +1,6 @@
 import {
     ComponentProps
     , ReactNode
-    , useMemo
 } from 'react';
 
 // Components
@@ -51,7 +50,7 @@ export const Formularity = <TFormValues extends FormValues>( {
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
 
-    const renderedChildren = useMemo( () => children( formularity ), [] );
+    const renderedChildren = children( formularity );
 
     return (
         <FormularityContext.Provider value={ formularity as FormularityProps }>
