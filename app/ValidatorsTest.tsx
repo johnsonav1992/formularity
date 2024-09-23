@@ -3,37 +3,20 @@ import {
     Formularity
     , createFormStore
 } from '../src';
-import { z } from 'zod';
-import { zodAdapter } from 'formularity-zod-adapter';
+import {
+    matchField
+    , min
+    , pattern
+    , required
+} from '../src/validators';
+import { match } from 'assert';
 
-type BasicTestFormValues = {
-    name: {
-        first: string;
-        last: string;
-    };
-    email: string;
-    acknowledgement: boolean;
-};
-
-const validationSchema = z.object( {
-    name: z.object( {
-        first: z.string().min( 1, 'First name is required' )
-        , last: z.string().min( 1, 'Last name is required' )
-    } )
-    , email: z.string().email( 'Invalid email' )
-    , acknowledgement: z.boolean().refine( val => val === true, 'Must acknowledge!' )
-} );
-
-const formStore = createFormStore<BasicTestFormValues>( {
+const formStore = createFormStore( {
     initialValues: {
-        name: {
-            first: ''
-            , last: ''
-        }
-        , email: ''
-        , acknowledgement: false
+        username: ''
+        , password: ''
+        , confirmPassword: ''
     }
-    , validationSchema: zodAdapter( validationSchema )
 } );
 
 const inputStyles: CSSProperties = {
@@ -49,7 +32,11 @@ const errorStyles: CSSProperties = {
     color: 'red'
 };
 
-const BasicTest = () => {
+const passRegex = new RegExp(
+    '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+);
+
+const ValidatorsTest = () => {
 
     return (
         <Formularity
@@ -61,8 +48,6 @@ const BasicTest = () => {
                 Field
                 , SubmitButton
                 , ResetButton
-                , validateForm
-                , setFieldValue
                 , ...formularity
             } ) => (
                 <div
@@ -74,42 +59,44 @@ const BasicTest = () => {
                     } }
                 >
                     <Field
-                        name='name.first'
-                        label='First Name'
+                        name='username'
+                        label='Username'
                         labelProps={ { labelStyles } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ { errorStyles } }
+                        validators={ [ required(), min( 3 ) ] }
                     />
                     <Field
-                        name='name.last'
-                        label='Last Name'
+                        name='password'
+                        label='Password'
+                        type='password'
                         labelProps={ { labelStyles } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ {
                             errorStyles
                         } }
+                        validators={ [
+                            required()
+                            , pattern(
+                                passRegex,
+                                'Password must be at least 8 characters long,'
+                                + ' contain one uppercase letter, one lowercase letter,'
+                                + ' one digit, and one special character.'
+                            )
+                            , matchField( 'confirmPassword', 'Must match password confirmation' )
+                        ] }
                     />
                     <Field
-                        name='email'
-                        label='Email'
+                        name='confirmPassword'
+                        label='Confirm Password'
+                        type='password'
                         labelProps={ { labelStyles } }
                         style={ inputStyles }
                         showErrors
                         errorProps={ { errorStyles } }
-                    />
-                    <Field
-                        name='acknowledgement'
-                        label='Do you acknowledge the terms?'
-                        labelProps={ { labelStyles } }
-                        type='checkbox'
-                        style={ {
-                            alignSelf: 'flex-start'
-                            , width: '20px'
-                        } }
-                        showErrors
-                        errorProps={ { errorStyles } }
+                        validators={ [ required(), matchField( 'password' ) ] }
                     />
                     <SubmitButton style={ { height: '40px' } }>
                         Submit
@@ -126,4 +113,4 @@ const BasicTest = () => {
     );
 };
 
-export default BasicTest;
+export default ValidatorsTest;

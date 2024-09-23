@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import BasicTest from './BasicTest';
 import FieldListTest from './FieldListTest';
+import ValidatorsTest from './ValidatorsTest';
 
 // Add new forms here
 const forms = {
     basic: <BasicTest />
     , fieldList: <FieldListTest />
+    , validators: <ValidatorsTest />
 } as const;
 
 const MainSwitcher = () => {

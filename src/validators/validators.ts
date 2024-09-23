@@ -126,6 +126,8 @@ export const pattern = <
     TFieldName extends DeepKeys<TFormValues>
 >( pattern: RegExp, message?: string ): SingleFieldValidator<TFormValues, TFieldName> => {
     return ( value: DeepValue<TFormValues, TFieldName> ) => {
+        if ( !value ) return null;
+
         if ( !pattern.test( String( value ) ) ) {
             return message || 'Invalid format';
         }
@@ -164,7 +166,7 @@ export const matchField = <
     return ( value: DeepValue<TFormValues, TFieldName>, opts ) => {
         const otherFieldValue = getViaPath( opts?.formValues, fieldToMatch as never );
 
-        if ( !isEqual( value, otherFieldValue ) ) {
+        if ( otherFieldValue && !isEqual( value, otherFieldValue ) ) {
             return message || `Must match ${ fieldToMatch }`;
         }
 
