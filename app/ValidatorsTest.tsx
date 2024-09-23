@@ -9,7 +9,6 @@ import {
     , pattern
     , required
 } from '../src/validators';
-import { match } from 'assert';
 
 const formStore = createFormStore( {
     initialValues: {
