@@ -6,13 +6,17 @@ import {
     , DeepValue
     , CheckArray
 } from './utilityTypes';
-import { FormValues } from './types';
-
-// Context
-import { useFormularityContext } from './FormularityContext';
+import {
+    FormStore
+    , FormValues
+} from './types';
 
 // Utils
-import { getViaPath } from './generalUtils';
+import {
+    getViaPath
+    , throwComponentFormStoreError
+} from './generalUtils';
+import { useFormularity } from './useFormularity';
 
 type FieldListHelpers<TListData extends unknown[]> = {
     /**
@@ -54,6 +58,7 @@ export type FieldListProps<
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TListData = CheckArray<DeepValue<TFormValues, TFieldName>>
 > = {
+    formStore?: FormStore<TFormValues>;
     name: TFieldName;
     render: (
         listValue: TListData
@@ -105,14 +110,16 @@ export const FieldList = <
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TListData = CheckArray<DeepValue<TFormValues, TFieldName>>
     >( {
-        name
+        formStore
+        , name
         , render
     }: FieldListProps ) => {
+    if ( !formStore ) throwComponentFormStoreError( 'FieldList', name );
 
     const {
         values
         , setFieldValue
-    } = useFormularityContext<TFormValues>();
+    } = useFormularity<TFormValues>( { formStore: formStore as FormStore<TFormValues> } );
 
     const listData = getViaPath( values, name ) as TListData;
 

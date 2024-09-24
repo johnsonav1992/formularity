@@ -7,20 +7,24 @@ import React, {
 // Types
 import { NoInfer } from './utilityTypes';
 
-// Context
-import { useFormularityContext } from './FormularityContext';
-
 // Utils
 import {
     disableAfterFirstSubmit
     , disableAfterFirstSubmitUnlessEditing
     , isFormDisabledNotDirty
 } from './disableLogicUtils';
+import {
+    FormStore
+    , FormValues
+} from './types';
+import { useFormularity } from './useFormularity';
+import { throwComponentFormStoreError } from './generalUtils';
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
     , TComponentProps = undefined
 > = {
+        formStore?: FormStore<FormValues>;
         /**
          * Child elements of the button
          */
@@ -83,10 +87,16 @@ export const SubmitButton = <
             , disabledMode
             , disableWhileSubmitting
             , children
+            , formStore
             , ...props
         }: SubmitButtonProps<TDisableInvalid, TComponentProps>
     ) => {
-    const formularity = useFormularityContext();
+    if ( !formStore ) throwComponentFormStoreError( 'SubmitButton' );
+
+    const formularity = useFormularity( {
+        formStore: formStore!
+        , onSubmit: () => console.log( 'blah' )
+    } );
 
     const renderedComponent = component as FC || 'button';
 

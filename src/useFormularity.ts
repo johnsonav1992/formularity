@@ -2,6 +2,7 @@ import {
     FormEvent
     , useCallback
     , useEffect
+    , useMemo
     , useRef
     , useSyncExternalStore
 } from 'react';
@@ -25,6 +26,9 @@ import {
     , FieldEffectsConfig
     , FieldEffectHelpers
     , FieldEffectFn
+    , FieldComponent
+    , FieldListComponent
+    , SubmitButtonComponent
 } from './types';
 import {
     CheckboxValue
@@ -68,6 +72,7 @@ import { Field } from './Field';
 import { FieldList } from './FieldList';
 import { SubmitButton } from './SubmitButton';
 import { ResetButton } from './ResetButton';
+import { withFormStore } from './withFormStore';
 
 export type UseFormularityParams<TFormValues extends FormValues> = {
     /**
@@ -161,6 +166,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isMounted = useRef<boolean>( false );
 
     const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
+
+    console.log( fieldRegistry );
 
     useEffect( () => {
         isMounted.current = true;
@@ -657,12 +664,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const isFormTouched = deepObjectKeys( touched ).length > 0;
     const areAllFieldsTouched = hasSameNestedKeys( values, touched );
 
-    const formularityComponents = {
-        Field
-        , FieldList
-        , SubmitButton
+    const formularityComponents = useMemo( () => ( {
+        Field: withFormStore( Field, formStore ) as FieldComponent<TFormValues>
+        , FieldList: withFormStore( FieldList, formStore ) as FieldListComponent<TFormValues>
+        , SubmitButton: withFormStore( SubmitButton, formStore ) as SubmitButtonComponent
         , ResetButton
-    };
+    } ), [] );
 
     return {
         ...currentStore

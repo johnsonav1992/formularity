@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {
     CSSProperties
     , ComponentProps
@@ -12,6 +13,7 @@ import {
     FieldEffectsConfig
     , FieldValidationOptions
     , FormErrors
+    , FormStore
     , FormTouched
     , FormValues
     , SingleFieldValidator
@@ -26,10 +28,13 @@ import {
 } from './utilityTypes';
 
 // Utils
-import { getViaPath } from './generalUtils';
+import {
+    getViaPath
+    , throwComponentFormStoreError
+} from './generalUtils';
 
 // Hooks
-import { useFormularityContext } from './FormularityContext';
+import { useFormularity } from './useFormularity';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
@@ -47,6 +52,11 @@ export type FieldProps<
             ? Omit<ComponentProps<TComponentProps>, DuplicateProps>
             : Omit<NoInfer<TComponentProps>, DuplicateProps>
     ) & {
+        /**
+         * The form store used to hook up the field to
+         * the form's state. *required
+         */
+        formStore?: FormStore<TFormValues>;
         /**
          * The name of the field. *required
          */
@@ -264,7 +274,8 @@ export const Field = <
     , TFieldValue extends DeepValue<TFormValues, TFieldName> = DeepValue<TFormValues, TFieldName>
     , TShouldValidate extends boolean | undefined = true
     >( {
-        name
+        formStore
+        , name
         , value
         , type
         , checked
@@ -288,6 +299,7 @@ export const Field = <
         , TFieldValue
         , TShouldValidate
     > ) => {
+    if ( !formStore ) throwComponentFormStoreError( 'Field', name );
 
     const {
         values
@@ -297,7 +309,7 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
-    } = useFormularityContext<TFormValues>();
+    } = useFormularity<TFormValues>( { formStore: formStore! } );
 
     const id = 'id' in props ? props.id as string : undefined;
 

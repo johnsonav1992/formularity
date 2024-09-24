@@ -2,11 +2,12 @@ import {
     ComponentProps
     , PropsWithChildren
 } from 'react';
+import {
+    FormularityProps
+    , FormValues
+} from './types';
 
-// Hooks
-import { useFormularityContext } from './FormularityContext';
-
-export type FormProps = PropsWithChildren<ComponentProps<'form'>>;
+export type FormProps = PropsWithChildren<{ formularity: FormularityProps<FormValues> } & ComponentProps<'form'>>;
 
 /**
  * The <Form /> component is a simple
@@ -19,9 +20,9 @@ export type FormProps = PropsWithChildren<ComponentProps<'form'>>;
  */
 export const Form = ( {
     children
+    , formularity
     , ...props
 }: FormProps ) => {
-    const formularity = useFormularityContext();
 
     return (
         <form

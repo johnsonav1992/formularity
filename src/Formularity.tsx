@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import {
     ComponentProps
     , ReactNode
@@ -15,9 +16,6 @@ import {
     UseFormularityParams
     , useFormularity
 } from './useFormularity';
-
-// Context
-import { FormularityContext } from './FormularityContext';
 
 export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
@@ -53,16 +51,15 @@ export const Formularity = <TFormValues extends FormValues>( {
     const renderedChildren = children( formularity );
 
     return (
-        <FormularityContext.Provider value={ formularity as FormularityProps }>
-            {
-                useFormComponent
-                    ? (
-                        <Form { ...formProps }>
-                            { renderedChildren }
-                        </Form>
-                    )
-                    : renderedChildren
-            }
-        </FormularityContext.Provider>
+        useFormComponent
+            ? (
+                <Form
+                    formularity={ formularity as FormularityProps<FormValues> }
+                    { ...formProps }
+                >
+                    { renderedChildren }
+                </Form>
+            )
+            : renderedChildren
     );
 };

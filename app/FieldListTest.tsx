@@ -133,12 +133,12 @@ const FieldListTest = () => {
                             );
                         } }
                     />
-                    <SubmitButton style={ { height: '40px' } }>
+                    { /* <SubmitButton style={ { height: '40px' } }>
                         Submit
                     </SubmitButton>
                     <ResetButton>
                         Reset
-                    </ResetButton>
+                    </ResetButton> */ }
                 </div>
             ) }
         </Formularity>

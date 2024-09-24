@@ -1,4 +1,3 @@
-// Types
 import {
     DeepKeys
     , DeepPartial
@@ -263,4 +262,11 @@ export const logDevWarning = ( msg: string ) => {
     if ( process.env.NODE_ENV !== 'production' ) {
         console.warn( msg );
     }
+};
+
+export const throwComponentFormStoreError = ( Comp: string, fieldName?: string ): never => {
+    throw new Error(
+        `Form store not found for <${ Comp } ${ fieldName ? `name='${ fieldName }' ` : '' }/>. `
+        + `All ${ Comp } components must be connected to a formStore to work.`
+    );
 };
