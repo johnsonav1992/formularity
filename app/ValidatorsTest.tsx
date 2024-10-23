@@ -73,9 +73,7 @@ const ValidatorsTest = () => {
                         labelProps={ { labelStyles } }
                         style={ inputStyles }
                         showErrors
-                        errorProps={ {
-                            errorStyles
-                        } }
+                        errorProps={ { errorStyles } }
                         validators={ [
                             required()
                             , pattern(
@@ -84,7 +82,6 @@ const ValidatorsTest = () => {
                                 + ' contain one uppercase letter, one lowercase letter,'
                                 + ' one digit, and one special character.'
                             )
-                            , matchField( 'confirmPassword', 'Must match password confirmation' )
                         ] }
                     />
                     <Field
