@@ -85,9 +85,7 @@ const BasicTest = () => {
                         labelProps={ { labelStyles } }
                         style={ inputStyles }
                         showErrors
-                        errorProps={ {
-                            errorStyles
-                        } }
+                        errorProps={ { errorStyles } }
                     />
                     <Field
                         name='email'

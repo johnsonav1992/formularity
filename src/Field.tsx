@@ -180,11 +180,11 @@ export type FieldProps<
          * happening on another field.
          *
          * @param fieldEffectsConfig an object with all of the fields of the form as keys (minus the field
-         * in which the effect config is being applied). Each fieldName object receives an object with two possible
-         * effect functions: one for `onChange` and one for `onBlur`. These functions will be called when the
-         * respective event occurs on the field this config is being applied to and each callback will effect the
+         * in which the effect config is being applied). Each event type object receives an object with all other fields
+         * in the form. These functions will be called when the respective event occurs on the field
+         * this config is being applied to and each callback will effect the
          * field being referred to in the config object. i.e. if an effect config is being applied to `<Field name='firstName' />`,
-         * the `onChange` callback set for `email` will run when `firstName` changes and thus effect the `email` field accordingly.
+         * the `email` callback set for `onChange` will run when `firstName` changes and thus effect the `email` field accordingly.
          * See example below.
          *
          *
@@ -193,15 +193,14 @@ export type FieldProps<
          *
          * ```ts
          * {
-         *     email: {
-         *         onChange: () => {}
-         *         , onBlur: () => {}
+         *     onChange: { // fieldEffects to run on other fields when this field changes
+         *         someField: () => {}
+         *         , anotherField: () => {}
          *     }
-         *     , phoneNumber: {
-         *          onChange: () => {}
-         *         , onBlur: () => {}
+         *     , onBlur: { // fieldEffects to run on other fields when this field blurs
+         *          someField: () => {}
+         *         , anotherField: () => {}
          *     }
-         *     , ...otherFields
          * }
          * ```
          *
@@ -212,10 +211,10 @@ export type FieldProps<
          * <Field
                 name='firstName'
                 fieldEffects={ {
-                    email: {
+                    onChange: {
                         // val and helpers here are for the email field
                         // This callback would be called onChange of firstName
-                        onChange: ( val, { validateField } ) => {
+                        email: ( val, { validateField } ) => {
                             validateField( { shouldTouchField: true } );
                         }
                     }
