@@ -1,5 +1,10 @@
 // Types
 import {
+    FieldEffectFn
+    , FieldRegistry
+    , FormValues
+} from './types';
+import {
     DeepKeys
     , DeepPartial
     , DeepValue
@@ -246,6 +251,28 @@ export const deepMerge = <TObj>( target: TObj, source: DeepPartial<TObj> ): TObj
     }
 
     return output;
+};
+
+export const getFieldEffectFns = <TFormValues extends FormValues>(
+    fieldRegistry: FieldRegistry<TFormValues>
+    , targetField: DeepKeys<TFormValues>
+    , changeType: 'change' | 'blur'
+) => {
+    const fieldEffectEntries: Array<[DeepKeys<TFormValues>, FieldEffectFn]> = [];
+
+    const targetSuffix = `${ String( targetField ) }-${ changeType }`;
+
+    for ( const fieldKey in fieldRegistry ) {
+        const field = fieldRegistry[ fieldKey as keyof typeof fieldRegistry ];
+
+        for ( const effectKey in field?.fieldEffects ) {
+            if ( effectKey === targetSuffix ) {
+                fieldEffectEntries.push( [ fieldKey as never, field?.fieldEffects[ effectKey as never ] ] );
+            }
+        }
+    }
+
+    return fieldEffectEntries;
 };
 
 export const getActiveElement = ( doc?: Document ) => {

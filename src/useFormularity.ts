@@ -55,6 +55,7 @@ import {
     , deepMerge
     , getActiveElement
     , logDevWarning
+    , getFieldEffectFns
 } from './generalUtils';
 import {
     touchAllFields
@@ -351,7 +352,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     } );
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
-    = useEventCallback( ( fieldName, newValue, options, onChangeFieldEffects ) => {
+    = useEventCallback( ( fieldName, newValue, options ) => {
         const shouldValidate = options?.shouldValidate !== undefined
             ? options.shouldValidate
             : validateOnChange;
@@ -377,26 +378,29 @@ export const useFormularity = <TFormValues extends FormValues>( {
             formStore.set( { values: newValues } );
         }
 
+        const fieldEffects = getFieldEffectFns( fieldRegistry.current, fieldName as never, 'change' );
+
         // Run onChange field effects
-        if ( onChangeFieldEffects ) {
-            objectEntries( onChangeFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
+        if ( fieldEffects ) {
+            fieldEffects.forEach( ( [ targetFieldName, effect ] ) => {
                 const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
-                const fieldVal = getViaPath( newValues, effectFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
+                const listenFieldName = fieldName;
+                const listenFieldVal = getViaPath( newValues, listenFieldName as never ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
 
                 const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
                     setValue: val => {
-                        newValues = setViaPath( newValues, effectFieldName, val );
+                        newValues = setViaPath( newValues, targetFieldName, val );
                         formStore.set( { values: newValues } );
                     }
-                    , setError: error => setFieldError( effectFieldName, error )
-                    , setTouched: touched => setFieldTouched( effectFieldName, touched )
+                    , setError: error => setFieldError( fieldName, error )
+                    , setTouched: touched => setFieldTouched( fieldName, touched )
                     , validateField: ( touchField, customValidator ) => {
                         // TODO: need to figure this out
                     }
                 };
 
                 fieldEffect(
-                    fieldVal
+                    listenFieldVal
                     , newValue
                     , helpers
                 );
@@ -430,7 +434,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         fieldName: DeepKeys<TFormValues>
         , newTouched: boolean
         , fieldValidationOptions?: FieldValidationOptions
-        , onBlurFieldEffects?: FieldEffectsConfig['onBlur']
     ) => {
         const newFieldTouched = setViaPath(
             touched
@@ -454,28 +457,28 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } );
 
         // Run onBlur field effects
-        if ( onBlurFieldEffects ) {
-            objectEntries( onBlurFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
-                const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
-                const fieldVal = getViaPath( values, effectFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
+        // if ( onBlurFieldEffects ) {
+        //     objectEntries( onBlurFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
+        //         const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
+        //         const fieldVal = getViaPath( values, effectFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
 
-                const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
-                    setValue: val => {
-                        const newValues = setViaPath( values, effectFieldName, val );
-                        formStore.set( { values: newValues } );
-                    }
-                    , setError: error => setFieldError( effectFieldName, error )
-                    , setTouched: touched => setFieldTouched( effectFieldName, touched )
-                    , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
-                };
+        //         const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
+        //             setValue: val => {
+        //                 const newValues = setViaPath( values, effectFieldName, val );
+        //                 formStore.set( { values: newValues } );
+        //             }
+        //             , setError: error => setFieldError( effectFieldName, error )
+        //             , setTouched: touched => setFieldTouched( effectFieldName, touched )
+        //             , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
+        //         };
 
-                fieldEffect(
-                    fieldVal
-                    , getViaPath( values, fieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>
-                    , helpers
-                );
-            } );
-        }
+        //         fieldEffect(
+        //             fieldVal
+        //             , getViaPath( values, fieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>
+        //             , helpers
+        //         );
+        //     } );
+        // }
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
@@ -488,7 +491,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const handleChange = useEventCallback( (
         e: OnChangeEvent
         , fieldValidationOptions?: FieldValidationOptions
-        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
     ) => {
         let finalValue;
 
@@ -534,18 +536,16 @@ export const useFormularity = <TFormValues extends FormValues>( {
             fieldName as never
             , finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>>
             , fieldValidationOptions
-            , onChangeFieldEffects
         );
     } );
 
     const handleBlur = useEventCallback( (
         e: OnBlurEvent
         , fieldValidationOptions?: FieldValidationOptions
-        , onBlurFieldEffects?: FieldEffectsConfig['onBlur']
     ) => {
         const fieldName = e.target.name as DeepKeys<TFormValues>;
 
-        setFieldTouched( fieldName, true, fieldValidationOptions, onBlurFieldEffects );
+        setFieldTouched( fieldName, true, fieldValidationOptions );
     } );
 
     const resetForm = useEventCallback( ( newFormValues?: DeepPartial<TFormValues> ) => {

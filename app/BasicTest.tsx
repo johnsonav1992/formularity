@@ -78,6 +78,8 @@ const BasicTest = () => {
                         style={ inputStyles }
                         showErrors
                         errorProps={ { errorStyles } }
+                        //@ts-ignore
+                        fieldEffects={ { 'email-change': ( email, firstName, { setValue } ) => { setValue( email ); } } }
                     />
                     <Field
                         name='name.last'

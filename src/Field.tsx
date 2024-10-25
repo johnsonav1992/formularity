@@ -306,6 +306,7 @@ export const Field = <
             , type
             , validationHandlers: validators || null
             , fieldId: id
+            , fieldEffects
         } );
 
         return () => {
@@ -336,8 +337,8 @@ export const Field = <
                 ? fieldValueState
                 : value
             : undefined
-        , onChange: ( e: OnChangeEvent ) => handleChange( e, fieldValidationOptions, fieldEffects?.onChange )
-        , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions, fieldEffects?.onBlur )
+        , onChange: ( e: OnChangeEvent ) => handleChange( e, fieldValidationOptions )
+        , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions )
         , type: isSilentExternalCheckbox ? 'checkbox' : type
         , ... props
     };

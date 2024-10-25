@@ -54,6 +54,10 @@ export type NewFieldRegistration<
      * type of the field for registration purposes (parent can have access)
      */
     type?: string;
+    /**
+     * `fieldEffects` for the field
+     */
+    fieldEffects?: FieldEffectsConfig<TFormValues, TFieldName>;
 };
 
 export type FieldRegistration<TFormValues extends FormValues = FormValues> = {
@@ -187,7 +191,6 @@ export type FormHandlers<
         fieldName: TOptionFieldName extends never ? TFieldName : TOptionFieldName
         , newValue: TFieldValue
         , options?: TFieldValidationOptions
-        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
     ) => void;
     /**
      * Set the values of any number of fields simultaneously
@@ -217,7 +220,6 @@ export type FormHandlers<
     handleChange: (
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
         , fieldValidationOptions?: FieldValidationOptions
-        , onChangeFieldEffects?: FieldEffectsConfig['onChange']
     ) => void;
     /**
      * Helper method to handle the updating of a field's touched status by
@@ -227,7 +229,6 @@ export type FormHandlers<
     handleBlur: (
         e: FocusEvent<HTMLInputElement | HTMLSelectElement>
         , fieldValidationOptions?: FieldValidationOptions
-        , onChangeFieldEffects?: FieldEffectsConfig['onBlur']
     ) => void;
     /**
      * Helper method for submitting the form imperatively
@@ -354,15 +355,15 @@ export type FieldEffectFn<
     /**
      * The field being listened to
      */
-    listenVal: DeepValue<TFormValues, TListenFieldName>
+    listenVal: DeepValue<TFormValues, TListenFieldName>,
     /**
      * The field the fieldEffect is being applied to
      */
-    , targetVal: DeepValue<TFormValues, TargetFieldName>
+    targetVal: DeepValue<TFormValues, TargetFieldName>,
     /**
      * Helpers to transform the applied field
      */
-    , helpers: FieldEffectHelpers<TFormValues, TargetFieldName>
+    helpers: FieldEffectHelpers<TFormValues, TargetFieldName>
 ) => void;
 
 export type FieldEffectHelpers<
