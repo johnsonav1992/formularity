@@ -342,25 +342,27 @@ export type FieldEffectsConfig<
     TFormValues extends FormValues = FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
-    [K in FieldEventNames | 'listen']?: K extends 'listen'
-        ? {
-            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: {
-                [K in FieldEventNames]?: FieldEffectFn<TFormValues, Val, TFieldName>;
-            }
-        }
-        : {
-            [Val in Exclude<DeepKeys<TFormValues>, TFieldName>]?: FieldEffectFn<TFormValues, Val, TFieldName>;
-        };
+    [K in `${ Extract<DeepKeys<TFormValues>, string> }-${ 'change' | 'blur' }`]?:
+        FieldEffectFn<TFormValues, Exclude<DeepKeys<TFormValues>, TFieldName>, TFieldName>;
 };
 
 export type FieldEffectFn<
     TFormValues extends FormValues = FormValues
-    , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
-    , TSrcFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TListenFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
+    , TargetFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = (
-    targetVal: DeepValue<TFormValues, TFieldName>
-    , srcVal: DeepValue<TFormValues, TSrcFieldName>
-    , helpers: FieldEffectHelpers<TFormValues, TFieldName>
+    /**
+     * The field being listened to
+     */
+    listenVal: DeepValue<TFormValues, TListenFieldName>
+    /**
+     * The field the fieldEffect is being applied to
+     */
+    , targetVal: DeepValue<TFormValues, TargetFieldName>
+    /**
+     * Helpers to transform the applied field
+     */
+    , helpers: FieldEffectHelpers<TFormValues, TargetFieldName>
 ) => void;
 
 export type FieldEffectHelpers<
