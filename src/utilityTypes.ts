@@ -48,13 +48,20 @@ export type FieldEventNames = 'onChange' | 'onBlur';
 export type CheckboxValue = string | boolean | unknown[];
 
 export type DeepKeys<TObj, IsRoot = true, Depth extends number[] = []> =
-        Depth['length'] extends MAX_RECURSION_LEVELS ? never :
-        keyof TObj extends infer TKey
+    Depth['length'] extends MAX_RECURSION_LEVELS
+        ? never
+        : keyof TObj extends infer TKey
             ? TKey extends keyof TObj
                 ? TKey extends string | number | undefined
-                    ? TObj[TKey] extends object
-                        ? `${ Keys<TObj, IsRoot, TKey & keyof TObj> }${ DeepKeys<TObj[TKey], false, [...Depth, 1]> }`
-                        : `${ Keys<TObj, IsRoot, TKey & keyof TObj> }`
+                    ? TObj[TKey] extends Array<infer U>
+                        ? `${ Keys<TObj, IsRoot, TKey & keyof TObj> }` |
+                            `${ Keys<TObj, IsRoot, TKey & keyof TObj> }[${ number }]` |
+                            ( U extends object
+                                    ? `${ Keys<TObj, IsRoot, TKey & keyof TObj> }[${ number }]${ Exclude<DeepKeys<U, false, [...Depth, 1]>, ''> }`
+                                    : never )
+                        : TObj[TKey] extends object
+                            ? `${ Keys<TObj, IsRoot, TKey & keyof TObj> }${ Exclude<DeepKeys<TObj[TKey], false, [...Depth, 1]>, ''> }`
+                            : `${ Keys<TObj, IsRoot, TKey & keyof TObj> }`
                     : never
                 : never
             : never;
