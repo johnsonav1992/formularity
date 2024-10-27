@@ -107,7 +107,7 @@ export const getViaPath = <
     TObj
     , TKey extends DeepKeys<TObj>
 >( obj: TObj, path: TKey ): DeepValue<TObj, TKey> | undefined => {
-    const keys = path
+    const keys = ( path as string )
         .split( /\.|\[|\]/ )
         .filter( Boolean ) as Array<keyof TObj>;
 
@@ -267,7 +267,7 @@ export const getFieldEffectFns = <TFormValues extends FormValues>(
 
         for ( const effectKey in field?.fieldEffects ) {
             if ( effectKey === targetSuffix ) {
-                fieldEffectEntries.push( [ fieldKey as never, field?.fieldEffects[ effectKey as never ] ] );
+                fieldEffectEntries.push( [ fieldKey as DeepKeys<TFormValues>, field?.fieldEffects[ effectKey as never ] ] );
             }
         }
     }

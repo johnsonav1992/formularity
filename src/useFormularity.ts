@@ -22,7 +22,6 @@ import {
     , SubmissionOrResetHelpers
     , OnSubmitOrReset
     , FieldValidationOptions
-    , FieldEffectsConfig
     , FieldEffectHelpers
     , FieldEffectFn
 } from './types';

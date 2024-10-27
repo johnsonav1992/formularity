@@ -47,10 +47,17 @@ export type FieldEventNames = 'onChange' | 'onBlur';
 
 export type CheckboxValue = string | boolean | unknown[];
 
-export type DeepKeys<TObj, IsRoot = true, TKey extends keyof TObj = keyof TObj> =
-    TKey extends string | number | undefined
-        ? `${ Keys<TObj, IsRoot, TKey> }${ '' | ( TObj[TKey] extends object ? DeepKeys<TObj[TKey], false> : '' ) }`
-        : never;
+export type DeepKeys<TObj, IsRoot = true, Depth extends number[] = []> =
+        Depth['length'] extends MAX_RECURSION_LEVELS ? never :
+        keyof TObj extends infer TKey
+            ? TKey extends keyof TObj
+                ? TKey extends string | number | undefined
+                    ? TObj[TKey] extends object
+                        ? `${ Keys<TObj, IsRoot, TKey & keyof TObj> }${ DeepKeys<TObj[TKey], false, [...Depth, 1]> }`
+                        : `${ Keys<TObj, IsRoot, TKey & keyof TObj> }`
+                    : never
+                : never
+            : never;
 
 export type DeepValue<T, P> = P extends `${ infer Left }.${ infer Right }`
     ? Left extends keyof Exclude<T, undefined>
@@ -77,6 +84,8 @@ export type DeepPartial<T> = {
     };
 
 ////// HELPERS //////
+type MAX_RECURSION_LEVELS = 10;
+
 type RemoveArrayMethods<T> = T extends number
     ? number
     : T extends keyof unknown[]
