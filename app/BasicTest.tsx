@@ -78,8 +78,11 @@ const BasicTest = () => {
                         style={ inputStyles }
                         showErrors
                         errorProps={ { errorStyles } }
-                        //@ts-ignore
-                        fieldEffects={ { 'email-change': ( email, firstName, { setValue } ) => { setValue( email ); } } }
+                        fieldEffects={ {
+                            'email-change': ( email, firstName, { setValue } ) => {
+                                email.includes( 'k' ) ? setValue( 'YO' ) : null;
+                            }
+                        } }
                     />
                     <Field
                         name='name.last'
