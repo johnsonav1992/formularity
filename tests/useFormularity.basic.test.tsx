@@ -312,6 +312,7 @@ describe( 'useFormularity basic', () => {
 
         const handleChange = vi.fn( formularity.current.handleChange );
         const handleSubmit = vi.fn( formularity.current.handleSubmit );
+
         const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
             <input
                 key={ fieldName }
@@ -322,7 +323,7 @@ describe( 'useFormularity basic', () => {
         const button = (
             <button
                 type='submit'
-                onSubmit={ () => handleSubmit }
+                onSubmit={ handleSubmit as never }
             >
                 Submit
             </button>
