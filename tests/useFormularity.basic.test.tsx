@@ -20,6 +20,7 @@ import {
     , createFormStore
     , useFormularity
 } from '../src';
+import userEvent from '@testing-library/user-event';
 
 const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
     const initialValues = {
@@ -303,5 +304,47 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.SubmitButton ).toBeTypeOf( 'function' );
         expect( formularity.current.FieldList ).toBeTypeOf( 'function' );
         expect( formularity.current.ResetButton ).toBeTypeOf( 'object' ); // React.memo
+    } );
+
+    it( 'should submit the form with correct form values', async () => {
+        const { formularity } = renderUseFormularity();
+        const user = userEvent.setup();
+
+        const handleChange = vi.fn( formularity.current.handleChange );
+        const handleSubmit = vi.fn( formularity.current.handleSubmit );
+        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
+            <input
+                key={ fieldName }
+                name={ fieldName }
+                onChange={ handleChange }
+            />
+        ) );
+        const button = (
+            <button
+                type='submit'
+                onSubmit={ () => handleSubmit }
+            >
+                Submit
+            </button>
+        );
+
+        render(
+            <form>
+                { inputs }
+                { button }
+            </form>
+        );
+
+        const fields = screen.getAllByRole( 'textbox' );
+
+        await user.type( fields[ 0 ], 'John' );
+        await user.type( fields[ 1 ], 'Doe' );
+        await user.type( fields[ 2 ], 'john@doe.com' );
+
+        expect( formularity.current.values ).toStrictEqual( {
+            firstName: 'John'
+            , lastName: 'Doe'
+            , email: 'john@doe.com'
+        } );
     } );
 } );
