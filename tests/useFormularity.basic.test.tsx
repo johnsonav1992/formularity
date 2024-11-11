@@ -199,7 +199,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.values.firstName ).toBe( 'Jim' );
     } );
 
-    it( 'should handle an input blur event', () => {
+    it( 'should handle an input blur event', async () => {
         const {
             formularity
         } = renderUseFormularity();
@@ -213,7 +213,7 @@ describe( 'useFormularity basic', () => {
             />
         );
 
-        fireEvent.blur( screen.getByRole( 'textbox' ) );
+        await act( () => fireEvent.blur( screen.getByRole( 'textbox' ) ) );
 
         expect( handleBlur ).toHaveBeenCalledTimes( 1 );
         expect( formularity.current.touched.firstName ).toBe( true );
@@ -267,10 +267,10 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.dirtyFields ).toStrictEqual( [ 'firstName', 'email' ] );
     } );
 
-    it( 'should indicate that the form has been touched if any field in the form has a touched status', () => {
+    it( 'should indicate that the form has been touched if any field in the form has a touched status', async () => {
         const { formularity } = renderUseFormularity();
 
-        act( () => {
+        await act( () => {
             formularity.current.setFieldTouched( 'email', true );
         } );
 
