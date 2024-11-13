@@ -331,8 +331,6 @@ describe( 'useFormularity basic', () => {
         await user.type( fields[ 2 ], 'john@doe.com' );
         await user.click( screen.getByRole( 'button' ) );
 
-        console.log( formularity.current.values );
-
         expect( formularity.current.values ).toStrictEqual( {
             firstName: 'John'
             , lastName: 'Doe'
