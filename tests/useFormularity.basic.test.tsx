@@ -339,6 +339,10 @@ describe( 'useFormularity basic', () => {
             , email: 'john@doe.com'
         } );
         expect( handleSubmit ).toHaveBeenCalledTimes( 1 );
+        expect( handleSubmit ).toHaveBeenCalledWith( expect.objectContaining( {
+            type: 'submit'
+            , preventDefault: expect.any( Function )
+        } ) );
     } );
 
     it( 'should reset the form correctly after fields have been updated', async () => {
