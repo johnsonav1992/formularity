@@ -297,15 +297,6 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.areAllFieldsTouched ).toBeTruthy();
     } );
 
-    it( 'should make instances of the Formularity components available', () => {
-        const { formularity } = renderUseFormularity();
-
-        expect( formularity.current.Field ).toBeTypeOf( 'function' );
-        expect( formularity.current.SubmitButton ).toBeTypeOf( 'function' );
-        expect( formularity.current.FieldList ).toBeTypeOf( 'function' );
-        expect( formularity.current.ResetButton ).toBeTypeOf( 'object' ); // React.memo
-    } );
-
     it( 'should submit the form with correct form values', async () => {
         const { formularity } = renderUseFormularity();
         const user = userEvent.setup();
@@ -321,16 +312,13 @@ describe( 'useFormularity basic', () => {
             />
         ) );
         const button = (
-            <button
-                type='submit'
-                onSubmit={ handleSubmit as never }
-            >
+            <button type='submit'>
                 Submit
             </button>
         );
 
         render(
-            <form>
+            <form onSubmit={ handleSubmit }>
                 { inputs }
                 { button }
             </form>
@@ -341,11 +329,66 @@ describe( 'useFormularity basic', () => {
         await user.type( fields[ 0 ], 'John' );
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
+        await user.click( screen.getByRole( 'button' ) );
+
+        console.log( formularity.current.values );
 
         expect( formularity.current.values ).toStrictEqual( {
             firstName: 'John'
             , lastName: 'Doe'
             , email: 'john@doe.com'
         } );
+        expect( handleSubmit ).toHaveBeenCalledTimes( 1 );
     } );
+
+    it( 'should reset the form correctly after fields have been updated', async () => {
+        const { formularity } = renderUseFormularity();
+        const user = userEvent.setup();
+
+        const handleChange = vi.fn( formularity.current.handleChange );
+        const handleReset = vi.fn( formularity.current.handleReset );
+
+        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
+            <input
+                key={ fieldName }
+                name={ fieldName }
+                onChange={ handleChange }
+            />
+        ) );
+        const button = (
+            <button type='reset'>
+                Reset
+            </button>
+        );
+
+        render(
+            <form onReset={ handleReset }>
+                { inputs }
+                { button }
+            </form>
+        );
+
+        const fields = screen.getAllByRole( 'textbox' );
+
+        await user.type( fields[ 0 ], 'John' );
+        await user.type( fields[ 1 ], 'Doe' );
+        await user.type( fields[ 2 ], 'john@doe.com' );
+        await user.click( screen.getByRole( 'button' ) );
+
+        expect( formularity.current.values ).toStrictEqual( {
+            firstName: ''
+            , lastName: ''
+            , email: ''
+        } );
+    } );
+
+    it( 'should make instances of the Formularity components available', () => {
+        const { formularity } = renderUseFormularity();
+
+        expect( formularity.current.Field ).toBeTypeOf( 'function' );
+        expect( formularity.current.SubmitButton ).toBeTypeOf( 'function' );
+        expect( formularity.current.FieldList ).toBeTypeOf( 'function' );
+        expect( formularity.current.ResetButton ).toBeTypeOf( 'object' ); // React.memo
+    } );
+
 } );
