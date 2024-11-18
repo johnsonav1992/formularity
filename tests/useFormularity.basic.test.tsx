@@ -12,13 +12,11 @@ import {
     , render
     , screen
     , cleanup
-    , waitFor
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import {
     FormErrors
     , FormValues
-    , FormularityProps
     , createFormStore
     , useFormularity
 } from '../src';
@@ -57,9 +55,10 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues; onSubmit:
     };
 };
 
-const renderUI = ( formularity: { current: any } ) => {
+const renderUI = ( formularity: ReturnType<typeof renderUseFormularity>['formularity'] ) => {
     const handleChange = vi.fn( formularity.current.handleChange );
     const handleSubmit = vi.fn( formularity.current.handleSubmit );
+    const handleBlur = vi.fn( formularity.current.handleBlur );
     const handleReset = vi.fn( formularity.current.handleReset );
 
     const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
@@ -67,6 +66,8 @@ const renderUI = ( formularity: { current: any } ) => {
             key={ fieldName }
             name={ fieldName }
             onChange={ handleChange }
+            onBlur={ handleBlur }
+            aria-label={ fieldName }
         />
     ) );
 
@@ -102,6 +103,7 @@ const renderUI = ( formularity: { current: any } ) => {
     return {
         handleChange
         , handleSubmit
+        , handleBlur
     };
 };
 
@@ -236,17 +238,10 @@ describe( 'useFormularity basic', () => {
             formularity
         } = renderUseFormularity();
 
-        const handleChange = vi.fn( formularity.current.handleChange );
-
-        render(
-            <input
-                onChange={ handleChange }
-                name='firstName'
-            />
-        );
+        const { handleChange } = renderUI( formularity );
 
         fireEvent.change(
-            screen.getByRole( 'textbox' )
+            screen.getByRole( 'textbox', { name: 'firstName' } )
             , { target: { value: 'Jim' } }
         );
 
@@ -259,16 +254,9 @@ describe( 'useFormularity basic', () => {
             formularity
         } = renderUseFormularity();
 
-        const handleBlur = vi.fn( formularity.current.handleBlur );
+        const { handleBlur } = renderUI( formularity );
 
-        render(
-            <input
-                onBlur={ handleBlur }
-                name='firstName'
-            />
-        );
-
-        await act( () => fireEvent.blur( screen.getByRole( 'textbox' ) ) );
+        await act( () => fireEvent.blur( screen.getByRole( 'textbox', { name: 'firstName' } ) ) );
 
         expect( handleBlur ).toHaveBeenCalledTimes( 1 );
         expect( formularity.current.touched.firstName ).toBe( true );
