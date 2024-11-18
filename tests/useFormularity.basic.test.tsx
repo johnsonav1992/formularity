@@ -22,15 +22,16 @@ import {
 } from '../src';
 import userEvent from '@testing-library/user-event';
 
-const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
-    const initialValues = {
-        firstName: ''
-        , lastName: ''
-        , email: ''
-    };
+const initialValues = {
+    firstName: ''
+    , lastName: ''
+    , email: ''
+};
+
+const renderUseFormularity = ( options?: { initialValues?: FormValues; onSubmit: ( values: typeof initialValues ) => void } ) => {
 
     const formStore = createFormStore( {
-        initialValues: options?.initialValues ?? initialValues
+        initialValues: options?.initialValues ?? { ...initialValues }
         , manualValidationHandler: values => {
             const errors: FormErrors<typeof initialValues> = {};
 
@@ -42,7 +43,10 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues } ) => {
         }
     } );
 
-    const { result } = renderHook( () => useFormularity( { formStore } ) );
+    const { result } = renderHook( () => useFormularity( {
+        formStore
+        , onSubmit: options?.onSubmit
+    } ) );
 
     return {
         formularity: result
@@ -357,6 +361,7 @@ describe( 'useFormularity basic', () => {
                 onChange={ handleChange }
             />
         ) );
+
         const button = (
             <button type='reset'>
                 Reset
@@ -382,6 +387,47 @@ describe( 'useFormularity basic', () => {
             , lastName: ''
             , email: ''
         } );
+    } );
+
+    it( 'should prevent full submission and calling of submit handler if errors exist', async () => {
+        const onSubmit = vi.fn();
+
+        const {
+            formularity
+        } = renderUseFormularity( { onSubmit } );
+
+        const user = userEvent.setup();
+
+        const handleChange = vi.fn( formularity.current.handleChange );
+        const handleSubmit = vi.fn( formularity.current.handleSubmit );
+
+        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
+            <input
+                key={ fieldName }
+                name={ fieldName }
+                onChange={ handleChange }
+            />
+        ) );
+
+        const button = (
+            <button type='submit'>
+                Submit
+            </button>
+        );
+
+        render(
+            <form onSubmit={ handleSubmit }>
+                { inputs }
+                { button }
+            </form>
+        );
+
+        await user.click( screen.getByRole( 'button' ) );
+
+        expect( formularity.current.errors ).toStrictEqual( {
+            firstName: 'First name is required'
+        } );
+        expect( onSubmit ).toHaveBeenCalledTimes( 0 );
     } );
 
     it( 'should make instances of the Formularity components available', () => {
