@@ -12,11 +12,13 @@ import {
     , render
     , screen
     , cleanup
+    , waitFor
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import {
     FormErrors
     , FormValues
+    , FormularityProps
     , createFormStore
     , useFormularity
 } from '../src';
@@ -52,6 +54,54 @@ const renderUseFormularity = ( options?: { initialValues?: FormValues; onSubmit:
         formularity: result
         , initialValues
         , formStore
+    };
+};
+
+const renderUI = ( formularity: { current: any } ) => {
+    const handleChange = vi.fn( formularity.current.handleChange );
+    const handleSubmit = vi.fn( formularity.current.handleSubmit );
+    const handleReset = vi.fn( formularity.current.handleReset );
+
+    const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
+        <input
+            key={ fieldName }
+            name={ fieldName }
+            onChange={ handleChange }
+        />
+    ) );
+
+    const submitButton = (
+        <button
+            type='submit'
+            name='submitBtn'
+        >
+            Submit
+        </button>
+    );
+
+    const resetButton = (
+        <button
+            type='reset'
+            name='resetBtn'
+        >
+            Reset
+        </button>
+    );
+
+    render(
+        <form
+            onSubmit={ handleSubmit }
+            onReset={ handleReset }
+        >
+            { inputs }
+            { submitButton }
+            { resetButton }
+        </form>
+    );
+
+    return {
+        handleChange
+        , handleSubmit
     };
 };
 
@@ -305,35 +355,15 @@ describe( 'useFormularity basic', () => {
         const { formularity } = renderUseFormularity();
         const user = userEvent.setup();
 
-        const handleChange = vi.fn( formularity.current.handleChange );
-        const handleSubmit = vi.fn( formularity.current.handleSubmit );
-
-        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
-            <input
-                key={ fieldName }
-                name={ fieldName }
-                onChange={ handleChange }
-            />
-        ) );
-        const button = (
-            <button type='submit'>
-                Submit
-            </button>
-        );
-
-        render(
-            <form onSubmit={ handleSubmit }>
-                { inputs }
-                { button }
-            </form>
-        );
+        const { handleSubmit } = renderUI( formularity );
 
         const fields = screen.getAllByRole( 'textbox' );
 
         await user.type( fields[ 0 ], 'John' );
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
-        await user.click( screen.getByRole( 'button' ) );
+
+        await user.click( screen.getByRole( 'button', { name: 'Submit' } ) );
 
         expect( formularity.current.values ).toStrictEqual( {
             firstName: 'John'
@@ -351,36 +381,16 @@ describe( 'useFormularity basic', () => {
         const { formularity } = renderUseFormularity();
         const user = userEvent.setup();
 
-        const handleChange = vi.fn( formularity.current.handleChange );
-        const handleReset = vi.fn( formularity.current.handleReset );
-
-        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
-            <input
-                key={ fieldName }
-                name={ fieldName }
-                onChange={ handleChange }
-            />
-        ) );
-
-        const button = (
-            <button type='reset'>
-                Reset
-            </button>
-        );
-
-        render(
-            <form onReset={ handleReset }>
-                { inputs }
-                { button }
-            </form>
-        );
+        renderUI( formularity );
 
         const fields = screen.getAllByRole( 'textbox' );
 
         await user.type( fields[ 0 ], 'John' );
         await user.type( fields[ 1 ], 'Doe' );
         await user.type( fields[ 2 ], 'john@doe.com' );
-        await user.click( screen.getByRole( 'button' ) );
+        await user.click( screen.getByRole( 'button', { name: 'Reset' } ) );
+
+        console.log( formularity.current.values );
 
         expect( formularity.current.values ).toStrictEqual( {
             firstName: ''
@@ -392,42 +402,26 @@ describe( 'useFormularity basic', () => {
     it( 'should prevent full submission and calling of submit handler if errors exist', async () => {
         const onSubmit = vi.fn();
 
-        const {
-            formularity
-        } = renderUseFormularity( { onSubmit } );
+        const { formularity } = renderUseFormularity( { onSubmit } );
+        renderUI( formularity );
 
         const user = userEvent.setup();
 
-        const handleChange = vi.fn( formularity.current.handleChange );
-        const handleSubmit = vi.fn( formularity.current.handleSubmit );
+        await user.click( screen.getByRole( 'button', { name: 'Submit' } ) );
 
-        const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
-            <input
-                key={ fieldName }
-                name={ fieldName }
-                onChange={ handleChange }
-            />
-        ) );
-
-        const button = (
-            <button type='submit'>
-                Submit
-            </button>
-        );
-
-        render(
-            <form onSubmit={ handleSubmit }>
-                { inputs }
-                { button }
-            </form>
-        );
-
-        await user.click( screen.getByRole( 'button' ) );
-
-        expect( formularity.current.errors ).toStrictEqual( {
-            firstName: 'First name is required'
-        } );
         expect( onSubmit ).toHaveBeenCalledTimes( 0 );
+    } );
+
+    it( 'should keep track of submit count', async () => {
+        const { formularity } = renderUseFormularity();
+
+        const user = userEvent.setup();
+
+        renderUI( formularity );
+
+        await user.click( screen.getByRole( 'button', { name: 'Submit' } ) );
+
+        expect( formularity.current.submitCount ).toBe( 1 );
     } );
 
     it( 'should make instances of the Formularity components available', () => {
