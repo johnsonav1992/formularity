@@ -419,9 +419,13 @@ describe( 'useFormularity basic', () => {
 
         renderUI( formularity );
 
-        await user.click( screen.getByRole( 'button', { name: 'Submit' } ) );
+        const submitBtn = screen.getByRole( 'button', { name: 'Submit' } );
 
+        await user.click( submitBtn );
         expect( formularity.current.submitCount ).toBe( 1 );
+
+        await user.click( submitBtn );
+        expect( formularity.current.submitCount ).toBe( 2 );
     } );
 
     it( 'should make instances of the Formularity components available', () => {
