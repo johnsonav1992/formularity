@@ -8,7 +8,6 @@ import {
 import {
     renderHook
     , act
-    , fireEvent
     , render
     , screen
     , cleanup
@@ -61,6 +60,8 @@ const renderUI = ( formularity: ReturnType<typeof renderUseFormularity>['formula
     const handleBlur = vi.fn( formularity.current.handleBlur );
     const handleReset = vi.fn( formularity.current.handleReset );
 
+    const user = userEvent.setup();
+
     const inputs = Object.keys( formularity.current.initialValues ).map( fieldName => (
         <input
             key={ fieldName }
@@ -104,6 +105,7 @@ const renderUI = ( formularity: ReturnType<typeof renderUseFormularity>['formula
         handleChange
         , handleSubmit
         , handleBlur
+        , user
     };
 };
 
@@ -233,19 +235,22 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.errors.lastName ).toBe( 'Last name is required' );
     } );
 
-    it( 'should handle an input change event', () => {
+    it( 'should handle an input change event', async () => {
         const {
             formularity
         } = renderUseFormularity();
 
-        const { handleChange } = renderUI( formularity );
+        const {
+            handleChange
+            , user
+        } = renderUI( formularity );
 
-        fireEvent.change(
+        await user.type(
             screen.getByRole( 'textbox', { name: 'firstName' } )
-            , { target: { value: 'Jim' } }
+            , 'Jim'
         );
 
-        expect( handleChange ).toHaveBeenCalledTimes( 1 );
+        expect( handleChange ).toHaveBeenCalledTimes( 3 );
         expect( formularity.current.values.firstName ).toBe( 'Jim' );
     } );
 
@@ -254,9 +259,13 @@ describe( 'useFormularity basic', () => {
             formularity
         } = renderUseFormularity();
 
-        const { handleBlur } = renderUI( formularity );
+        const {
+            handleBlur
+            , user
+        } = renderUI( formularity );
 
-        await act( () => fireEvent.blur( screen.getByRole( 'textbox', { name: 'firstName' } ) ) );
+        await user.click( screen.getByRole( 'textbox', { name: 'firstName' } ) );
+        await user.click( screen.getByRole( 'textbox', { name: 'email' } ) );
 
         expect( handleBlur ).toHaveBeenCalledTimes( 1 );
         expect( formularity.current.touched.firstName ).toBe( true );
