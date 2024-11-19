@@ -43,9 +43,7 @@ const renderComponents = () => {
 
     render(
         <>
-            <Formularity
-                formStore={ formStore }
-            >
+            <Formularity formStore={ formStore }>
                 { ( {
                     Field
                 } ) => (
@@ -70,5 +68,23 @@ describe( '<Field /> basic', () => {
 
         expect( fields[ 0 ] ).toBeInTheDocument();
         expect( fields[ 1 ] ).toBeInTheDocument();
+    } );
+
+    it( 'should render the component with the correct props', () => {
+        const { fields } = renderComponents();
+
+        expect( fields[ 0 ] ).toHaveAttribute( 'name', 'firstName' );
+        expect( fields[ 1 ] ).toHaveAttribute( 'name', 'lastName' );
+    } );
+
+    it( 'should update the field value on input', async () => {
+        const {
+            fields
+            , user
+        } = renderComponents();
+
+        await user.type( fields[ 0 ], 'John' );
+
+        expect( fields[ 0 ] ).toHaveValue( 'John' );
     } );
 } );
