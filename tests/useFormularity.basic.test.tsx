@@ -111,7 +111,7 @@ describe( 'useFormularity basic', () => {
             , email: 'john@example.com'
         };
 
-        await act( () => formularity.current.setValues( newValues ) );
+        act( () => formularity.current.setValues( newValues ) );
 
         expect( formularity.current.values ).toStrictEqual( newValues );
     } );
@@ -127,7 +127,7 @@ describe( 'useFormularity basic', () => {
             , email: 'john@example.com'
         };
 
-        await act( () => formularity.current.setValues( newValues ) );
+        act( () => formularity.current.setValues( newValues ) );
 
         expect( formularity.current.values ).toStrictEqual( {
             ...newValues
@@ -138,7 +138,7 @@ describe( 'useFormularity basic', () => {
     it( 'should set a field as touched appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
-        await act( () => formularity.current.setFieldTouched( 'firstName', true ) );
+        await formularity.current.setFieldTouched( 'firstName', true );
 
         expect( formularity.current.touched.firstName ).toBeTruthy();
     } );
@@ -227,9 +227,7 @@ describe( 'useFormularity basic', () => {
     it( 'should indicate that the form has been touched if any field in the form has a touched status', async () => {
         const { formularity } = renderUseFormularity();
 
-        await act( () => {
-            formularity.current.setFieldTouched( 'email', true );
-        } );
+        await formularity.current.setFieldTouched( 'email', true );
 
         expect( formularity.current.isFormTouched ).toBeTruthy();
     } );
