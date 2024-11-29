@@ -94,15 +94,15 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.touched ).toStrictEqual( {} );
     } );
 
-    it( 'should set a field value appropriately', async () => {
+    it( 'should set a field value appropriately', () => {
         const { formularity } = renderUseFormularity();
 
-        await act( () => formularity.current.setFieldValue( 'firstName', 'John' ) );
+        act( () => formularity.current.setFieldValue( 'firstName', 'John' ) );
 
         expect( formularity.current.values.firstName ).toBe( 'John' );
     } );
 
-    it( 'should set all field values appropriately', async () => {
+    it( 'should set all field values appropriately', () => {
         const { formularity } = renderUseFormularity();
 
         const newValues = {
@@ -116,7 +116,7 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.values ).toStrictEqual( newValues );
     } );
 
-    it( 'should set some field values appropriately', async () => {
+    it( 'should set some field values appropriately', () => {
         const {
             formularity
             , initialValues
@@ -138,7 +138,7 @@ describe( 'useFormularity basic', () => {
     it( 'should set a field as touched appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
-        await formularity.current.setFieldTouched( 'firstName', true );
+        await act( () => formularity.current.setFieldTouched( 'firstName', true ) );
 
         expect( formularity.current.touched.firstName ).toBeTruthy();
     } );
@@ -227,15 +227,15 @@ describe( 'useFormularity basic', () => {
     it( 'should indicate that the form has been touched if any field in the form has a touched status', async () => {
         const { formularity } = renderUseFormularity();
 
-        await formularity.current.setFieldTouched( 'email', true );
+        await act( () => formularity.current.setFieldTouched( 'email', true ) );
 
         expect( formularity.current.isFormTouched ).toBeTruthy();
     } );
 
-    it( 'should indicate if all fields in the form have been touched', () => {
+    it( 'should indicate if all fields in the form have been touched', async () => {
         const { formularity } = renderUseFormularity();
 
-        act( () => {
+        await act( () => {
             formularity.current.setTouched( {
                 email: true
                 , firstName: true
