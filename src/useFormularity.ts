@@ -482,8 +482,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
         if ( isEqual( touched, newTouched ) ) return;
 
-        // TODO: Not sure this condition is right. check if this is needed
-        validateOnBlur && formStore.set( { touched: newTouched } );
+        formStore.set( { touched: newTouched } );
     }, [] );
 
     const handleChange = useEventCallback( (
@@ -505,7 +504,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         const { checked } = e.target as HTMLInputElement;
 
-        // determine field type -> number, range, checkbox, multiselect or other stock input
         switch ( true ) {
             case /number|range/.test( type ): {
                 const parsedValue = parseFloat( value );
@@ -635,9 +633,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         e.preventDefault();
         e.stopPropagation();
 
-        if ( onReset ) {
-            await onReset( values, submitOrResetHelpers );
-        }
+        onReset && await onReset( values, submitOrResetHelpers );
 
         resetForm();
     } );
