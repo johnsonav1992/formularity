@@ -313,7 +313,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 fieldName
                 , formValues: values
             } );
-
         }
 
         return fieldErrorsOrNull;

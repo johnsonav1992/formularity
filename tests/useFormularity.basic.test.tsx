@@ -259,5 +259,4 @@ describe( 'useFormularity basic', () => {
         expect( formularity.current.FieldList ).toBeTypeOf( 'function' );
         expect( formularity.current.ResetButton ).toBeTypeOf( 'object' ); // React.memo
     } );
-
 } );

@@ -339,11 +339,13 @@ export type FormComputedProps<TFormValues extends FormValues> = {
 };
 
 ////// FIELD EFFECTS //////
+export type FieldEffectType = 'change' | 'blur';
+
 export type FieldEffectsConfig<
     TFormValues extends FormValues = FormValues,
     TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
 > = {
-    [K in `${ Exclude<DeepKeys<TFormValues>, TFieldName> }-${ 'change' | 'blur' }`]?:
+    [K in `${ Exclude<DeepKeys<TFormValues>, TFieldName> }-${ FieldEffectType }`]?:
         FieldEffectFn<
             TFormValues,
             K extends `${ infer ListenFieldName }-${ string }`

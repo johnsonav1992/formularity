@@ -1,6 +1,8 @@
 // Types
 import {
     FieldEffectFn
+    , FieldEffectsConfig
+    , FieldEffectType
     , FieldRegistry
     , FormValues
 } from './types';
@@ -273,6 +275,18 @@ export const getFieldEffectFns = <TFormValues extends FormValues>(
     }
 
     return fieldEffectEntries;
+};
+
+export const checkFieldEffectKeyNames = ( fieldEffectsConfig: FieldEffectsConfig ) => {
+    const types: FieldEffectType[] = [ 'change', 'blur' ];
+
+    for ( const key in fieldEffectsConfig ) {
+        if ( !types.some( type => key.includes( `-${ type }` ) ) ) {
+            throw new Error(
+                `Field effect key names must include a correct suffix, either -change or -blur. Found: ${ key }`
+            );
+        }
+    }
 };
 
 export const getActiveElement = ( doc?: Document ) => {

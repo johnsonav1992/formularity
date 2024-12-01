@@ -26,7 +26,10 @@ import {
 } from './utilityTypes';
 
 // Utils
-import { getViaPath } from './generalUtils';
+import {
+    checkFieldEffectKeyNames
+    , getViaPath
+} from './generalUtils';
 
 // Hooks
 import { useFormularityContext } from './FormularityContext';
@@ -299,6 +302,8 @@ export const Field = <
     } = useFormularityContext<TFormValues>();
 
     const id = 'id' in props ? props.id as string : undefined;
+
+    fieldEffects && checkFieldEffectKeyNames( fieldEffects );
 
     useEffect( () => {
         registerField( {
