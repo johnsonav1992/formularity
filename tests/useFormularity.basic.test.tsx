@@ -138,7 +138,7 @@ describe( 'useFormularity basic', () => {
     it( 'should set a field as touched appropriately', async () => {
         const { formularity } = renderUseFormularity();
 
-        await act( () => formularity.current.setFieldTouched( 'firstName', true ) );
+        await act( async () => formularity.current.setFieldTouched( 'firstName', true ) );
 
         expect( formularity.current.touched.firstName ).toBeTruthy();
     } );
