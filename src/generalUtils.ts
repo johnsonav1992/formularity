@@ -258,7 +258,7 @@ export const deepMerge = <TObj>( target: TObj, source: DeepPartial<TObj> ): TObj
 export const getFieldEffectFns = <TFormValues extends FormValues>(
     fieldRegistry: FieldRegistry<TFormValues>
     , targetField: DeepKeys<TFormValues>
-    , changeType: 'change' | 'blur'
+    , changeType: FieldEffectType
 ) => {
     const fieldEffectEntries: Array<[DeepKeys<TFormValues>, FieldEffectFn]> = [];
 
