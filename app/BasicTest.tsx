@@ -84,6 +84,7 @@ const BasicTest = () => {
                                 , setError
                                 , setTouched
                             } ) => {
+                                setValue( 'Email changed' );
                                 setError( 'Email changed' );
                             }
                         } }

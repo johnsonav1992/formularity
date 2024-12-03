@@ -359,7 +359,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         let newValues = setViaPath( values, fieldName, newValue );
 
-        const runFieldEffects = () => {
+        const runFieldEffects = ( newErrors: DeepPartial<FormErrors<TFormValues>> ) => {
             const fieldEffects = getFieldEffectFns( fieldRegistry.current, fieldName as never, 'change' );
 
             if ( fieldEffects ) {
@@ -375,7 +375,15 @@ export const useFormularity = <TFormValues extends FormValues>( {
                             newValues = setViaPath( newValues, targetFieldName, val );
                             formStore.set( { values: newValues } );
                         }
-                        , setError: error => setFieldError( targetFieldName, error )
+                        , setError: error => {
+                            const newFieldErrors = setViaPath(
+                                newErrors as FormErrors<TFormValues>
+                                , targetFieldName
+                                , error
+                            );
+
+                            formStore.set( { errors: newFieldErrors } );
+                        }
                         , setTouched: touched => setFieldTouched( targetFieldName, touched )
                         , validateField: ( touchField, customValidator ) => {
                             // TODO: need to figure this out
@@ -396,7 +404,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
                 case 'all':
                 case 'onChange': {
                     formStore.set( { values: newValues } );
-                    _validate( newValues ).then( () => runFieldEffects() );
+                    _validate( newValues ).then( runFieldEffects );
                     break;
                 }
                 case 'onBlur': {

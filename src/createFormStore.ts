@@ -12,7 +12,10 @@ import {
 } from './utilityTypes';
 
 // Utils
-import { cloneDeep } from './generalUtils';
+import {
+    cloneDeep
+    , deepMerge
+} from './generalUtils';
 
 export type CreateFormStoreParams<TFormValues extends FormValues> = {
     /**
@@ -58,10 +61,7 @@ export const createFormStore
         return {
             get: () => storeState
             , set: ( newStoreState: Partial<FormStoreState<TFormValues>> ) => {
-                storeState = {
-                    ...storeState
-                    , ...newStoreState
-                };
+                storeState = deepMerge( storeState, newStoreState as never );
 
                 subscribers.forEach( callback => callback() );
             }
