@@ -79,13 +79,7 @@ const BasicTest = () => {
                         showErrors
                         errorProps={ { errorStyles } }
                         fieldEffects={ {
-                            'email-change': ( email, firstName, {
-                                setValue
-                                , setError
-                                , setTouched
-                            } ) => {
-                                setValue( 'Email changed' );
-                                setError( 'Email changed' );
+                            'email-change': ( email, firstName ) => {
                             }
                         } }
                     />

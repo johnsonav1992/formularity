@@ -367,8 +367,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
                     const listenFieldName = fieldName;
 
-                    const listenFieldVal = getViaPath( newValues, listenFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
-                    const targetFieldVal = getViaPath( newValues, targetFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
+                    const listenFieldVal = getViaPath( newValues, listenFieldName );
+                    const targetFieldVal = getViaPath( newValues, targetFieldName )!;
 
                     const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
                         setValue: val => {
@@ -384,9 +384,20 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
                             formStore.set( { errors: newFieldErrors } );
                         }
-                        , setTouched: touched => setFieldTouched( targetFieldName, touched )
-                        , validateField: ( touchField, customValidator ) => {
-                            // TODO: need to figure this out
+                        , setTouched: tchd => {
+                            const newTouched = setViaPath(
+                                touched
+                                , targetFieldName
+                                , tchd
+                            );
+
+                            formStore.set( { touched: newTouched } );
+                        }
+                        , validateField: async ( touchField, customValidator ) => {
+                            await validateField( targetFieldName, {
+                                validators: customValidator || undefined
+                                , shouldTouchField: !!touchField
+                            } );
                         }
                     };
 

@@ -363,11 +363,11 @@ export type FieldEffectFn<
     /**
      * The field being listened to
      */
-    listenVal: DeepValue<TFormValues, TListenFieldName>,
+    listenVal: DeepValue<TFormValues, TListenFieldName> | undefined,
     /**
      * The field the fieldEffect is being applied to
      */
-    targetVal: DeepValue<TFormValues, TargetFieldName>,
+    targetVal: DeepValue<TFormValues, TargetFieldName> | undefined,
     /**
      * Helpers to transform the applied field
      */

@@ -15,6 +15,7 @@ import { DeepPartial } from './utilityTypes';
 export const touchAllFields = <TFormValues extends FormValues>( targetObj: TFormValues | DeepPartial<FormErrors<TFormValues>> ) => {
     return deepObjectKeys( targetObj )
         .reduce<FormTouched<TFormValues>>( ( touchedObj, key ) => {
+            console.log( touchedObj );
             const newTouchedObj = setViaPath( touchedObj, key as never, true );
 
             return newTouchedObj;
