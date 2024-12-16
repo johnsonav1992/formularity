@@ -8,18 +8,26 @@ import {
     FormValues
     , FormularityProps
 } from './types';
+import { ComponentLibraryConfig } from './component-library-configs/types';
 
-export const FormularityContext = createContext<FormularityProps | null>( null );
+export const FormularityContext = createContext< ( FormularityProps & {
+    componentLibrary?: ComponentLibraryConfig;
+} ) | null>( null );
 
-export const useFormularityContext = <TFormValues extends FormValues = FormValues>() => {
-    const formularity = useContext<FormularityProps<TFormValues>>( FormularityContext as never );
+export type UseFormularityContextReturn<TFormValues extends FormValues> =
+    FormularityProps<TFormValues> & { componentLibrary?: ComponentLibraryConfig };
 
-    if ( !formularity ) {
+export const useFormularityContext = <
+    TFormValues extends FormValues = FormValues
+>(): UseFormularityContextReturn<TFormValues> => {
+    const formularityCtx: ReturnType<typeof useFormularityContext> = useContext( FormularityContext as never );
+
+    if ( !formularityCtx ) {
         throw new Error(
             `Must use any Formularity custom component within 
             a <Formularity /> component in order for it to work!`
         );
     }
 
-    return formularity;
+    return formularityCtx as never;
 };

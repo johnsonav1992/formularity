@@ -18,6 +18,7 @@ import {
 
 // Context
 import { FormularityContext } from './FormularityContext';
+import { ComponentLibraryConfig } from './component-library-configs/types';
 
 export type FormularityComponentProps<TFormValues extends FormValues> =
     UseFormularityParams<TFormValues>
@@ -31,6 +32,13 @@ export type FormularityComponentProps<TFormValues extends FormValues> =
          * Props to pass to the `<form />` element.
          */
         formProps?: ComponentProps<'form'>;
+        /**
+         * Config for the component library to use for the form.
+         * This is helpful for mitigating some unexpected behaviors
+         * with components from libraries when passed to the `component`
+         * prop of the `<Field />` component.
+         */
+        componentLibrary?: ComponentLibraryConfig;
         /**
          * The function that will be called to render the children of the `<Formularity />` component.
          * The Formularity props and components are passed to this function for an easy form-building experience.
@@ -53,7 +61,12 @@ export const Formularity = <TFormValues extends FormValues>( {
     const renderedChildren = children( formularity );
 
     return (
-        <FormularityContext.Provider value={ formularity as FormularityProps }>
+        <FormularityContext.Provider
+            value={ {
+                ...formularity as FormularityProps
+                , componentLibrary: formularityProps.componentLibrary
+            } }
+        >
             {
                 useFormComponent
                     ? (

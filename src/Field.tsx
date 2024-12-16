@@ -299,6 +299,7 @@ export const Field = <
         , handleBlur
         , registerField
         , unregisterField
+        , componentLibrary
     } = useFormularityContext<TFormValues>();
 
     const id = 'id' in props ? props.id as string : undefined;
@@ -322,10 +323,9 @@ export const Field = <
     const renderedComponent = component as FC || 'input';
     const fieldValueState = getViaPath( values, name );
 
-    // TODO: need to get this working again
-    const isSilentExternalCheckbox = type == undefined
-        && !!component
-        && checked != undefined;
+    console.log( componentLibrary );
+
+    if ( componentLibrary?.checkboxConfig?.checker?.( renderedComponent ) ) type = 'checkbox';
 
     const fieldValidationOptions = {
         shouldValidate
@@ -337,14 +337,14 @@ export const Field = <
         , value: valueTransform && fieldValueState
             ? valueTransform( fieldValueState )
             : value || fieldValueState
-        , checked: ( type === 'checkbox' || isSilentExternalCheckbox )
+        , checked: checked || ( type === 'checkbox' )
             ? value == undefined
                 ? fieldValueState
                 : value
             : undefined
         , onChange: ( e: OnChangeEvent ) => handleChange( e, fieldValidationOptions )
         , onBlur: ( e: OnBlurEvent ) => handleBlur( e, fieldValidationOptions )
-        , type: isSilentExternalCheckbox ? 'checkbox' : type
+        , type
         , ... props
     };
 
