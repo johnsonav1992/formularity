@@ -323,9 +323,9 @@ export const Field = <
     const renderedComponent = component as FC || 'input';
     const fieldValueState = getViaPath( values, name );
 
-    console.log( componentLibrary );
+    const isComponentLibraryCheckbox = componentLibrary?.checkboxConfig?.check?.( renderedComponent );
 
-    if ( componentLibrary?.checkboxConfig?.checker?.( renderedComponent ) ) type = 'checkbox';
+    if ( isComponentLibraryCheckbox ) type = 'checkbox';
 
     const fieldValidationOptions = {
         shouldValidate

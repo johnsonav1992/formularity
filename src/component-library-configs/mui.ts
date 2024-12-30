@@ -12,7 +12,7 @@ export function mui (): ComponentLibraryConfig {
     return {
         libraryName: 'mui'
         , checkboxConfig: {
-            checker: ( Component: FC ) => Component === Checkbox
+            check: ( Component: FC ) => Component === Checkbox
         }
     };
 }
