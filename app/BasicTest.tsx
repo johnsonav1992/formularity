@@ -59,6 +59,8 @@ const BasicTest = () => {
             onSubmit={ values => console.log( values ) }
             formProps={ { style: { width: '100%' } } }
             componentLibrary={ mui() }
+            validateOnChange={ false }
+            validateOnBlur={ false }
         >
             { ( {
                 Field
@@ -82,7 +84,14 @@ const BasicTest = () => {
                         showErrors
                         errorProps={ { errorStyles } }
                         fieldEffects={ {
-                            'email-change': ( email, firstName ) => {
+                            'email-change': ( email, firstName, {
+                                setTouched
+                                , setError
+                            } ) => {
+                                if ( email?.includes( '@example.com' ) ) {
+                                    setTouched( true );
+                                    setError( 'ERROR' );
+                                }
                             }
                         } }
                     />

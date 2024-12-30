@@ -357,9 +357,13 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
         const validationEvent = options?.validationEvent ?? 'all';
 
-        let newValues = setViaPath( values, fieldName, newValue );
+        const newValues = setViaPath( values, fieldName, newValue );
 
-        const runFieldEffects = ( newErrors: DeepPartial<FormErrors<TFormValues>> ) => {
+        const runFieldEffects = (
+            newErrors: DeepPartial<FormErrors<TFormValues>> | FormErrors<TFormValues>,
+            newValues: TFormValues,
+            touched: FormTouched<TFormValues>
+        ) => {
             const fieldEffects = getFieldEffectFns( fieldRegistry.current, fieldName as never, 'change' );
 
             if ( fieldEffects ) {
@@ -377,18 +381,18 @@ export const useFormularity = <TFormValues extends FormValues>( {
                         }
                         , setError: error => {
                             const newFieldErrors = setViaPath(
-                                newErrors as FormErrors<TFormValues>
-                                , targetFieldName
-                                , error
+                                newErrors as FormErrors<TFormValues>,
+                                targetFieldName,
+                                error
                             );
 
                             formStore.set( { errors: newFieldErrors } );
                         }
                         , setTouched: tchd => {
                             const newTouched = setViaPath(
-                                touched
-                                , targetFieldName
-                                , tchd
+                                touched,
+                                targetFieldName,
+                                tchd
                             );
 
                             formStore.set( { touched: newTouched } );
@@ -402,29 +406,28 @@ export const useFormularity = <TFormValues extends FormValues>( {
                     };
 
                     fieldEffect(
-                        listenFieldVal
-                        , targetFieldVal
-                        , helpers
+                        listenFieldVal,
+                        targetFieldVal,
+                        helpers
                     );
                 } );
             }
         };
 
+        formStore.set( { values: newValues } );
+
         if ( shouldValidate ) {
             switch ( validationEvent ) {
                 case 'all':
                 case 'onChange': {
-                    formStore.set( { values: newValues } );
-                    _validate( newValues ).then( runFieldEffects );
+                    _validate( newValues )
+                        .then( newErrors => runFieldEffects( newErrors, newValues, touched ) );
                     break;
                 }
-                case 'onBlur': {
-                    formStore.set( { values: newValues } );
-                    break;
-                }
+                case 'onBlur': break;
             }
         } else {
-            formStore.set( { values: newValues } );
+            runFieldEffects( errors, newValues, touched );
         }
     } );
 
