@@ -244,8 +244,10 @@ export const deepMerge = <TObj>( target: TObj, source: DeepPartial<TObj> ): TObj
     const output = cloneDeep( target ) as TObj;
     for ( const key in source ) {
         if ( Object.prototype.hasOwnProperty.call( source, key ) ) {
-            if ( isObject( source[ key ] ) && key in target ) {
-                output[ key ] = deepMerge( target[ key ], source[ key as never ] );
+            if ( source[ key ] == undefined ) {
+                delete output[ key ];
+            } else if ( isObject( source[ key ] ) && key in target ) {
+                output[ key ] = deepMerge( target[ key ], source[ key as keyof TObj ] as never );
             } else {
                 ( output[ key ] as unknown ) = source[ key ];
             }

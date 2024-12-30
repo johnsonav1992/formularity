@@ -380,7 +380,7 @@ export type FieldEffectHelpers<
 > = {
     setValue: ( newVal: DeepValue<TFormValues, TFieldName> ) => void;
     setTouched: ( touched: boolean ) => void;
-    setError: ( error: string ) => void;
+    setError: ( error: string | null ) => void;
     validateField: (
         touchField?: 'touchField',
         customValidator?: SingleFieldValidator<TFormValues, TFieldName>
