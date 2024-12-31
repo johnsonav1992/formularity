@@ -81,18 +81,18 @@ const BasicTest = () => {
                         style={ inputStyles }
                         showErrors
                         errorProps={ { errorStyles } }
-                        // fieldEffects={ {
-                        //     'email-change': ( email, firstName, {
-                        //         setTouched
-                        //         , setValue
-                        //         , setError
-                        //     } ) => {
-                        //         if ( email?.includes( '@example.com' ) ) {
-                        //             setValue( 'Example user' );
-                        //             setError( null );
-                        //         }
-                        //     }
-                        // } }
+                        fieldEffects={ {
+                            'email-blur': ( email, firstName, {
+                                setTouched
+                                , setValue
+                                , setError
+                            } ) => {
+                                if ( email?.includes( '@example.com' ) ) {
+                                    setValue( 'Example user' );
+                                    setError( null );
+                                }
+                            }
+                        } }
                     />
                     <Field
                         name='name.last'

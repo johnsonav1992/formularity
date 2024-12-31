@@ -265,16 +265,22 @@ export const getFieldEffectFns = <TFormValues extends FormValues>(
     const fieldEffectEntries: Array<[DeepKeys<TFormValues>, FieldEffectFn]> = [];
 
     const targetSuffix = `${ String( targetField ) }-${ changeType }`;
+    console.log( { targetSuffix } );
+    console.log( { fieldRegistry } );
 
     for ( const fieldKey in fieldRegistry ) {
         const field = fieldRegistry[ fieldKey as keyof typeof fieldRegistry ];
+        console.log( field );
 
         for ( const effectKey in field?.fieldEffects ) {
+            console.log( { effectKey } );
             if ( effectKey === targetSuffix ) {
                 fieldEffectEntries.push( [ fieldKey as DeepKeys<TFormValues>, field?.fieldEffects[ effectKey as never ] ] );
             }
         }
     }
+
+    console.log( { fieldEffectEntries } );
 
     return fieldEffectEntries;
 };

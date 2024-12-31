@@ -479,29 +479,63 @@ export const useFormularity = <TFormValues extends FormValues>( {
             , errors: newErrors as FormErrors<TFormValues>
         } );
 
-        // Run onBlur field effects
-        // if ( onBlurFieldEffects ) {
-        //     objectEntries( onBlurFieldEffects as object ).forEach( ( [ effectFieldName, effect ] ) => {
-        //         const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
-        //         const fieldVal = getViaPath( values, effectFieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>;
+        const runFieldEffects = (
+            newErrors: DeepPartial<FormErrors<TFormValues>>,
+            newValues: TFormValues,
+            touched: FormTouched<TFormValues>,
+        ) => {
+            const fieldEffects = getFieldEffectFns( fieldRegistry.current, fieldName as never, 'blur' );
+            console.log( fieldEffects );
 
-        //         const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
-        //             setValue: val => {
-        //                 const newValues = setViaPath( values, effectFieldName, val );
-        //                 formStore.set( { values: newValues } );
-        //             }
-        //             , setError: error => setFieldError( effectFieldName, error )
-        //             , setTouched: touched => setFieldTouched( effectFieldName, touched )
-        //             , validateField: touchField => validateField( effectFieldName, { shouldTouchField: !!touchField } )
-        //         };
+            if ( fieldEffects ) {
+                fieldEffects.forEach( ( [ targetFieldName, effect ] ) => {
+                    const fieldEffect = effect as FieldEffectFn<TFormValues, DeepKeys<TFormValues>, DeepKeys<TFormValues>>;
+                    const listenFieldName = fieldName;
 
-        //         fieldEffect(
-        //             fieldVal
-        //             , getViaPath( values, fieldName ) as DeepValue<TFormValues, DeepKeys<TFormValues>>
-        //             , helpers
-        //         );
-        //     } );
-        // }
+                    const listenFieldVal = getViaPath( newValues, listenFieldName );
+                    const targetFieldVal = getViaPath( newValues, targetFieldName )!;
+
+                    const helpers: FieldEffectHelpers<TFormValues, DeepKeys<TFormValues>> = {
+                        setValue: val => {
+                            newValues = setViaPath( newValues, targetFieldName, val );
+                            formStore.set( { values: newValues } );
+                        }
+                        , setError: error => {
+                            const newFieldErrors = setViaPath(
+                                newErrors as FormErrors<TFormValues>,
+                                targetFieldName,
+                                error
+                            );
+
+                            formStore.set( { errors: newFieldErrors } );
+                        }
+                        , setTouched: tchd => {
+                            const newTouched = setViaPath(
+                                touched,
+                                targetFieldName,
+                                tchd
+                            );
+
+                            formStore.set( { touched: newTouched } );
+                        }
+                        , validateField: async ( touchField, customValidator ) => {
+                            await validateField( targetFieldName, {
+                                validators: customValidator || undefined
+                                , shouldTouchField: !!touchField
+                            } );
+                        }
+                    };
+
+                    fieldEffect(
+                        listenFieldVal,
+                        targetFieldVal,
+                        helpers
+                    );
+                } );
+            }
+        };
+
+        runFieldEffects( newErrors as never, values, newFieldTouched );
     } );
 
     const setTouched = useCallback( ( newTouched: FormTouched<TFormValues> ) => {
