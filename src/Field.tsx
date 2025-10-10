@@ -11,8 +11,6 @@ import React, {
 import {
     FieldEffectsConfig
     , FieldValidationOptions
-    , FormErrors
-    , FormTouched
     , FormValues
     , SingleFieldValidator
 } from './types';
@@ -28,11 +26,12 @@ import {
 // Utils
 import {
     checkFieldEffectKeyNames
-    , getViaPath
 } from './generalUtils';
 
 // Hooks
-import { useFormularityContext } from './FormularityContext';
+import { useFormStore } from './FormStoreContext';
+import { useFormHandlers } from './FormHandlersContext';
+import { useFieldState } from './useFieldState';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
@@ -291,16 +290,20 @@ export const Field = <
         , TShouldValidate
     > ) => {
 
+    // Get the form store and handlers from context (stable, won't cause re-renders)
+    const formStore = useFormStore<TFormValues>();
     const {
-        values
-        , errors
-        , touched
-        , handleChange
+        handleChange
         , handleBlur
         , registerField
         , unregisterField
         , componentLibrary
-    } = useFormularityContext<TFormValues>();
+    } = useFormHandlers<TFormValues>();
+
+    // Subscribe ONLY to this field's state (value, error, touched)
+    // This is the key optimization - only re-renders when THIS field's data changes
+    const fieldState = useFieldState(formStore, name);
+    const { value: fieldValueState, error, touched: isTouched } = fieldState;
 
     const id = 'id' in props ? props.id as string : undefined;
 
@@ -318,10 +321,9 @@ export const Field = <
         return () => {
             unregisterField( name );
         };
-    }, [ name ] );
+    }, [ name, registerField, unregisterField ] );
 
     const renderedComponent = component as FC || 'input';
-    const fieldValueState = getViaPath( values, name );
 
     const isComponentLibraryCheckbox = componentLibrary?.checkboxConfig?.check?.( renderedComponent );
 
@@ -347,9 +349,6 @@ export const Field = <
         , type
         , ... props
     };
-
-    const error = getViaPath( errors, name as DeepKeys<FormErrors<FormValues>> );
-    const isTouched = getViaPath( touched, name as DeepKeys<FormTouched<FormValues>> );
 
     return (
         <>

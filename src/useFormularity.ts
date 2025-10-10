@@ -3,7 +3,6 @@ import {
     , useCallback
     , useEffect
     , useRef
-    , useSyncExternalStore
 } from 'react';
 
 // Types
@@ -145,18 +144,26 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , validateOnChange = true
     , validateOnSubmit = true
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
-    const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
+    // Get initial store state once - don't subscribe to changes
+    // Individual components will subscribe to what they need via useStoreSelector
+    const initialStoreState = useRef(formStore.get()).current;
 
-    const validationSchema = currentStore.validationSchema;
-    const manualValidationHandler = currentStore.manualValidationHandler;
-    const submitHandler = currentStore.onSubmit || onSubmit;
+    const validationSchema = initialStoreState.validationSchema;
+    const manualValidationHandler = initialStoreState.manualValidationHandler;
+    const submitHandler = initialStoreState.onSubmit || onSubmit;
 
-    const initialValues = useRef( currentStore.initialValues );
-    const prevValuesInitializer = useRef( cloneDeep( currentStore.initialValues ) );
+    const initialValues = useRef( initialStoreState.initialValues );
+    const prevValuesInitializer = useRef( cloneDeep( initialStoreState.initialValues ) );
 
-    const values = currentStore.values;
-    const errors = currentStore.errors;
-    const touched = currentStore.touched;
+    // Return initial state for values/errors/touched
+    // These are passed to children() render prop for backwards compatibility
+    // But Fields don't use these - they subscribe directly via useFieldState
+    const values = initialStoreState.values;
+    const errors = initialStoreState.errors;
+    const touched = initialStoreState.touched;
+
+    // Helper to get current store state imperatively (for handlers)
+    const getStoreState = useCallback(() => formStore.get(), [formStore]);
 
     const isMounted = useRef<boolean>( false );
 
@@ -211,6 +218,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         options?: { updateStore?: boolean }
     ) => {
         const updateStore = options?.updateStore ?? true;
+        const currentErrors = getStoreState().errors;
 
         let newErrors: DeepPartial<FormErrors<TFormValues>> = {};
 
@@ -236,7 +244,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             }
 
             // If the errors haven't changed, skip render cycle and just return the errors
-            if ( isEqual( newErrors, errors ) ) return;
+            if ( isEqual( newErrors, currentErrors ) ) return;
 
             updateStore && setErrors( newErrors );
         };
@@ -275,9 +283,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
             return null;
         }
 
+        const currentState = getStoreState();
         const errorOrNull = await runSingleFieldValidations( validatorToRun, fieldName );
-        const newTouched = shouldTouchField ? setViaPath( touched, fieldName, true ) : touched;
-        const newErrors = errorOrNull ? setViaPath( errors, fieldName, errorOrNull ) : errors;
+        const newTouched = shouldTouchField ? setViaPath( currentState.touched, fieldName, true ) : currentState.touched;
+        const newErrors = errorOrNull ? setViaPath( currentState.errors, fieldName, errorOrNull ) : currentState.errors;
 
         formStore.set( {
             touched: newTouched
@@ -291,7 +300,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         fieldValidators: SingleFieldValidator<TFormValues, TFieldName> | Array<SingleFieldValidator<TFormValues, TFieldName>>
         , fieldName: TFieldName
     ) => {
-        const fieldValue = getViaPath( values, fieldName );
+        const currentValues = getStoreState().values;
+        const fieldValue = getViaPath( currentValues, fieldName );
 
         let fieldErrorsOrNull: string | Nullish = null;
 
@@ -299,7 +309,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
             for ( const validator of fieldValidators ) {
                 const newErrorOrNull = await validator( fieldValue!, {
                     fieldName
-                    , formValues: values
+                    , formValues: currentValues
                 } );
 
                 if ( newErrorOrNull ) {
@@ -311,7 +321,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
         } else {
             fieldErrorsOrNull = await fieldValidators( fieldValue!, {
                 fieldName
-                , formValues: values
+                , formValues: currentValues
             } );
         }
 
@@ -351,13 +361,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const setFieldValue: FormHandlers<TFormValues>['setFieldValue']
     = useEventCallback( ( fieldName, newValue, options ) => {
+        const currentValues = getStoreState().values;
         const shouldValidate = options?.shouldValidate !== undefined
             ? options.shouldValidate
             : validateOnChange;
 
         const validationEvent = options?.validationEvent ?? 'all';
 
-        const newValues = setViaPath( values, fieldName, newValue );
+        const newValues = setViaPath( currentValues, fieldName, newValue );
 
         const runFieldEffects = (
             newErrors: DeepPartial<FormErrors<TFormValues>> | FormErrors<TFormValues>,
@@ -433,33 +444,37 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     // TODO: add options object with validation options
     const setValues = useCallback( ( newValues: DeepPartial<TFormValues> ) => {
-        const mergedValues = deepMerge( values, newValues );
+        const currentValues = getStoreState().values;
+        const mergedValues = deepMerge( currentValues, newValues );
         formStore.set( { values: mergedValues } );
 
         validateOnChange && _validate( mergedValues );
-    }, [] );
+    }, [getStoreState, formStore, validateOnChange, _validate] );
 
     const setFieldError = useCallback( ( fieldName: DeepKeys<TFormValues>, newError: string ) => {
+        const currentErrors = getStoreState().errors;
         const newFieldErrors = setViaPath(
-            errors
+            currentErrors
             , fieldName as DeepKeys<FormErrors<TFormValues>>
             , newError
         );
 
         formStore.set( { errors: newFieldErrors } );
-    }, [] );
+    }, [getStoreState, formStore] );
 
     const setErrors = useCallback( ( newErrors: DeepPartial<FormErrors<TFormValues>> ) => {
-        formStore.set( { errors: deepMerge( errors, newErrors ) } );
-    }, [] );
+        const currentErrors = getStoreState().errors;
+        formStore.set( { errors: deepMerge( currentErrors, newErrors ) } );
+    }, [getStoreState, formStore] );
 
     const setFieldTouched = useEventCallback( async (
         fieldName: DeepKeys<TFormValues>
         , newTouched: boolean
         , fieldValidationOptions?: FieldValidationOptions
     ) => {
+        const currentState = getStoreState();
         const newFieldTouched = setViaPath(
-            touched
+            currentState.touched
             , fieldName as DeepKeys<FormTouched<TFormValues>>
             , newTouched
         );
@@ -471,8 +486,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
             || validateOnBlur;
 
         const newErrors = shouldValidateFieldOnBlur
-            ? await _validate( values, { updateStore: false } )
-            : errors;
+            ? await _validate( currentState.values, { updateStore: false } )
+            : currentState.errors;
 
         formStore.set( {
             touched: newFieldTouched
@@ -485,7 +500,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
             touched: FormTouched<TFormValues>,
         ) => {
             const fieldEffects = getFieldEffectFns( fieldRegistry.current, fieldName as never, 'blur' );
-            console.log( fieldEffects );
 
             if ( fieldEffects ) {
                 fieldEffects.forEach( ( [ targetFieldName, effect ] ) => {
@@ -623,25 +637,27 @@ export const useFormularity = <TFormValues extends FormValues>( {
     };
 
     const submitForm = async () => {
+        const currentState = getStoreState();
+
         formStore.set( {
             isSubmitting: true
             , isValidating: !!validateOnSubmit
         } );
 
         if ( validateOnSubmit ) {
-            const validationErrors = await _validate( values, { updateStore: false } );
+            const validationErrors = await _validate( currentState.values, { updateStore: false } );
             const hasErrors = objectKeys( validationErrors ).length > 0;
 
             if ( hasErrors ) {
                 const newTouched = touchAllFields( validationErrors );
 
                 return formStore.set( {
-                    submitCount: currentStore.submitCount + 1
+                    submitCount: getStoreState().submitCount + 1
                     , isSubmitting: false
                     , isValidating: false
                     , touched: newTouched
                     , errors: {
-                        ...errors
+                        ...currentState.errors
                         , ...validationErrors
                     } as FormErrors<TFormValues>
                 } );
@@ -650,10 +666,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
             formStore.set( { isValidating: false } );
         }
 
-        await submitHandler?.( values, submitOrResetHelpers );
+        await submitHandler?.( currentState.values, submitOrResetHelpers );
 
         formStore.set( {
-            submitCount: currentStore.submitCount + 1
+            submitCount: getStoreState().submitCount + 1
             , isSubmitting: false
         } );
     };
@@ -701,6 +717,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
         ? prevValuesInitializer.current
         : initialValues.current;
 
+    // Computed properties use initial values for backwards compatibility in render prop
+    // These are mainly for display purposes in the formularity object
     const isDirty = !isEqual( values, initialValuesToCompare );
     const isPristine = !isDirty;
     const dirtyFields = getKeysWithDiffs( values, initialValuesToCompare );
@@ -717,12 +735,22 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , ResetButton
     };
 
+    const currentState = getStoreState();
+
     return {
-        ...currentStore
-        , values
+        // Store state properties
+        values
         , errors
         , touched
         , initialValues: initialValues.current
+        , isSubmitting: currentState.isSubmitting
+        , isValidating: currentState.isValidating
+        , submitCount: currentState.submitCount
+        , isEditing
+        , validationSchema
+        , manualValidationHandler
+        , onSubmit: submitHandler as never
+        // Handlers
         , registerField
         , unregisterField
         , setFieldValue
@@ -739,13 +767,14 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleReset
         , validateForm
         , validateField
+        // Computed properties
         , isDirty
         , isPristine
         , isValid
-        , isEditing
         , dirtyFields
         , isFormTouched
         , areAllFieldsTouched
+        // Components
         , ...formularityComponents
     };
 };

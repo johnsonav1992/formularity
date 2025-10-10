@@ -8,8 +8,11 @@ import {
 } from './utilityTypes';
 import { FormValues } from './types';
 
-// Context
-import { useFormularityContext } from './FormularityContext';
+// Hooks
+import { useFormStore } from './FormStoreContext';
+import { useFormHandlers } from './FormHandlersContext';
+import { useStoreSelector } from './useStoreSelector';
+import { useMemo } from 'react';
 
 // Utils
 import { getViaPath } from './generalUtils';
@@ -109,12 +112,17 @@ export const FieldList = <
         , render
     }: FieldListProps ) => {
 
-    const {
-        values
-        , setFieldValue
-    } = useFormularityContext<TFormValues>();
+    const formStore = useFormStore<TFormValues>();
+    const { setFieldValue } = useFormHandlers<TFormValues>();
 
-    const listData = getViaPath( values, name ) as TListData;
+    // Subscribe only to this specific list field's value
+    const listData = useStoreSelector(
+        formStore,
+        useMemo(
+            () => (state) => getViaPath(state.values, name) as TListData,
+            [name]
+        )
+    );
 
     if ( !Array.isArray( listData ) ) {
         throw new Error(

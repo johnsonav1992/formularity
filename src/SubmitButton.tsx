@@ -7,8 +7,13 @@ import React, {
 // Types
 import { NoInfer } from './utilityTypes';
 
-// Context
-import { useFormularityContext } from './FormularityContext';
+// Hooks
+import { useFormStore } from './FormStoreContext';
+import { useStoreSelector } from './useStoreSelector';
+import { useMemo } from 'react';
+
+// Utils
+import { deepObjectKeys } from './generalUtils';
 
 // Utils
 import {
@@ -86,25 +91,40 @@ export const SubmitButton = <
             , ...props
         }: SubmitButtonProps<TDisableInvalid, TComponentProps>
     ) => {
-    const formularity = useFormularityContext();
+    const formStore = useFormStore();
+
+    // Subscribe only to the form state needed for submit button logic
+    const buttonState = useStoreSelector(
+        formStore,
+        useMemo(
+            () => (state) => ({
+                isValid: deepObjectKeys(state.errors).length === 0,
+                isSubmitting: state.isSubmitting,
+                submitCount: state.submitCount,
+                isDirty: state.values !== state.initialValues,
+                isEditing: state.isEditing
+            }),
+            []
+        )
+    );
 
     const renderedComponent = component as FC || 'button';
 
     const getDisabledLogic = () => {
-        const isValid = !!formularity.isValid;
+        const isValid = !!buttonState.isValid;
 
         if ( 'disabled' in props && props.disabled ) return props.disabled;
         if ( disableInvalid == null ) return !isValid;
-        if ( disableWhileSubmitting && formularity.isSubmitting ) return true;
+        if ( disableWhileSubmitting && buttonState.isSubmitting ) return true;
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {
                 case 'after-first-submission':
-                    return disableAfterFirstSubmit( formularity );
+                    return disableAfterFirstSubmit( buttonState as never );
                 case 'after-first-submission-editing':
-                    return disableAfterFirstSubmitUnlessEditing( formularity );
+                    return disableAfterFirstSubmitUnlessEditing( buttonState as never );
                 case 'not-dirty':
-                    return isFormDisabledNotDirty( formularity );
+                    return isFormDisabledNotDirty( buttonState as never );
                 case 'errors-only':
                 default:
                     return !isValid;

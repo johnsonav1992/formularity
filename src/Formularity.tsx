@@ -1,6 +1,7 @@
 import {
     ComponentProps
     , ReactNode
+    , useMemo
 } from 'react';
 
 // Components
@@ -17,7 +18,8 @@ import {
 } from './useFormularity';
 
 // Context
-import { FormularityContext } from './FormularityContext';
+import { FormStoreContext } from './FormStoreContext';
+import { FormHandlersContext } from './FormHandlersContext';
 import { ComponentLibraryConfig } from './component-library-configs/types';
 
 export type FormularityComponentProps<TFormValues extends FormValues> =
@@ -54,28 +56,62 @@ export const Formularity = <TFormValues extends FormValues>( {
     children
     , useFormComponent = true
     , formProps
+    , componentLibrary
     , ...formularityProps
 }: FormularityComponentProps<TFormValues> ) => {
     const formularity = useFormularity( { ...formularityProps } );
+    const { formStore } = formularityProps;
+
+    // Memoize handlers to prevent context from changing on every render
+    const handlers = useMemo(() => ({
+        handleChange: formularity.handleChange,
+        handleBlur: formularity.handleBlur,
+        handleSubmit: formularity.handleSubmit,
+        handleReset: formularity.handleReset,
+        setFieldValue: formularity.setFieldValue,
+        setValues: formularity.setValues,
+        setFieldError: formularity.setFieldError,
+        setErrors: formularity.setErrors,
+        setFieldTouched: formularity.setFieldTouched,
+        setTouched: formularity.setTouched,
+        validateForm: formularity.validateForm,
+        validateField: formularity.validateField,
+        registerField: formularity.registerField,
+        unregisterField: formularity.unregisterField,
+        componentLibrary
+    }), [
+        formularity.handleChange,
+        formularity.handleBlur,
+        formularity.handleSubmit,
+        formularity.handleReset,
+        formularity.setFieldValue,
+        formularity.setValues,
+        formularity.setFieldError,
+        formularity.setErrors,
+        formularity.setFieldTouched,
+        formularity.setTouched,
+        formularity.validateForm,
+        formularity.validateField,
+        formularity.registerField,
+        formularity.unregisterField,
+        componentLibrary
+    ]);
 
     const renderedChildren = children( formularity );
 
     return (
-        <FormularityContext.Provider
-            value={ {
-                ...formularity as FormularityProps
-                , componentLibrary: formularityProps.componentLibrary
-            } }
-        >
-            {
-                useFormComponent
-                    ? (
-                        <Form { ...formProps }>
-                            { renderedChildren }
-                        </Form>
-                    )
-                    : renderedChildren
-            }
-        </FormularityContext.Provider>
+        <FormStoreContext.Provider value={ formStore }>
+            <FormHandlersContext.Provider value={ handlers as never }>
+                {
+                    useFormComponent
+                        ? (
+                            <Form { ...formProps }>
+                                { renderedChildren }
+                            </Form>
+                        )
+                        : renderedChildren
+                }
+            </FormHandlersContext.Provider>
+        </FormStoreContext.Provider>
     );
 };

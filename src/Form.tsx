@@ -4,7 +4,7 @@ import {
 } from 'react';
 
 // Hooks
-import { useFormularityContext } from './FormularityContext';
+import { useFormHandlers } from './FormHandlersContext';
 
 export type FormProps = PropsWithChildren<ComponentProps<'form'>>;
 
@@ -21,12 +21,12 @@ export const Form = ( {
     children
     , ...props
 }: FormProps ) => {
-    const formularity = useFormularityContext();
+    const { handleSubmit, handleReset } = useFormHandlers();
 
     return (
         <form
-            onSubmit={ formularity?.handleSubmit }
-            onReset={ formularity?.handleReset }
+            onSubmit={ handleSubmit }
+            onReset={ handleReset }
             { ...props }
         >
             { children }
