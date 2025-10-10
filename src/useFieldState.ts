@@ -20,7 +20,6 @@ export function useFieldState<
     formStore: FormStore<TFormValues>,
     fieldName: TFieldName
 ) {
-    // Create a stable selector that's memoized per fieldName
     const selector = useMemo(
         () => (state: FormStoreState<TFormValues>) => ({
             value: getViaPath(state.values, fieldName) as DeepValue<TFormValues, TFieldName>,

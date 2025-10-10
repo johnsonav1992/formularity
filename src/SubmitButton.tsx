@@ -93,7 +93,6 @@ export const SubmitButton = <
     ) => {
     const formStore = useFormStore();
 
-    // Subscribe only to the form state needed for submit button logic
     const buttonState = useStoreSelector(
         formStore,
         useMemo(

@@ -115,7 +115,6 @@ export const FieldList = <
     const formStore = useFormStore<TFormValues>();
     const { setFieldValue } = useFormHandlers<TFormValues>();
 
-    // Subscribe only to this specific list field's value
     const listData = useStoreSelector(
         formStore,
         useMemo(

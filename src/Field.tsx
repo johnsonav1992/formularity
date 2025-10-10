@@ -290,7 +290,6 @@ export const Field = <
         , TShouldValidate
     > ) => {
 
-    // Get the form store and handlers from context (stable, won't cause re-renders)
     const formStore = useFormStore<TFormValues>();
     const {
         handleChange
@@ -300,8 +299,6 @@ export const Field = <
         , componentLibrary
     } = useFormHandlers<TFormValues>();
 
-    // Subscribe ONLY to this field's state (value, error, touched)
-    // This is the key optimization - only re-renders when THIS field's data changes
     const fieldState = useFieldState(formStore, name);
     const { value: fieldValueState, error, touched: isTouched } = fieldState;
 

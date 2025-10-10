@@ -62,7 +62,6 @@ export const Formularity = <TFormValues extends FormValues>( {
     const formularity = useFormularity( { ...formularityProps } );
     const { formStore } = formularityProps;
 
-    // Memoize handlers to prevent context from changing on every render
     const handlers = useMemo(() => ({
         handleChange: formularity.handleChange,
         handleBlur: formularity.handleBlur,

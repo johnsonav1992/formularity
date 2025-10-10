@@ -144,8 +144,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , validateOnChange = true
     , validateOnSubmit = true
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
-    // Get initial store state once - don't subscribe to changes
-    // Individual components will subscribe to what they need via useStoreSelector
     const initialStoreState = useRef(formStore.get()).current;
 
     const validationSchema = initialStoreState.validationSchema;
@@ -155,14 +153,10 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const initialValues = useRef( initialStoreState.initialValues );
     const prevValuesInitializer = useRef( cloneDeep( initialStoreState.initialValues ) );
 
-    // Return initial state for values/errors/touched
-    // These are passed to children() render prop for backwards compatibility
-    // But Fields don't use these - they subscribe directly via useFieldState
     const values = initialStoreState.values;
     const errors = initialStoreState.errors;
     const touched = initialStoreState.touched;
 
-    // Helper to get current store state imperatively (for handlers)
     const getStoreState = useCallback(() => formStore.get(), [formStore]);
 
     const isMounted = useRef<boolean>( false );
@@ -717,8 +711,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         ? prevValuesInitializer.current
         : initialValues.current;
 
-    // Computed properties use initial values for backwards compatibility in render prop
-    // These are mainly for display purposes in the formularity object
     const isDirty = !isEqual( values, initialValuesToCompare );
     const isPristine = !isDirty;
     const dirtyFields = getKeysWithDiffs( values, initialValuesToCompare );
@@ -738,7 +730,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
     const currentState = getStoreState();
 
     return {
-        // Store state properties
         values
         , errors
         , touched
@@ -750,7 +741,6 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , validationSchema
         , manualValidationHandler
         , onSubmit: submitHandler as never
-        // Handlers
         , registerField
         , unregisterField
         , setFieldValue
@@ -767,14 +757,12 @@ export const useFormularity = <TFormValues extends FormValues>( {
         , handleReset
         , validateForm
         , validateField
-        // Computed properties
         , isDirty
         , isPristine
         , isValid
         , dirtyFields
         , isFormTouched
         , areAllFieldsTouched
-        // Components
         , ...formularityComponents
     };
 };

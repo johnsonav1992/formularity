@@ -31,11 +31,9 @@ export function useStoreSelector<
     store: FormStore<TFormValues>,
     selector: (state: FormStoreState<TFormValues>) => TSelected
 ): TSelected {
-    // Keep selector function stable across renders
     const selectorRef = useRef(selector);
     selectorRef.current = selector;
 
-    // Initialize the ref with current value on mount (not on first change)
     const lastSelectedRef = useRef<TSelected>(
         (() => {
             const state = store.get();
@@ -43,14 +41,11 @@ export function useStoreSelector<
         })()
     );
 
-    // Create a stable getSnapshot function that uses deep equality
     const getSnapshot = useMemo(() => {
         return () => {
             const state = store.get();
             const selected = selectorRef.current(state);
 
-            // Only update the ref if the value actually changed (deep equality)
-            // This ensures useSyncExternalStore gets the same reference for the same value
             if (!isEqual(lastSelectedRef.current, selected)) {
                 lastSelectedRef.current = selected;
             }
@@ -59,7 +54,5 @@ export function useStoreSelector<
         };
     }, [store]);
 
-    // Provide getServerSnapshot to prevent hydration mismatches and initial sync issues
-    // Even in client-only apps, this helps useSyncExternalStore optimize better
     return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
