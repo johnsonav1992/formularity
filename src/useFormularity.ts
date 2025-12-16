@@ -125,6 +125,11 @@ export type UseFormularityParams<TFormValues extends FormValues> = {
      * @default true
      */
     validateOnSubmit?: boolean;
+    /**
+     * Internal: field registry ref passed from Formularity component
+     * @internal
+     */
+    fieldRegistryRef?: React.MutableRefObject<FieldRegistry<TFormValues>>;
 };
 
 /**
@@ -144,6 +149,7 @@ export const useFormularity = <TFormValues extends FormValues>( {
     , validateOnBlur = true
     , validateOnChange = true
     , validateOnSubmit = true
+    , fieldRegistryRef
 }: UseFormularityParams<TFormValues> ): FormularityProps<TFormValues> => {
     const currentStore = useSyncExternalStore<FormStoreState<TFormValues>>( formStore.subscribe, formStore.get );
 
@@ -160,7 +166,8 @@ export const useFormularity = <TFormValues extends FormValues>( {
 
     const isMounted = useRef<boolean>( false );
 
-    const fieldRegistry = useRef<FieldRegistry<TFormValues>>( {} );
+    // Use provided fieldRegistryRef or create a local one
+    const fieldRegistry = fieldRegistryRef || useRef<FieldRegistry<TFormValues>>( {} );
 
     useEffect( () => {
         isMounted.current = true;

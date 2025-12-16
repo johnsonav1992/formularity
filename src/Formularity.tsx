@@ -1,6 +1,7 @@
 import {
     ComponentProps
     , ReactNode
+    , useRef
 } from 'react';
 
 // Components
@@ -10,6 +11,7 @@ import { Form } from './Form';
 import {
     FormValues
     , FormularityProps
+    , FieldRegistry
 } from './types';
 import {
     UseFormularityParams
@@ -54,17 +56,32 @@ export const Formularity = <TFormValues extends FormValues>( {
     children
     , useFormComponent = true
     , formProps
+    , validateOnChange = true
+    , validateOnBlur = true
+    , validateOnSubmit = true
     , ...formularityProps
 }: FormularityComponentProps<TFormValues> ) => {
-    const formularity = useFormularity( { ...formularityProps } );
+    const fieldRegistryRef = useRef<FieldRegistry<TFormValues>>( {} );
+    
+    const formularity = useFormularity( {
+        ...formularityProps
+        , validateOnChange
+        , validateOnBlur
+        , validateOnSubmit
+        , fieldRegistryRef
+    } );
 
     const renderedChildren = children( formularity );
 
     return (
         <FormularityContext.Provider
             value={ {
-                ...formularity as FormularityProps
+                formStore: formularityProps.formStore
+                , fieldRegistry: fieldRegistryRef
                 , componentLibrary: formularityProps.componentLibrary
+                , validateOnChange
+                , validateOnBlur
+                , validateOnSubmit
             } }
         >
             {

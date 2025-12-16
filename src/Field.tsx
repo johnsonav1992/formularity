@@ -5,6 +5,7 @@ import React, {
     , HTMLInputTypeAttribute
     , ReactNode
     , useEffect
+    , useMemo
 } from 'react';
 
 // Types
@@ -15,6 +16,8 @@ import {
     , FormTouched
     , FormValues
     , SingleFieldValidator
+    , NewFieldRegistration
+    , FieldRegistry
 } from './types';
 import {
     DeepKeys
@@ -23,16 +26,25 @@ import {
     , NoInfer
     , OnBlurEvent
     , OnChangeEvent
+    , CheckboxValue
 } from './utilityTypes';
 
 // Utils
 import {
     checkFieldEffectKeyNames
     , getViaPath
+    , isEqual
+    , setViaPath
 } from './generalUtils';
+import {
+    getCheckboxValue
+    , getMultiSelectValues
+} from './formUtils';
 
 // Hooks
 import { useFormularityContext } from './FormularityContext';
+import { useFormStoreSubscription } from './useFormStoreSubscription';
+import { useEventCallback } from './useEventCallback';
 
 type DuplicateProps = 'name' | 'value' | 'type' | 'checked';
 
@@ -292,36 +304,118 @@ export const Field = <
     > ) => {
 
     const {
-        values
-        , errors
-        , touched
-        , handleChange
-        , handleBlur
-        , registerField
-        , unregisterField
+        formStore
+        , fieldRegistry
         , componentLibrary
+        , validateOnChange
+        , validateOnBlur
     } = useFormularityContext<TFormValues>();
+
+    // Subscribe only to this field's value, error, and touched state
+    // This means the field only rerenders when its own data changes
+    const fieldValueState = useFormStoreSubscription(
+        formStore
+        , ( state ) => getViaPath( state.values, name )
+    );
+
+    const error = useFormStoreSubscription(
+        formStore
+        , ( state ) => getViaPath( state.errors, name as DeepKeys<FormErrors<FormValues>> )
+    );
+
+    const isTouched = useFormStoreSubscription(
+        formStore
+        , ( state ) => getViaPath( state.touched, name as DeepKeys<FormTouched<FormValues>> )
+    );
 
     const id = 'id' in props ? props.id as string : undefined;
 
     fieldEffects && checkFieldEffectKeyNames( fieldEffects );
 
+    // Stable field registration
     useEffect( () => {
-        registerField( {
+        const newFieldRegistration: NewFieldRegistration<TFormValues, typeof name> = {
             name
             , type
             , validationHandlers: validators || null
             , fieldId: id
             , fieldEffects
-        } );
+        };
+
+        if ( !fieldRegistry.current[ name ] ) {
+            fieldRegistry.current[ name ]
+                = { ...newFieldRegistration } as FieldRegistry<TFormValues>[typeof name];
+        }
 
         return () => {
-            unregisterField( name );
+            delete fieldRegistry.current[ name ];
         };
-    }, [ name ] );
+    }, [ name, fieldRegistry ] );
+
+    // Stable change handler
+    const handleChange = useEventCallback( ( e: OnChangeEvent ) => {
+        const currentStore = formStore.get();
+        let finalValue;
+
+        const fieldName = e.target.name as DeepKeys<TFormValues>;
+        const {
+            value
+            , type: inputType
+        } = e.target;
+
+        const {
+            options
+            , multiple
+        } = e.target as HTMLSelectElement;
+
+        const { checked } = e.target as HTMLInputElement;
+
+        switch ( true ) {
+            case /number|range/.test( inputType ): {
+                const parsedValue = parseFloat( value );
+
+                if ( isNaN( parsedValue ) ) {
+                    finalValue = '';
+                } else {
+                    finalValue = parsedValue;
+                }
+            }
+                break;
+            case ( /checkbox/.test( inputType ) || checked ):
+                finalValue = getCheckboxValue(
+                    getViaPath( currentStore.values, fieldName ) as CheckboxValue
+                    , checked
+                    , value
+                );
+                break;
+            case options && multiple:
+                finalValue = getMultiSelectValues( options );
+                break;
+            default: finalValue = value;
+        }
+
+        const newValues = setViaPath( currentStore.values, fieldName, finalValue as DeepValue<TFormValues, DeepKeys<TFormValues>> );
+
+        formStore.set( { values: newValues } );
+    } );
+
+    // Stable blur handler
+    const handleBlur = useEventCallback( ( e: OnBlurEvent ) => {
+        const fieldName = e.target.name as DeepKeys<TFormValues>;
+        const currentStore = formStore.get();
+        
+        const newFieldTouched = setViaPath(
+            currentStore.touched
+            , fieldName as DeepKeys<FormTouched<TFormValues>>
+            , true
+        );
+
+        formStore.set( {
+            touched: newFieldTouched
+        } );
+    } );
 
     const renderedComponent = component as FC || 'input';
-    const fieldValueState = getViaPath( values, name );
 
     const isComponentLibraryCheckbox = componentLibrary?.checkboxConfig?.check?.( renderedComponent );
 
@@ -347,9 +441,6 @@ export const Field = <
         , type
         , ... props
     };
-
-    const error = getViaPath( errors, name as DeepKeys<FormErrors<FormValues>> );
-    const isTouched = getViaPath( touched, name as DeepKeys<FormTouched<FormValues>> );
 
     return (
         <>

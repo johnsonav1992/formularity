@@ -7,20 +7,43 @@ import {
 import {
     FormValues
     , FormularityProps
+    , FormStore
+    , FieldRegistry
 } from './types';
 import { ComponentLibraryConfig } from './component-library-configs/types';
+import { DeepKeys } from './utilityTypes';
 
-export const FormularityContext = createContext< ( FormularityProps & {
+/**
+ * The context now only stores stable references:
+ * - formStore: the stable store object
+ * - fieldRegistry: stable ref to field registrations
+ * - componentLibrary: stable config
+ * - validation flags: stable boolean flags
+ * 
+ * This prevents unnecessary rerenders since these values don't change frequently
+ */
+export type FormularityContextValue<TFormValues extends FormValues = FormValues> = {
+    formStore: FormStore<TFormValues>;
+    fieldRegistry: React.MutableRefObject<FieldRegistry<TFormValues>>;
     componentLibrary?: ComponentLibraryConfig;
-} ) | null>( null );
+    validateOnChange: boolean;
+    validateOnBlur: boolean;
+    validateOnSubmit: boolean;
+};
+
+export const FormularityContext = createContext<FormularityContextValue | null>( null );
 
 export type UseFormularityContextReturn<TFormValues extends FormValues> =
     FormularityProps<TFormValues> & { componentLibrary?: ComponentLibraryConfig };
 
+/**
+ * Hook to get the stable context values (store, field registry, etc.)
+ * This doesn't cause rerenders since these are stable references
+ */
 export const useFormularityContext = <
     TFormValues extends FormValues = FormValues
->(): UseFormularityContextReturn<TFormValues> => {
-    const formularityCtx: ReturnType<typeof useFormularityContext> = useContext( FormularityContext as never );
+>(): FormularityContextValue<TFormValues> => {
+    const formularityCtx = useContext( FormularityContext );
 
     if ( !formularityCtx ) {
         throw new Error(
@@ -29,5 +52,5 @@ export const useFormularityContext = <
         );
     }
 
-    return formularityCtx as never;
+    return formularityCtx as FormularityContextValue<TFormValues>;
 };
