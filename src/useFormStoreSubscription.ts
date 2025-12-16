@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 // Types
 import {
@@ -25,36 +25,33 @@ export const useFormStoreSubscription = <
         formStore: FormStore<TFormValues>
         , selector: ( state: FormStoreState<TFormValues> ) => TSelected
     ): TSelected => {
+    // Store selector in ref to always use latest version
     const selectorRef = useRef( selector );
     selectorRef.current = selector;
 
     // Initialize state with the current selected value
     const [ selectedState, setSelectedState ] = useState( () => selector( formStore.get() ) );
-    
-    // Keep track of the last selected value for comparison
-    const lastSelectedRef = useRef( selectedState );
-    lastSelectedRef.current = selectedState;
 
     useEffect( () => {
+        // Check if we need to update after mount (in case state changed during render)
+        const currentValue = selectorRef.current( formStore.get() );
+        if ( !isEqual( selectedState, currentValue ) ) {
+            setSelectedState( currentValue );
+        }
+
         // Subscribe to store changes
         const unsubscribe = formStore.subscribe( () => {
             const state = formStore.get();
             const nextValue = selectorRef.current( state );
             
             // Only update state if the value has actually changed (deep equality)
-            if ( !isEqual( lastSelectedRef.current, nextValue ) ) {
-                lastSelectedRef.current = nextValue;
-                setSelectedState( nextValue );
-            }
+            setSelectedState( prevState => {
+                if ( isEqual( prevState, nextValue ) ) {
+                    return prevState; // Return same reference to prevent rerender
+                }
+                return nextValue;
+            } );
         } );
-
-        // Check if the value changed since initial render
-        const state = formStore.get();
-        const nextValue = selectorRef.current( state );
-        if ( !isEqual( lastSelectedRef.current, nextValue ) ) {
-            lastSelectedRef.current = nextValue;
-            setSelectedState( nextValue );
-        }
 
         return unsubscribe;
     }, [ formStore ] );
