@@ -6,7 +6,6 @@ import React, {
 
 // Types
 import { NoInfer } from './utilityTypes';
-import { FormValues } from './types';
 
 // Context
 import { useFormularityContext } from './FormularityContext';
@@ -20,7 +19,10 @@ import {
     , disableAfterFirstSubmitUnlessEditing
     , isFormDisabledNotDirty
 } from './disableLogicUtils';
-import { deepObjectKeys, getKeysWithDiffs, hasSameNestedKeys, isEqual } from './generalUtils';
+import {
+    deepObjectKeys
+    , isEqual
+} from './generalUtils';
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
@@ -96,24 +98,23 @@ export const SubmitButton = <
     // Subscribe only to the state needed for submit button logic
     const isValid = useFormStoreSubscription(
         formStore
-        , ( state ) => deepObjectKeys( state.errors ).length === 0
+        , state => deepObjectKeys( state.errors ).length === 0
     );
 
     const isSubmitting = useFormStoreSubscription(
         formStore
-        , ( state ) => state.isSubmitting
+        , state => state.isSubmitting
     );
 
     const submitCount = useFormStoreSubscription(
         formStore
-        , ( state ) => state.submitCount
+        , state => state.submitCount
     );
 
     const isDirty = useFormStoreSubscription(
         formStore
-        , ( state ) => {
+        , state => {
             const currentStore = formStore.get();
-            const valuesInitializer = undefined; // TODO: need to handle this
             const initialValuesToCompare = currentStore.initialValues;
             return !isEqual( state.values, initialValuesToCompare );
         }
@@ -121,7 +122,7 @@ export const SubmitButton = <
 
     const isEditing = useFormStoreSubscription(
         formStore
-        , ( state ) => state.isEditing
+        , state => state.isEditing
     );
 
     // Create a minimal formularity object with only what's needed

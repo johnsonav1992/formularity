@@ -15,9 +15,9 @@ export const useFormStoreSubscription = <
     TFormValues extends FormValues
     , TSelected = FormStoreState<TFormValues>
 >(
-    formStore: FormStore<TFormValues>
-    , selector: ( state: FormStoreState<TFormValues> ) => TSelected
-): TSelected => {
+        formStore: FormStore<TFormValues>
+        , selector: ( state: FormStoreState<TFormValues> ) => TSelected
+    ): TSelected => {
     return useSyncExternalStore(
         formStore.subscribe
         , () => selector( formStore.get() )
