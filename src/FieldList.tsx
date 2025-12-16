@@ -11,6 +11,9 @@ import { FormValues } from './types';
 // Context
 import { useFormularityContext } from './FormularityContext';
 
+// Hooks
+import { useFormStoreSubscription } from './useFormStoreSubscription';
+
 // Utils
 import { getViaPath } from './generalUtils';
 
@@ -110,11 +113,15 @@ export const FieldList = <
     }: FieldListProps ) => {
 
     const {
-        values
-        , setFieldValue
+        formStore
+        , handlers
     } = useFormularityContext<TFormValues>();
 
-    const listData = getViaPath( values, name ) as TListData;
+    // Subscribe only to this specific list value
+    const listData = useFormStoreSubscription(
+        formStore
+        , ( state ) => getViaPath( state.values, name ) as TListData
+    );
 
     if ( !Array.isArray( listData ) ) {
         throw new Error(
@@ -129,7 +136,7 @@ export const FieldList = <
         , FV = DeepValue<TFormValues, TFieldName>
     >
         ( name: FN, newList: FV ) => {
-        setFieldValue(
+        handlers.setFieldValue(
             name as never
             , newList as DeepValue<TFormValues, TFieldName>
         );

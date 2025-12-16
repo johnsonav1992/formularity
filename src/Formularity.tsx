@@ -2,6 +2,7 @@ import {
     ComponentProps
     , ReactNode
     , useRef
+    , useMemo
 } from 'react';
 
 // Components
@@ -73,10 +74,48 @@ export const Formularity = <TFormValues extends FormValues>( {
 
     const renderedChildren = children( formularity );
 
+    // Extract stable handlers that won't cause rerenders
+    const handlers = useMemo( () => ( {
+        setFieldValue: formularity.setFieldValue
+        , setValues: formularity.setValues
+        , setFieldError: formularity.setFieldError
+        , setErrors: formularity.setErrors
+        , setFieldTouched: formularity.setFieldTouched
+        , setTouched: formularity.setTouched
+        , handleChange: formularity.handleChange
+        , handleBlur: formularity.handleBlur
+        , submitForm: formularity.submitForm
+        , handleSubmit: formularity.handleSubmit
+        , resetForm: formularity.resetForm
+        , handleReset: formularity.handleReset
+        , validateForm: formularity.validateForm
+        , validateField: formularity.validateField
+        , registerField: formularity.registerField
+        , unregisterField: formularity.unregisterField
+    } ), [
+        formularity.setFieldValue
+        , formularity.setValues
+        , formularity.setFieldError
+        , formularity.setErrors
+        , formularity.setFieldTouched
+        , formularity.setTouched
+        , formularity.handleChange
+        , formularity.handleBlur
+        , formularity.submitForm
+        , formularity.handleSubmit
+        , formularity.resetForm
+        , formularity.handleReset
+        , formularity.validateForm
+        , formularity.validateField
+        , formularity.registerField
+        , formularity.unregisterField
+    ] );
+
     return (
         <FormularityContext.Provider
             value={ {
                 formStore: formularityProps.formStore
+                , handlers
                 , fieldRegistry: fieldRegistryRef
                 , componentLibrary: formularityProps.componentLibrary
                 , validateOnChange

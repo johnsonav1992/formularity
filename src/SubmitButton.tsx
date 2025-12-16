@@ -6,9 +6,13 @@ import React, {
 
 // Types
 import { NoInfer } from './utilityTypes';
+import { FormValues } from './types';
 
 // Context
 import { useFormularityContext } from './FormularityContext';
+
+// Hooks
+import { useFormStoreSubscription } from './useFormStoreSubscription';
 
 // Utils
 import {
@@ -16,6 +20,7 @@ import {
     , disableAfterFirstSubmitUnlessEditing
     , isFormDisabledNotDirty
 } from './disableLogicUtils';
+import { deepObjectKeys, getKeysWithDiffs, hasSameNestedKeys, isEqual } from './generalUtils';
 
 export type SubmitButtonProps<
     TDisableInvalid extends boolean
@@ -86,25 +91,63 @@ export const SubmitButton = <
             , ...props
         }: SubmitButtonProps<TDisableInvalid, TComponentProps>
     ) => {
-    const formularity = useFormularityContext();
+    const { formStore } = useFormularityContext();
+
+    // Subscribe only to the state needed for submit button logic
+    const isValid = useFormStoreSubscription(
+        formStore
+        , ( state ) => deepObjectKeys( state.errors ).length === 0
+    );
+
+    const isSubmitting = useFormStoreSubscription(
+        formStore
+        , ( state ) => state.isSubmitting
+    );
+
+    const submitCount = useFormStoreSubscription(
+        formStore
+        , ( state ) => state.submitCount
+    );
+
+    const isDirty = useFormStoreSubscription(
+        formStore
+        , ( state ) => {
+            const currentStore = formStore.get();
+            const valuesInitializer = undefined; // TODO: need to handle this
+            const initialValuesToCompare = currentStore.initialValues;
+            return !isEqual( state.values, initialValuesToCompare );
+        }
+    );
+
+    const isEditing = useFormStoreSubscription(
+        formStore
+        , ( state ) => state.isEditing
+    );
+
+    // Create a minimal formularity object with only what's needed
+    const formularity = {
+        isValid
+        , isSubmitting
+        , submitCount
+        , isDirty
+        , isEditing
+    };
 
     const renderedComponent = component as FC || 'button';
 
     const getDisabledLogic = () => {
-        const isValid = !!formularity.isValid;
-
         if ( 'disabled' in props && props.disabled ) return props.disabled;
         if ( disableInvalid == null ) return !isValid;
-        if ( disableWhileSubmitting && formularity.isSubmitting ) return true;
+        if ( disableWhileSubmitting && isSubmitting ) return true;
 
         if ( disableInvalid ) {
             switch ( disabledMode ) {
                 case 'after-first-submission':
-                    return disableAfterFirstSubmit( formularity );
+                    return disableAfterFirstSubmit( formularity as never );
                 case 'after-first-submission-editing':
-                    return disableAfterFirstSubmitUnlessEditing( formularity );
+                    return disableAfterFirstSubmitUnlessEditing( formularity as never );
                 case 'not-dirty':
-                    return isFormDisabledNotDirty( formularity );
+                    return isFormDisabledNotDirty( formularity as never );
                 case 'errors-only':
                 default:
                     return !isValid;

@@ -21,12 +21,12 @@ export const Form = ( {
     children
     , ...props
 }: FormProps ) => {
-    const formularity = useFormularityContext();
+    const { handlers } = useFormularityContext();
 
     return (
         <form
-            onSubmit={ formularity?.handleSubmit }
-            onReset={ formularity?.handleReset }
+            onSubmit={ handlers.handleSubmit }
+            onReset={ handlers.handleReset }
             { ...props }
         >
             { children }

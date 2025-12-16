@@ -9,21 +9,25 @@ import {
     , FormularityProps
     , FormStore
     , FieldRegistry
+    , FormHandlers
+    , FieldRegistration
 } from './types';
 import { ComponentLibraryConfig } from './component-library-configs/types';
 import { DeepKeys } from './utilityTypes';
 
 /**
- * The context now only stores stable references:
- * - formStore: the stable store object
+ * The context now stores:
+ * - formStore: the stable store object (never changes)
+ * - handlers: stable handler functions (don't cause rerenders)
  * - fieldRegistry: stable ref to field registrations
  * - componentLibrary: stable config
  * - validation flags: stable boolean flags
  * 
- * This prevents unnecessary rerenders since these values don't change frequently
+ * This prevents unnecessary rerenders since these values are all stable
  */
 export type FormularityContextValue<TFormValues extends FormValues = FormValues> = {
     formStore: FormStore<TFormValues>;
+    handlers: FormHandlers<TFormValues> & FieldRegistration<TFormValues>;
     fieldRegistry: React.MutableRefObject<FieldRegistry<TFormValues>>;
     componentLibrary?: ComponentLibraryConfig;
     validateOnChange: boolean;
@@ -37,7 +41,7 @@ export type UseFormularityContextReturn<TFormValues extends FormValues> =
     FormularityProps<TFormValues> & { componentLibrary?: ComponentLibraryConfig };
 
 /**
- * Hook to get the stable context values (store, field registry, etc.)
+ * Hook to get the stable context values (store, handlers, field registry, etc.)
  * This doesn't cause rerenders since these are stable references
  */
 export const useFormularityContext = <
