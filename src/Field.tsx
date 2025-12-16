@@ -258,7 +258,7 @@ export type FieldProps<
  * many basic actions such as handling change, blur, and showing errors. **Must
  * be used underneath a `<Formularity />` component.**
  */
-export const Field = <
+const FieldComponent = <
     TFormValues extends FormValues
     , TFieldName extends DeepKeys<TFormValues> = DeepKeys<TFormValues>
     , TComponentProps = keyof IntrinsicFormElements
@@ -399,3 +399,7 @@ export const Field = <
         </>
     );
 };
+
+// Export Field wrapped with React.memo to prevent unnecessary rerenders
+// when parent Formularity component rerenders
+export const Field = React.memo( FieldComponent ) as typeof FieldComponent;
