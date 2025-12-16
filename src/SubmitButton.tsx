@@ -113,26 +113,13 @@ export const SubmitButton = <
 
     const isDirty = useFormStoreSubscription(
         formStore
-        , state => {
-            const currentStore = formStore.get();
-            const initialValuesToCompare = currentStore.initialValues;
-            return !isEqual( state.values, initialValuesToCompare );
-        }
+        , state => !isEqual( state.values, state.initialValues )
     );
 
     const isEditing = useFormStoreSubscription(
         formStore
         , state => state.isEditing
     );
-
-    // Create a minimal formularity object with only what's needed
-    const formularity = {
-        isValid
-        , isSubmitting
-        , submitCount
-        , isDirty
-        , isEditing
-    };
 
     const renderedComponent = component as FC || 'button';
 
@@ -142,13 +129,22 @@ export const SubmitButton = <
         if ( disableWhileSubmitting && isSubmitting ) return true;
 
         if ( disableInvalid ) {
+            // Create a minimal formularity object with only what's needed for disable logic
+            const formularityForDisableLogic = {
+                isValid
+                , isSubmitting
+                , submitCount
+                , isDirty
+                , isEditing
+            };
+
             switch ( disabledMode ) {
                 case 'after-first-submission':
-                    return disableAfterFirstSubmit( formularity as never );
+                    return disableAfterFirstSubmit( formularityForDisableLogic );
                 case 'after-first-submission-editing':
-                    return disableAfterFirstSubmitUnlessEditing( formularity as never );
+                    return disableAfterFirstSubmitUnlessEditing( formularityForDisableLogic );
                 case 'not-dirty':
-                    return isFormDisabledNotDirty( formularity as never );
+                    return isFormDisabledNotDirty( formularityForDisableLogic );
                 case 'errors-only':
                 default:
                     return !isValid;

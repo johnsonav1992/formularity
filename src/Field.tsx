@@ -333,7 +333,7 @@ export const Field = <
         return () => {
             handlers.unregisterField( name );
         };
-    }, [ name, handlers ] );
+    }, [ name ] );
 
     const renderedComponent = component as FC || 'input';
 

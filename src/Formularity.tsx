@@ -2,7 +2,6 @@ import {
     ComponentProps
     , ReactNode
     , useRef
-    , useMemo
 } from 'react';
 
 // Components
@@ -74,8 +73,8 @@ export const Formularity = <TFormValues extends FormValues>( {
 
     const renderedChildren = children( formularity );
 
-    // Extract stable handlers that won't cause rerenders
-    const handlers = useMemo( () => ( {
+    // Extract stable handlers - they're already memoized with useCallback/useEventCallback
+    const handlers = {
         setFieldValue: formularity.setFieldValue
         , setValues: formularity.setValues
         , setFieldError: formularity.setFieldError
@@ -92,24 +91,7 @@ export const Formularity = <TFormValues extends FormValues>( {
         , validateField: formularity.validateField
         , registerField: formularity.registerField
         , unregisterField: formularity.unregisterField
-    } ), [
-        formularity.setFieldValue
-        , formularity.setValues
-        , formularity.setFieldError
-        , formularity.setErrors
-        , formularity.setFieldTouched
-        , formularity.setTouched
-        , formularity.handleChange
-        , formularity.handleBlur
-        , formularity.submitForm
-        , formularity.handleSubmit
-        , formularity.resetForm
-        , formularity.handleReset
-        , formularity.validateForm
-        , formularity.validateField
-        , formularity.registerField
-        , formularity.unregisterField
-    ] );
+    };
 
     return (
         <FormularityContext.Provider
