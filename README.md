@@ -1,54 +1,23 @@
 <div align="center">
   <img src="./assets/formularity_logo_small.png" alt="Formularity Logo" width="300"/>
-  
-  # Formularity
-  
-  **The last React form library you will ever need!**
-  
-  [![npm version](https://badge.fury.io/js/formularity.svg)](https://badge.fury.io/js/formularity)
-  [![npm downloads](https://img.shields.io/npm/dt/formularity.svg)](https://www.npmjs.com/package/formularity)
-  [![GitHub license](https://img.shields.io/github/license/johnsonav1992/formularity.svg)](https://github.com/johnsonav1992/formularity/blob/main/LICENSE)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-  [![GitHub stars](https://img.shields.io/github/stars/johnsonav1992/formularity.svg?style=social&label=Star)](https://github.com/johnsonav1992/formularity)
-  
-  [![Build Status](https://img.shields.io/github/actions/workflow/status/johnsonav1992/formularity/ci.yml?branch=main)](https://github.com/johnsonav1992/formularity/actions)
-  [![Coverage Status](https://img.shields.io/badge/coverage-90%25-brightgreen)](https://github.com/johnsonav1992/formularity)
-  [![Bundle Size](https://img.shields.io/bundlephobia/minzip/formularity)](https://bundlephobia.com/package/formularity)
-  
 </div>
 
 ---
 
 ## 🚀 Status
 
-<div align="center">
-  <img src="./assets/under-construction.jpg" alt="Under Construction" width="300"/>
-  
-  **Formularity is currently in active development!**
-  
-  Stay tuned for continual pre-releases as we get closer to production-ready!
-  
-  [![Alpha Version](https://img.shields.io/badge/Status-Alpha-orange)](https://www.npmjs.com/package/formularity)
-  [![Coming Soon](https://img.shields.io/badge/Coming-Soon-blue)](#coming-soon)
-</div>
+### DEVELOPMENT ON THIS PROJECT IS NO LONGER ACTIVE!
+
+It was a fun ride but I have since ventured into other projects that have taken
+up my time and attention. It is possible in the future that I will build a different
+library, should the need arise. So stay tuned!
 
 ---
+# Legacy Docs
 
 ## 🎯 Overview
 
 Formularity is a powerful, type-safe React form library built with TypeScript that provides an intuitive API for building complex forms with minimal boilerplate. It offers comprehensive form state management, validation, and field effects out of the box.
-
-### ✨ Key Features
-
-- 🔥 **Type-Safe**: Full TypeScript support with intelligent type inference
-- 🎯 **Zero Dependencies**: Lightweight with no external dependencies
-- 🚀 **Performance**: Optimized re-renders and efficient state management
-- 🔧 **Flexible**: Works with any UI library or custom components
-- 📝 **Validation**: Built-in validators and custom validation support
-- 🎨 **Field Effects**: Dynamic field behavior based on form state
-- 📱 **Mobile Ready**: Touch-friendly with proper mobile support
-- 🧪 **Well Tested**: Comprehensive test coverage
 
 ---
 
@@ -588,11 +557,3 @@ function ConditionalForm() {
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ---
-
-<div align="center">
-  
-  **[⬆ Back to Top](#formularity)**
-  
-  Made with ❤️ by Alex Johnson
-  
-</div>
